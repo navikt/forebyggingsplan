@@ -11,6 +11,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+
+    // Funksjonelle operatorer
+    implementation("io.arrow-kt:arrow-core:1.1.2")
 }
 
 tasks.test {
