@@ -3,7 +3,7 @@ import domene.Aktivitet
 import domene.Arbeidsgiver
 import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForArbeidsgiver
 import domene.NavAnsatt
-import domene.ValgtAktivitet.Companion.velgtForeslåttAktivitet
+import domene.ValgtAktivitet.Companion.velgForeslåttAktivitet
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
@@ -28,7 +28,7 @@ class AktivitetTest {
         foreslåttAktivitet.foreslåttAv shouldBe navAnsatt
         foreslåttAktivitet.foreslåttFor shouldBe arbeidsgiver
 
-        val valgtAktivitet = arbeidsgiver.velgtForeslåttAktivitet(foreslåttAktivitet)
+        val valgtAktivitet = arbeidsgiver.velgForeslåttAktivitet(foreslåttAktivitet)
         valgtAktivitet.foreslåttAktivitet shouldBe foreslåttAktivitet
         valgtAktivitet.foreslåttAktivitet.aktivitet shouldBe aktivitet
         valgtAktivitet.valgtAv shouldBe arbeidsgiver

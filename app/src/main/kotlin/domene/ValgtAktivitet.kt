@@ -30,7 +30,7 @@ class ValgtAktivitet private constructor(
     }
 
     companion object {
-        fun Arbeidsgiver.velgtForeslåttAktivitet(foreslåttAktivitet: ForeslåttAktivitet) =
+        fun Arbeidsgiver.velgForeslåttAktivitet(foreslåttAktivitet: ForeslåttAktivitet) =
             ValgtAktivitet(foreslåttAktivitet = foreslåttAktivitet, valgtAv = this)
     }
 }
