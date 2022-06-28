@@ -12,11 +12,11 @@ class ValgtAktivitet private constructor(
 ) {
     private val valgtTidspunkt = Instant.now()
 
-    private var fristForÅFullføreAktivitet: Option<Duration> = None
+    var fristForÅFullføreAktivitet: Option<Duration> = None
+        private set
+
     private var fullført: Boolean = false
     private var fullførtTidspunkt: Option<Instant> = None
-
-    val frist get() = this.fristForÅFullføreAktivitet
 
     fun erFullført() = this.fullført
 
@@ -25,7 +25,7 @@ class ValgtAktivitet private constructor(
         this.fullførtTidspunkt = Some(Instant.now())
     }
 
-    fun oppdaterFristForÅFullføreAktivitet(duration: Duration) {
+    fun endreFristForÅFullføreAktivitet(duration: Duration) {
         this.fristForÅFullføreAktivitet = Some(duration)
     }
 

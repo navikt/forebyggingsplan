@@ -7,7 +7,7 @@ class ForeslåttAktivitet private constructor(
     val foreslåttAv: NavAnsatt,
     val foreslåttFor: Arbeidsgiver,
 ) {
-    private val foreslåttTidspunkt: Instant = Instant.now()
+    private val foreslåttTidspunkt = Instant.now()
 
     companion object {
         fun NavAnsatt.foreslåAktivitetForArbeidsgiver(aktivitet: Aktivitet, arbeidsgiver: Arbeidsgiver) =

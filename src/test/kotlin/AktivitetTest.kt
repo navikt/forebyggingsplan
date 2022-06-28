@@ -1,6 +1,4 @@
 import arrow.core.None
-import arrow.core.getOrElse
-import arrow.core.none
 import domene.Aktivitet
 import domene.Arbeidsgiver
 import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForArbeidsgiver
@@ -8,7 +6,6 @@ import domene.NavAnsatt
 import domene.ValgtAktivitet.Companion.velgtForeslåttAktivitet
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.shouldBe
 import java.time.Duration
 import kotlin.test.Test
@@ -36,11 +33,11 @@ class AktivitetTest {
         valgtAktivitet.foreslåttAktivitet.aktivitet shouldBe aktivitet
         valgtAktivitet.valgtAv shouldBe arbeidsgiver
 
-        valgtAktivitet.frist shouldBe None
+        valgtAktivitet.fristForÅFullføreAktivitet shouldBe None
         val nyFrist = Duration.ofHours(72)
-        valgtAktivitet.oppdaterFristForÅFullføreAktivitet(duration = nyFrist)
-        valgtAktivitet.frist.isDefined().shouldBeTrue()
-        valgtAktivitet.frist.tap { it shouldBe nyFrist }
+        valgtAktivitet.endreFristForÅFullføreAktivitet(duration = nyFrist)
+        valgtAktivitet.fristForÅFullføreAktivitet.isDefined().shouldBeTrue()
+        valgtAktivitet.fristForÅFullføreAktivitet.tap { it shouldBe nyFrist }
 
         valgtAktivitet.erFullført().shouldBeFalse()
         valgtAktivitet.fullførAktivitet()

@@ -16,9 +16,6 @@ dependencies {
     val kotestVerstion = "5.3.2"
     testImplementation("io.kotest:kotest-assertions-core:$kotestVerstion")
 
-    // ULID
-    implementation("com.github.guepardoapps:kulid:2.0.0.0")
-
     // Funksjonelle operatorer
     implementation("io.arrow-kt:arrow-core:1.1.2")
 }
