@@ -8,7 +8,7 @@ import java.time.Instant
 
 class ValgtAktivitet private constructor(
     val foreslåttAktivitet: ForeslåttAktivitet,
-    val valgtAv: Arbeidsgiver,
+    val valgtAv: ArbeidsgiverRepresentant,
 ) {
     private val valgtTidspunkt = Instant.now()
 
@@ -30,7 +30,7 @@ class ValgtAktivitet private constructor(
     }
 
     companion object {
-        fun Arbeidsgiver.velgForeslåttAktivitet(foreslåttAktivitet: ForeslåttAktivitet) =
+        fun ArbeidsgiverRepresentant.velgForeslåttAktivitet(foreslåttAktivitet: ForeslåttAktivitet) =
             ValgtAktivitet(foreslåttAktivitet = foreslåttAktivitet, valgtAv = this)
     }
 }

@@ -1,6 +1,6 @@
 import arrow.core.None
 import domene.Aktivitet
-import domene.Arbeidsgiver
+import domene.ArbeidsgiverRepresentant
 import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForVirksomhet
 import domene.ValgtAktivitet.Companion.velgForeslåttAktivitet
 import domene.Virksomhet
@@ -21,16 +21,16 @@ class AktivitetTest {
             mål = "Et mål"
         )
         val virksomhet = Virksomhet(orgnr = "123456789")
-        val arbeidsgiver = Arbeidsgiver(fnr = "12345678911", virksomhet = virksomhet)
+        val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678911", virksomhet = virksomhet)
 
         val foreslåttAktivitet = foreslåAktivitetForVirksomhet(aktivitet, virksomhet)
         foreslåttAktivitet.aktivitet shouldBe aktivitet
         foreslåttAktivitet.foreslåttFor shouldBe virksomhet
 
-        val valgtAktivitet = arbeidsgiver.velgForeslåttAktivitet(foreslåttAktivitet)
+        val valgtAktivitet = arbeidsgiverRepresentant.velgForeslåttAktivitet(foreslåttAktivitet)
         valgtAktivitet.foreslåttAktivitet shouldBe foreslåttAktivitet
         valgtAktivitet.foreslåttAktivitet.aktivitet shouldBe aktivitet
-        valgtAktivitet.valgtAv shouldBe arbeidsgiver
+        valgtAktivitet.valgtAv shouldBe arbeidsgiverRepresentant
 
         valgtAktivitet.fristForÅFullføreAktivitet shouldBe None
         val nyFrist = Duration.ofHours(72)

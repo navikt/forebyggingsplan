@@ -1,3 +1,3 @@
 package domene
 
-class Arbeidsgiver(private val fnr: String, private val virksomhet: Virksomhet)
+class ArbeidsgiverRepresentant(private val fnr: String, private val virksomhet: Virksomhet)
