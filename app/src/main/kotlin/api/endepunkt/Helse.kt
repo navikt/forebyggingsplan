@@ -5,7 +5,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 
-fun Routing.helse() {
+fun Routing.helseEndepunkter() {
     get("/internal/isAlive") {
         call.respond("ALIVE")
     }

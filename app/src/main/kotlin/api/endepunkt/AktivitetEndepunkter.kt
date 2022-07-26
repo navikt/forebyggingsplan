@@ -1,13 +1,26 @@
 package api.endepunkt
 
+import AktivitetService
 import domene.Aktivitet
-import io.ktor.server.application.call
+import domene.Virksomhet
+import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Routing
-import io.ktor.server.routing.get
+import io.ktor.server.routing.*
 
-fun Routing.aktivitetEndepunkter() {
+fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
+
+    val queryParameters = object {
+        val orgnr ="orgnummer"
+    }
+
     get("/aktiviteter") {
-        call.respond(domene.aktiviteter.map(Aktivitet::tilDto))
+        call.respond(aktivitetService.hentAktiviteter().map(Aktivitet::tilDto))
+    }
+
+    get("/aktiviteter/{${queryParameters.orgnr}}") {
+        val orgnr = call.parameters[queryParameters.orgnr] ?: return@get call.respond(HttpStatusCode.NotFound)
+        val virksomhet = Virksomhet(orgnr = orgnr)
+        call.respond(aktivitetService.hentAktiviteterForVirksomhet(virksomhet).map(Aktivitet::tilDto))
     }
 }
