@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     id("com.github.johnrengelman.shadow") version "7.1.2"
     application
 }
@@ -29,14 +29,6 @@ dependencies {
 
     // Funksjonelle operatorer
     implementation("io.arrow-kt:arrow-core:1.1.2")
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 application {

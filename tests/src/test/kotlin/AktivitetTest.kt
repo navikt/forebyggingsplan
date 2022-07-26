@@ -1,5 +1,6 @@
 import arrow.core.None
 import domene.Aktivitet
+import domene.AktivitetsType
 import domene.ArbeidsgiverRepresentant
 import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForVirksomhet
 import domene.ValgtAktivitet.Companion.velgForeslåttAktivitet
@@ -17,7 +18,7 @@ class AktivitetTest {
         val aktivitet = Aktivitet(
             tittel = "Videokurs om mestring på jobb",
             beskrivelse = "En lang beskrivelse",
-            type = Aktivitet.AktivitetsType.Kurs,
+            type = AktivitetsType.Kurs,
             mål = "Et mål"
         )
         val virksomhet = Virksomhet(orgnr = "123456789")
