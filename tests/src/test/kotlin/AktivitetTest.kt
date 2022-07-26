@@ -1,9 +1,9 @@
 import arrow.core.None
 import domene.Aktivitet
 import domene.Arbeidsgiver
-import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForArbeidsgiver
-import domene.NavAnsatt
+import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForVirksomhet
 import domene.ValgtAktivitet.Companion.velgForeslåttAktivitet
+import domene.Virksomhet
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
@@ -20,13 +20,12 @@ class AktivitetTest {
             type = Aktivitet.AktivitetsType.Kurs,
             mål = "Et mål"
         )
-        val navAnsatt = NavAnsatt("Z123456")
-        val arbeidsgiver = Arbeidsgiver(fnr = "12345678911", orgnr = "123456789")
+        val virksomhet = Virksomhet(orgnr = "123456789")
+        val arbeidsgiver = Arbeidsgiver(fnr = "12345678911", virksomhet = virksomhet)
 
-        val foreslåttAktivitet = navAnsatt.foreslåAktivitetForArbeidsgiver(aktivitet, arbeidsgiver)
+        val foreslåttAktivitet = foreslåAktivitetForVirksomhet(aktivitet, virksomhet)
         foreslåttAktivitet.aktivitet shouldBe aktivitet
-        foreslåttAktivitet.foreslåttAv shouldBe navAnsatt
-        foreslåttAktivitet.foreslåttFor shouldBe arbeidsgiver
+        foreslåttAktivitet.foreslåttFor shouldBe virksomhet
 
         val valgtAktivitet = arbeidsgiver.velgForeslåttAktivitet(foreslåttAktivitet)
         valgtAktivitet.foreslåttAktivitet shouldBe foreslåttAktivitet

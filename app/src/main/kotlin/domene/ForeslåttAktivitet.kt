@@ -4,13 +4,12 @@ import java.time.Instant
 
 class ForeslåttAktivitet private constructor(
     val aktivitet: Aktivitet,
-    val foreslåttAv: NavAnsatt,
-    val foreslåttFor: Arbeidsgiver,
+    val foreslåttFor: Virksomhet,
 ) {
     private val foreslåttTidspunkt = Instant.now()
 
     companion object {
-        fun NavAnsatt.foreslåAktivitetForArbeidsgiver(aktivitet: Aktivitet, arbeidsgiver: Arbeidsgiver) =
-            ForeslåttAktivitet(aktivitet = aktivitet, foreslåttAv = this, foreslåttFor = arbeidsgiver)
+        fun foreslåAktivitetForVirksomhet(aktivitet: Aktivitet, virksomhet: Virksomhet) =
+            ForeslåttAktivitet(aktivitet = aktivitet, foreslåttFor = virksomhet)
     }
 }
