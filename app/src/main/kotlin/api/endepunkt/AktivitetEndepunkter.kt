@@ -8,8 +8,9 @@ import io.ktor.server.application.*
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 
+val AKTIVITET_PATH = "aktiviteter"
+
 fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
-    val AKTIVITET_PATH = "aktiviteter"
 
     val queryParameters = object {
         val orgnr ="orgnummer"
