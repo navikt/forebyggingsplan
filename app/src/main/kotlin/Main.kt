@@ -1,4 +1,5 @@
 import api.endepunkt.aktivitetEndepunkter
+import api.endepunkt.helse
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
@@ -17,6 +18,8 @@ fun bootstrap() {
         }
         routing {
             aktivitetEndepunkter()
+            helse()
         }
     }.start(wait = true)
 }
+
