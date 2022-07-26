@@ -9,16 +9,17 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 
 fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
+    val AKTIVITET_PATH = "aktiviteter"
 
     val queryParameters = object {
         val orgnr ="orgnummer"
     }
 
-    get("/aktiviteter") {
+    get("/$AKTIVITET_PATH") {
         call.respond(aktivitetService.hentAktiviteter().map(Aktivitet::tilDto))
     }
 
-    get("/aktiviteter/{${queryParameters.orgnr}}") {
+    get("/$AKTIVITET_PATH/{${queryParameters.orgnr}}") {
         val orgnr = call.parameters[queryParameters.orgnr] ?: return@get call.respond(HttpStatusCode.NotFound)
         val virksomhet = Virksomhet(orgnr = orgnr)
         call.respond(aktivitetService.hentAktiviteterForVirksomhet(virksomhet).map(Aktivitet::tilDto))
