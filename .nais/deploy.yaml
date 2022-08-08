@@ -24,6 +24,10 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 60
+  accessPolicy:
+    inbound:
+      rules:
+        - application: forebyggingsplan-frontend
   replicas:
     min: 1
     max: 2
