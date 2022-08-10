@@ -3,17 +3,13 @@ package domene
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
-import java.time.Duration
 import java.time.Instant
 
 class ValgtAktivitet private constructor(
-    val foreslåttAktivitet: ForeslåttAktivitet,
+    val aktivitet: Aktivitet,
     val valgtAv: ArbeidsgiverRepresentant,
 ) {
     private val valgtTidspunkt = Instant.now()
-
-    var fristForÅFullføreAktivitet: Option<Duration> = None
-        private set
 
     private var fullført: Boolean = false
     private var fullførtTidspunkt: Option<Instant> = None
@@ -25,12 +21,8 @@ class ValgtAktivitet private constructor(
         this.fullførtTidspunkt = Some(Instant.now())
     }
 
-    fun endreFristForÅFullføreAktivitet(duration: Duration) {
-        this.fristForÅFullføreAktivitet = Some(duration)
-    }
-
     companion object {
-        fun ArbeidsgiverRepresentant.velgForeslåttAktivitet(foreslåttAktivitet: ForeslåttAktivitet) =
-            ValgtAktivitet(foreslåttAktivitet = foreslåttAktivitet, valgtAv = this)
+        fun ArbeidsgiverRepresentant.velgAktivitet(aktivitet: Aktivitet) =
+            ValgtAktivitet(aktivitet = aktivitet, valgtAv = this)
     }
 }

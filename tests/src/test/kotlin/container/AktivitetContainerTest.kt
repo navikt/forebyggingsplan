@@ -18,9 +18,17 @@ class AktivitetContainerTest {
 
     @Test
     fun `skal kunne hente alle aktiviteter`() {
-        val orgnr = "123456789"
-        hentAktiviteterForVirksomhet(orgnr = orgnr).size shouldBeGreaterThanOrEqual 1
+        hentAktiviteter().size shouldBeGreaterThanOrEqual 1
     }
+
+    private fun hentAktiviteter(): List<AktivitetDTO> {
+        return forebyggingsplanContainer.performGet(AKTIVITET_PATH)
+            .tilListeRespons<AktivitetDTO>()
+            .third.fold(
+                success = { respons -> respons },
+                failure = { fail(it.message) }
+            )
+        }
 
     private fun hentAktiviteterForVirksomhet(orgnr: String): List<AktivitetDTO> {
         return forebyggingsplanContainer.performGet("$AKTIVITET_PATH/$orgnr")

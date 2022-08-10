@@ -1,18 +1,11 @@
 package db
 
 import domene.*
-import domene.ForeslåttAktivitet.Companion.foreslåAktivitetForVirksomhet
-import domene.ValgtAktivitet.Companion.velgForeslåttAktivitet
+import domene.ValgtAktivitet.Companion.velgAktivitet
 
 class AktivitetRepository {
 
     fun hentAktiviteter() = aktiviteter
-
-    fun hentAktiviteterForVirksomhet(virksomhet: Virksomhet): List<Aktivitet> {
-        return foreslåtteAktiviteter
-            .filter { foreslåttAktivitet -> foreslåttAktivitet.foreslåttFor == virksomhet }
-            .map { it.aktivitet }
-    }
 
     fun lagreValgtAktivitet(valgAktivitet: ValgtAktivitet): ValgtAktivitet {
         valgteAktiviteter.add(valgAktivitet)
@@ -47,12 +40,9 @@ class AktivitetRepository {
         ),
     )
     private val virksomhet = Virksomhet("123456789")
-    private var foreslåtteAktiviteter = aktiviteter.subList(0, 2).map { aktivitet ->
-        foreslåAktivitetForVirksomhet(aktivitet = aktivitet, virksomhet = virksomhet)
-    }
 
     private val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678912", virksomhet = virksomhet)
-    private var valgteAktiviteter : MutableList<ValgtAktivitet> = mutableListOf(arbeidsgiverRepresentant.velgForeslåttAktivitet(foreslåtteAktiviteter.first()))
+    private var valgteAktiviteter : MutableList<ValgtAktivitet> = mutableListOf(arbeidsgiverRepresentant.velgAktivitet(aktiviteter.first()))
     // SLUTT MOCK DATA
 
 

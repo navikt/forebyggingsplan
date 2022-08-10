@@ -1,20 +1,15 @@
 import db.AktivitetRepository
-import domene.ArbeidsgiverRepresentant
-import domene.ForeslåttAktivitet
-import domene.ValgtAktivitet
-import domene.ValgtAktivitet.Companion.velgForeslåttAktivitet
-import domene.Virksomhet
+import domene.*
+import domene.ValgtAktivitet.Companion.velgAktivitet
 
 class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
 
     fun hentAktiviteter() = aktivitetRepository.hentAktiviteter()
-    fun hentAktiviteterForVirksomhet(virksomhet: Virksomhet) =
-        aktivitetRepository.hentAktiviteterForVirksomhet(virksomhet = virksomhet)
 
-    fun velgForeslåttAktivitet(
+    fun velgAktivitet(
         arbeidsgiverRepresentant: ArbeidsgiverRepresentant,
-        foreslåttAktivitet: ForeslåttAktivitet
-    ) = arbeidsgiverRepresentant.velgForeslåttAktivitet(foreslåttAktivitet).lagre()
+        aktivitet: Aktivitet
+    ) = arbeidsgiverRepresentant.velgAktivitet(aktivitet).lagre()
 
     private fun ValgtAktivitet.lagre() = aktivitetRepository.lagreValgtAktivitet(this)
 }
