@@ -34,3 +34,15 @@ dependencies {
 application {
     mainClass.set("MainKt")
 }
+
+tasks {
+    shadowJar {
+        manifest {
+            attributes(Pair("Main-Class", "MainKt"))
+        }
+    }
+
+    withType<Test>{
+        dependsOn(shadowJar)
+    }
+}

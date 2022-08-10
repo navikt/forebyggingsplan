@@ -29,3 +29,9 @@ dependencies {
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
 
 }
+
+tasks {
+    withType<Test>{
+        dependsOn(":app:shadowJar")
+    }
+}
