@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -26,9 +24,6 @@ dependencies {
 
     // Serialisering av dato-objekter
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-
-    val kotestVerstion = "5.3.2"
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVerstion")
 
     // Funksjonelle operatorer
     implementation("io.arrow-kt:arrow-core:1.1.2")
