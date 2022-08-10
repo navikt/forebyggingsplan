@@ -7,11 +7,9 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.serialization.responseObject
 import container.TestContainerHelper.Companion.performGet
 import container.TestContainerHelper.Companion.performPost
-import domene.enArbeidsgiverRepresentant
 import domene.enVirksomhet
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.InternalSerializationApi
@@ -30,7 +28,7 @@ class AktivitetContainerTest {
     }
 
     @Test
-    fun `skal kunne hente velge en aktivitet`() {
+    fun `skal kunne hente og velge en aktivitet`() {
         hentValgteAktiviteterForVirksomhet(enVirksomhet.orgnr).shouldBeEmpty()
         val alleAktiviteter = hentAktiviteter()
         val aktivitetSomSkalVelges = alleAktiviteter.first()

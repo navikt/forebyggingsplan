@@ -1,7 +1,6 @@
 package db
 
 import domene.*
-import domene.ValgtAktivitet.Companion.velgAktivitet
 
 class AktivitetRepository {
 
@@ -46,7 +45,7 @@ class AktivitetRepository {
     private val virksomhet = Virksomhet("123456789")
 
     private val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678912", virksomhet = virksomhet)
-    private var valgteAktiviteter : MutableList<ValgtAktivitet> = mutableListOf(arbeidsgiverRepresentant.velgAktivitet(aktiviteter.first()))
+    private var valgteAktiviteter : MutableList<ValgtAktivitet> = mutableListOf()
     // SLUTT MOCK DATA
 
 
