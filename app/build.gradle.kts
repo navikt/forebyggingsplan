@@ -24,6 +24,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
 
+    // Serialisering av dato-objekter
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
     val kotestVerstion = "5.3.2"
     testImplementation("io.kotest:kotest-assertions-core:$kotestVerstion")
 

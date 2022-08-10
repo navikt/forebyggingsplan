@@ -1,11 +1,19 @@
 package container
 
 import api.dto.AktivitetDTO
+import api.dto.ValgtAktivitetDTO
 import api.endepunkt.AKTIVITET_PATH
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.serialization.responseObject
 import container.TestContainerHelper.Companion.performGet
+import container.TestContainerHelper.Companion.performPost
+import domene.enArbeidsgiverRepresentant
+import domene.enVirksomhet
+import io.kotest.inspectors.forAtLeastOne
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -21,6 +29,19 @@ class AktivitetContainerTest {
         hentAktiviteter().size shouldBeGreaterThanOrEqual 1
     }
 
+    @Test
+    fun `skal kunne hente velge en aktivitet`() {
+        hentValgteAktiviteterForVirksomhet(enVirksomhet.orgnr).shouldBeEmpty()
+        val alleAktiviteter = hentAktiviteter()
+        val aktivitetSomSkalVelges = alleAktiviteter.first()
+        velgAktivitet(aktivitetSomSkalVelges.id)
+        val alleValgteAktiviteter = hentValgteAktiviteterForVirksomhet(enVirksomhet.orgnr)
+        alleValgteAktiviteter.size shouldBeGreaterThanOrEqual 1
+        alleValgteAktiviteter.forAtLeastOne {
+            it.aktivitet.id shouldBe aktivitetSomSkalVelges.id
+        }
+    }
+
     private fun hentAktiviteter(): List<AktivitetDTO> {
         return forebyggingsplanContainer.performGet(AKTIVITET_PATH)
             .tilListeRespons<AktivitetDTO>()
@@ -30,9 +51,18 @@ class AktivitetContainerTest {
             )
         }
 
-    private fun hentAktiviteterForVirksomhet(orgnr: String): List<AktivitetDTO> {
+    private fun hentValgteAktiviteterForVirksomhet(orgnr: String): List<ValgtAktivitetDTO> {
         return forebyggingsplanContainer.performGet("$AKTIVITET_PATH/$orgnr")
-            .tilListeRespons<AktivitetDTO>()
+            .tilListeRespons<ValgtAktivitetDTO>()
+            .third.fold(
+                success = { respons -> respons },
+                failure = { fail(it.message) }
+            )
+        }
+
+    private fun velgAktivitet(aktivitetsId: String): ValgtAktivitetDTO {
+        return forebyggingsplanContainer.performPost("$AKTIVITET_PATH/$aktivitetsId")
+            .tilSingelRespons<ValgtAktivitetDTO>()
             .third.fold(
                 success = { respons -> respons },
                 failure = { fail(it.message) }

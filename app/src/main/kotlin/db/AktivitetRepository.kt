@@ -7,6 +7,10 @@ class AktivitetRepository {
 
     fun hentAktiviteter() = aktiviteter
 
+    fun hentAktivitet(aktivitetsId: String) = aktiviteter.find { it.id == aktivitetsId }
+
+    fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) = valgteAktiviteter.filter { it.valgtAv.virksomhet == virksomhet}
+
     fun lagreValgtAktivitet(valgAktivitet: ValgtAktivitet): ValgtAktivitet {
         valgteAktiviteter.add(valgAktivitet)
         return valgAktivitet

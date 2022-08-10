@@ -1,8 +1,10 @@
 package domene
 
+import api.dto.ValgtAktivitetDTO
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import kotlinx.datetime.toKotlinInstant
 import java.time.Instant
 
 class ValgtAktivitet private constructor(
@@ -20,6 +22,12 @@ class ValgtAktivitet private constructor(
         this.fullført = true
         this.fullførtTidspunkt = Some(Instant.now())
     }
+
+    fun tilDto(): ValgtAktivitetDTO = ValgtAktivitetDTO(
+        aktivitet = aktivitet.tilDto(),
+        valgtTidspunkt = valgtTidspunkt.toKotlinInstant(),
+        valgtAv = valgtAv.tilDto()
+    )
 
     companion object {
         fun ArbeidsgiverRepresentant.velgAktivitet(aktivitet: Aktivitet) =
