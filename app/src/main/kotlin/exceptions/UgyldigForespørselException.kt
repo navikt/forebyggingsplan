@@ -1,4 +1,4 @@
 package exceptions
 
 
-class UgyldigForespørselException(): Exception(message = "Ugyldig forespørsel")
+class UgyldigForespørselException(): Exception("Ugyldig forespørsel")

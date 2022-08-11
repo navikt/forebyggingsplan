@@ -9,7 +9,7 @@ class ValgtAktivitet private constructor(
     val aktivitet: Aktivitet,
     val valgtAv: ArbeidsgiverRepresentant,
 ) {
-    private val valgtTidspunkt = Instant.now()
+    val valgtTidspunkt = Instant.now()
 
     fun fullførAktivitet() = fraValgtAktivitet(this)
 
