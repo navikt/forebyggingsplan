@@ -10,7 +10,10 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-val AKTIVITET_PATH = "aktiviteter"
+val AKTIVITETER_PATH = "aktiviteter"
+val VALGTE_PATH = "valgte"
+val FULLFØRTE_PATH = "fullførte"
+
 
 fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
 
@@ -19,17 +22,11 @@ fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
         val aktivitetsId ="aktivitetsId"
     }
 
-    get("/$AKTIVITET_PATH") {
+    get("/$AKTIVITETER_PATH") {
         call.respond(aktivitetService.hentAktiviteter().map(Aktivitet::tilDto))
     }
 
-//    get("/$AKTIVITET_PATH/{${queryParameters.orgnr}}") {
-//        val orgnr = call.parameters[queryParameters.orgnr] ?: return@get call.respond(HttpStatusCode.NotFound)
-//        val virksomhet = Virksomhet(orgnr = orgnr)
-//        call.respond(aktivitetService.hentAktiviteterForVirksomhet(virksomhet).map(Aktivitet::tilDto))
-//    }
-
-    post("/$AKTIVITET_PATH/{${parameters.aktivitetsId}}") {
+    post("/$AKTIVITETER_PATH/{${parameters.orgnr}}/$VALGTE_PATH/{${parameters.aktivitetsId}}") {
         val aktivitetsId = call.parameters[parameters.aktivitetsId] ?: return@post call.respond(HttpStatusCode.NotFound)
         val valgtAktivitet = aktivitetService.velgAktivitet(
             aktivitetsId = aktivitetsId,
@@ -38,9 +35,17 @@ fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
         call.respond(valgtAktivitet.tilDto())
     }
 
-    get("/$AKTIVITET_PATH/{${parameters.orgnr}}") {
+    get("/$AKTIVITETER_PATH/{${parameters.orgnr}}/$VALGTE_PATH") {
         val orgnr = call.parameters[parameters.orgnr] ?: return@get call.respond(HttpStatusCode.NotFound)
         val virksomhet = Virksomhet(orgnr = orgnr)
         call.respond(aktivitetService.hentValgteAktiviteterForVirksomhet(virksomhet).map(ValgtAktivitet::tilDto))
+    }
+
+    post("/$AKTIVITETER_PATH/{${parameters.orgnr}}/$FULLFØRTE_PATH/{${parameters.aktivitetsId}}") {
+        call.respond(status = HttpStatusCode.NotImplemented, message = "")
+    }
+
+    get("/$AKTIVITETER_PATH/{${parameters.orgnr}}/$FULLFØRTE_PATH") {
+        call.respond(status = HttpStatusCode.NotImplemented, message = "")
     }
 }

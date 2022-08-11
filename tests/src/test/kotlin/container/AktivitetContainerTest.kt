@@ -2,7 +2,8 @@ package container
 
 import api.dto.AktivitetDTO
 import api.dto.ValgtAktivitetDTO
-import api.endepunkt.AKTIVITET_PATH
+import api.endepunkt.AKTIVITETER_PATH
+import api.endepunkt.VALGTE_PATH
 import container.TestContainerHelper.Companion.performGet
 import container.TestContainerHelper.Companion.performPost
 import data
@@ -26,11 +27,11 @@ class AktivitetContainerTest {
 
     @Test
     fun `skal kunne hente og velge en aktivitet`() {
-        hentValgteAktiviteterForVirksomhet(enVirksomhet.orgnr).data.shouldBeEmpty()
+        hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr).data.shouldBeEmpty()
         val aktivitetSomSkalVelges = hentAktiviteter().data.first()
-        val valgtAktivitetDto = velgAktivitet(aktivitetSomSkalVelges.id).third.get()
+        val valgtAktivitetDto = velgAktivitet(aktivitetsId = aktivitetSomSkalVelges.id, orgnr = enVirksomhet.orgnr).third.get()
         valgtAktivitetDto.aktivitet shouldBeEqualToComparingFields aktivitetSomSkalVelges
-        val alleValgteAktiviteter = hentValgteAktiviteterForVirksomhet(enVirksomhet.orgnr).data
+        val alleValgteAktiviteter = hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr).data
         alleValgteAktiviteter.size shouldBeGreaterThanOrEqual 1
         alleValgteAktiviteter.forAtLeastOne {
             it.aktivitet.id shouldBe aktivitetSomSkalVelges.id
@@ -39,17 +40,17 @@ class AktivitetContainerTest {
 
     @Test
     fun `skal få 404 dersom man ikke finner en aktivitet`() {
-        velgAktivitet("yololoooo").second.statusCode shouldBe 404
+        velgAktivitet(aktivitetsId = "yololoooo", orgnr = enVirksomhet.orgnr).second.statusCode shouldBe 404
     }
 
-    private fun hentAktiviteter() = forebyggingsplanContainer.performGet(AKTIVITET_PATH)
+    private fun hentAktiviteter() = forebyggingsplanContainer.performGet(AKTIVITETER_PATH)
         .tilListeRespons<AktivitetDTO>()
 
     private fun hentValgteAktiviteterForVirksomhet(orgnr: String) =
-        forebyggingsplanContainer.performGet("$AKTIVITET_PATH/$orgnr")
+        forebyggingsplanContainer.performGet("$AKTIVITETER_PATH/$orgnr/$VALGTE_PATH")
             .tilListeRespons<ValgtAktivitetDTO>()
 
-    private fun velgAktivitet(aktivitetsId: String) =
-        forebyggingsplanContainer.performPost("$AKTIVITET_PATH/$aktivitetsId")
+    private fun velgAktivitet(aktivitetsId: String, orgnr: String) =
+        forebyggingsplanContainer.performPost("$AKTIVITETER_PATH/$orgnr/$VALGTE_PATH/$aktivitetsId")
             .tilSingelRespons<ValgtAktivitetDTO>()
 }
