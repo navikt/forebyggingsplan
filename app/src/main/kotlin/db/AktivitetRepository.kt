@@ -22,28 +22,16 @@ class AktivitetRepository {
     // MOCK DATA INNTIL VI HAR DB PÅ PLASS
     private var aktiviteter: List<Aktivitet> = listOf(
         Aktivitet(
-            tittel = "Pilotering av medarbeidersamtalen",
-            beskrivelse = "Svada svada",
-            type = AktivitetsType.Øvelse,
-            mål = "Å bli ferdig"
+            tittel = "Pilotering av medarbeidersamtalen"
         ),
         Aktivitet(
-            tittel = "Kartleggingsmøte med ansatt",
-            beskrivelse = "Enda mer svada",
-            type = AktivitetsType.Oppgave,
-            mål = "Å bli (nesten) ferdig"
+            tittel = "Kartleggingsmøte med ansatt"
         ),
         Aktivitet(
-            tittel = "Sinnemestring",
-            beskrivelse = "Hvordan ikke bli sinna?",
-            type = AktivitetsType.Kurs,
-            mål = "Ikke være sinna mer"
+            tittel = "Sinnemestring"
         ),
         Aktivitet(
-            tittel = "Hvordan ta den vanskelige praten?",
-            beskrivelse = "Vi hjelper deg på veien.",
-            type = AktivitetsType.Kurs,
-            mål = "Udefinert"
+            tittel = "Hvordan ta den vanskelige praten?"
         ),
     )
     private val virksomhet = Virksomhet("123456789")

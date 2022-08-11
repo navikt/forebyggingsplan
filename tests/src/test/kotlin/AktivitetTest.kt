@@ -1,5 +1,4 @@
 import domene.Aktivitet
-import domene.AktivitetsType
 import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
@@ -14,10 +13,7 @@ class AktivitetTest {
     @Test
     fun `en aktivitet kan opprettes og velges`() {
         val aktivitet = Aktivitet(
-            tittel = "Videokurs om mestring på jobb",
-            beskrivelse = "En lang beskrivelse",
-            type = AktivitetsType.Kurs,
-            mål = "Et mål"
+            tittel = "Videokurs om mestring på jobb"
         )
         val virksomhet = Virksomhet(orgnr = "123456789")
         val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678911", virksomhet = virksomhet)
@@ -31,10 +27,7 @@ class AktivitetTest {
     @Test
     fun `en valgt aktivitet kan fullføres`() {
         val aktivitet = Aktivitet(
-            tittel = "Videokurs om mestring på jobb",
-            beskrivelse = "En lang beskrivelse",
-            type = AktivitetsType.Kurs,
-            mål = "Et mål"
+            tittel = "Videokurs om mestring på jobb"
         )
         val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678911", virksomhet = Virksomhet(orgnr = "123456789"))
         val fullførtAktivitet = arbeidsgiverRepresentant.velgAktivitet(aktivitet).fullførAktivitet()
