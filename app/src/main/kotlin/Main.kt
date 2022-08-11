@@ -2,6 +2,7 @@ import api.endepunkt.aktivitetEndepunkter
 import api.endepunkt.helseEndepunkter
 import db.AktivitetRepository
 import exceptions.IkkeFunnetException
+import exceptions.UgyldigForespørselException
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -27,6 +28,7 @@ fun bootstrapServer() {
             exception<Throwable> { call, cause ->
                 when (cause) {
                     is IkkeFunnetException -> call.respond(status = HttpStatusCode.NotFound, message = cause.message!!)
+                    is UgyldigForespørselException -> call.respond(status = HttpStatusCode.BadRequest, message = cause.message!!)
                     else -> {
                         this@embeddedServer.log.error("Uhåndtert feil", cause)
                         call.respond(status = HttpStatusCode.InternalServerError, "Uhåndtert feil")

@@ -5,6 +5,7 @@ import domene.Aktivitet
 import domene.ValgtAktivitet
 import domene.Virksomhet
 import domene.enArbeidsgiverRepresentant
+import exceptions.UgyldigForespørselException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -15,8 +16,8 @@ val VALGTE_PATH = "valgte"
 val FULLFØRTE_PATH = "fullførte"
 
 
-fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
 
+fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
     val parameters = object {
         val orgnr ="orgnummer"
         val aktivitetsId ="aktivitetsId"
@@ -27,7 +28,7 @@ fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
     }
 
     post("/$AKTIVITETER_PATH/{${parameters.orgnr}}/$VALGTE_PATH/{${parameters.aktivitetsId}}") {
-        val aktivitetsId = call.parameters[parameters.aktivitetsId] ?: return@post call.respond(HttpStatusCode.NotFound)
+        val aktivitetsId = call.aktivitetsId
         val valgtAktivitet = aktivitetService.velgAktivitet(
             aktivitetsId = aktivitetsId,
             arbeidsgiverRepresentant = enArbeidsgiverRepresentant
@@ -36,7 +37,7 @@ fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
     }
 
     get("/$AKTIVITETER_PATH/{${parameters.orgnr}}/$VALGTE_PATH") {
-        val orgnr = call.parameters[parameters.orgnr] ?: return@get call.respond(HttpStatusCode.NotFound)
+        val orgnr = call.orgnr
         val virksomhet = Virksomhet(orgnr = orgnr)
         call.respond(aktivitetService.hentValgteAktiviteterForVirksomhet(virksomhet).map(ValgtAktivitet::tilDto))
     }
@@ -49,3 +50,6 @@ fun Route.aktivitetEndepunkter(aktivitetService: AktivitetService) {
         call.respond(status = HttpStatusCode.NotImplemented, message = "")
     }
 }
+val ApplicationCall.orgnr get() = this.parameters["orgnummer"] ?: throw UgyldigForespørselException()
+val ApplicationCall.aktivitetsId get () = this.parameters["aktivitetsId"] ?: throw UgyldigForespørselException()
+
