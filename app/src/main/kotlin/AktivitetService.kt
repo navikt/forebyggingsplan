@@ -1,6 +1,7 @@
 import db.AktivitetRepository
 import domene.*
 import domene.ValgtAktivitet.Companion.velgAktivitet
+import exceptions.AktivitetIkkeFunnetException
 
 class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
 
