@@ -8,12 +8,16 @@ class AktivitetRepository {
 
     fun hentAktivitet(aktivitetsId: String) = aktiviteter.find { it.id == aktivitetsId }
 
-    fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) = valgteAktiviteter.filter { it.valgtAv.virksomhet == virksomhet}
+    fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
+        valgteAktiviteter.filter { it.valgtAv.virksomhet == virksomhet}
 
     fun lagreValgtAktivitet(valgAktivitet: ValgtAktivitet): ValgtAktivitet {
         valgteAktiviteter.add(valgAktivitet)
         return valgAktivitet
     }
+
+    fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
+        fullførteAktiviteter.filter { it.fullførtAv.virksomhet == virksomhet}
 
     // MOCK DATA INNTIL VI HAR DB PÅ PLASS
     private var aktiviteter: List<Aktivitet> = listOf(
@@ -46,9 +50,7 @@ class AktivitetRepository {
 
     private val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678912", virksomhet = virksomhet)
     private var valgteAktiviteter : MutableList<ValgtAktivitet> = mutableListOf()
+    private var fullførteAktiviteter : MutableList<FullførtAktivitet> = mutableListOf()
     // SLUTT MOCK DATA
-
-
-
 
 }

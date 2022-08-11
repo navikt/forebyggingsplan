@@ -16,6 +16,9 @@ class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         aktivitetRepository.hentValgteAktiviteterForVirksomhet(virksomhet)
 
+    fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
+        aktivitetRepository.hentFullførteAktiviteterForVirksomhet(virksomhet)
+
     private fun velgAktivitet(
         arbeidsgiverRepresentant: ArbeidsgiverRepresentant,
         aktivitet: Aktivitet
