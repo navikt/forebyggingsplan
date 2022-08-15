@@ -3,7 +3,7 @@ package api.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AktivitetDTO(
+data class AktivitetsmalDTO(
     val id: String,
     val tittel: String
 )

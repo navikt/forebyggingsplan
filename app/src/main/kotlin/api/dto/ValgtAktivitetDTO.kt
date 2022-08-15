@@ -4,8 +4,14 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class OpprettValgtAktivitetDTO(
+    val aktivitetsmalId: String,
+    val orgnr: String
+)
+
+@Serializable
 data class ValgtAktivitetDTO(
-    val aktivitet: AktivitetDTO,
+    val aktivitetsmalId: String,
     val valgtTidspunkt: Instant,
     val valgtAv: ArbeidsgiverRepresentantDTO
 )

@@ -5,12 +5,11 @@ import exceptions.AktivitetIkkeFunnetException
 
 class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
 
-    fun hentAktiviteter() = aktivitetRepository.hentAktiviteter()
+    fun hentAktivitetsmaler() = aktivitetRepository.hentAktivitetsmaler()
 
-    fun velgAktivitet(aktivitetsId: String, arbeidsgiverRepresentant: ArbeidsgiverRepresentant): ValgtAktivitet {
-
-        val aktivitet = aktivitetRepository.hentAktivitet(aktivitetsId) ?: throw AktivitetIkkeFunnetException(aktivitetsId = aktivitetsId)
-        return velgAktivitet(aktivitet = aktivitet, arbeidsgiverRepresentant = arbeidsgiverRepresentant)
+    fun velgAktivitet(aktivitetsmalId: String, arbeidsgiverRepresentant: ArbeidsgiverRepresentant): ValgtAktivitet {
+        val aktivitetsmal = aktivitetRepository.hentAktivitetsmal(aktivitetsmalId) ?: throw AktivitetIkkeFunnetException(aktivitetsmalId = aktivitetsmalId)
+        return velgAktivitet(aktivitetsmal = aktivitetsmal, arbeidsgiverRepresentant = arbeidsgiverRepresentant)
     }
 
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
@@ -21,8 +20,8 @@ class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
 
     private fun velgAktivitet(
         arbeidsgiverRepresentant: ArbeidsgiverRepresentant,
-        aktivitet: Aktivitet
-    ) = arbeidsgiverRepresentant.velgAktivitet(aktivitet).lagre()
+        aktivitetsmal: Aktivitetsmal
+    ) = arbeidsgiverRepresentant.velgAktivitet(aktivitetsmal).lagre()
 
     private fun ValgtAktivitet.lagre() = aktivitetRepository.lagreValgtAktivitet(this)
 }

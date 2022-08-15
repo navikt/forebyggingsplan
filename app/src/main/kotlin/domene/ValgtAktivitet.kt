@@ -6,7 +6,7 @@ import kotlinx.datetime.toKotlinInstant
 import java.time.Instant
 
 class ValgtAktivitet private constructor(
-    val aktivitet: Aktivitet,
+    val aktivitetsmal: Aktivitetsmal,
     val valgtAv: ArbeidsgiverRepresentant,
 ) {
     val valgtTidspunkt = Instant.now()
@@ -14,13 +14,13 @@ class ValgtAktivitet private constructor(
     fun fullførAktivitet() = fraValgtAktivitet(this)
 
     fun tilDto(): ValgtAktivitetDTO = ValgtAktivitetDTO(
-        aktivitet = aktivitet.tilDto(),
+        aktivitetsmalId = aktivitetsmal.id,
         valgtTidspunkt = valgtTidspunkt.toKotlinInstant(),
         valgtAv = valgtAv.tilDto()
     )
 
     companion object {
-        fun ArbeidsgiverRepresentant.velgAktivitet(aktivitet: Aktivitet) =
-            ValgtAktivitet(aktivitet = aktivitet, valgtAv = this)
+        fun ArbeidsgiverRepresentant.velgAktivitet(aktivitetsmal: Aktivitetsmal) =
+            ValgtAktivitet(aktivitetsmal = aktivitetsmal, valgtAv = this)
     }
 }

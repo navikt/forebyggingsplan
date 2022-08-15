@@ -4,33 +4,33 @@ import domene.*
 
 class AktivitetRepository {
 
-    fun hentAktiviteter() = aktiviteter
+    fun hentAktivitetsmaler() = aktivitetsmaler
 
-    fun hentAktivitet(aktivitetsId: String) = aktiviteter.find { it.id == aktivitetsId }
+    fun hentAktivitetsmal(aktivitetsmalId: String) = aktivitetsmaler.find { it.id == aktivitetsmalId }
 
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         valgteAktiviteter.filter { it.valgtAv.virksomhet == virksomhet}
 
-    fun lagreValgtAktivitet(valgAktivitet: ValgtAktivitet): ValgtAktivitet {
-        valgteAktiviteter.add(valgAktivitet)
-        return valgAktivitet
+    fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet): ValgtAktivitet {
+        valgteAktiviteter.add(valgtAktivitet)
+        return valgtAktivitet
     }
 
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         fullførteAktiviteter.filter { it.fullførtAv.virksomhet == virksomhet}
 
     // MOCK DATA INNTIL VI HAR DB PÅ PLASS
-    private var aktiviteter: List<Aktivitet> = listOf(
-        Aktivitet(
+    private var aktivitetsmaler: List<Aktivitetsmal> = listOf(
+        Aktivitetsmal(
             tittel = "Pilotering av medarbeidersamtalen"
         ),
-        Aktivitet(
+        Aktivitetsmal(
             tittel = "Kartleggingsmøte med ansatt"
         ),
-        Aktivitet(
+        Aktivitetsmal(
             tittel = "Sinnemestring"
         ),
-        Aktivitet(
+        Aktivitetsmal(
             tittel = "Hvordan ta den vanskelige praten?"
         ),
     )

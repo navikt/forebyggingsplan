@@ -1,5 +1,7 @@
-import api.endepunkt.aktivitetEndepunkter
+import api.endepunkt.aktivitetsmaler
+import api.endepunkt.fullførteAktiviteter
 import api.endepunkt.helseEndepunkter
+import api.endepunkt.valgteAktiviteter
 import db.AktivitetRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
@@ -38,7 +40,9 @@ fun bootstrapServer() {
         }
         routing {
             helseEndepunkter()
-            aktivitetEndepunkter(aktivitetService = aktivitetService)
+            aktivitetsmaler(aktivitetService = aktivitetService)
+            valgteAktiviteter(aktivitetService = aktivitetService)
+            fullførteAktiviteter(aktivitetService = aktivitetService)
         }
     }.start(wait = true)
 }
