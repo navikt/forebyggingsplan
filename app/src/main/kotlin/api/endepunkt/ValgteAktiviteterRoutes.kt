@@ -14,7 +14,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 const val ORGNR ="orgnr"
-const val VALGTE_PATH = "valgteaktiviterer"
+const val VALGTE_PATH = "valgteaktiviteter"
 const val FULLFØRTE_PATH = "fullførteaktiviteter"
 
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
