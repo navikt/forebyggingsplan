@@ -28,6 +28,10 @@ dependencies {
     testImplementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:$fuelVersion")
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
 
+    // Mock-oauth2-server
+    val mockOAuth2ServerVersion = "0.5.1"
+    testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
+
 }
 
 tasks {
