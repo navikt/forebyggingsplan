@@ -1,4 +1,4 @@
-package container
+package container.helper
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost

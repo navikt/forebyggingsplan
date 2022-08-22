@@ -5,8 +5,9 @@ import api.dto.ValgtAktivitetDTO
 import api.endepunkt.AKTIVITETSMALER_PATH
 import api.endepunkt.VALGTE_PATH
 import com.github.kittinunf.fuel.core.extensions.jsonBody
-import container.TestContainerHelper.Companion.performGet
-import container.TestContainerHelper.Companion.performPost
+import container.helper.TestContainerHelper
+import container.helper.TestContainerHelper.Companion.performGet
+import container.helper.TestContainerHelper.Companion.performPost
 import data
 import domene.enVirksomhet
 import io.kotest.inspectors.forAtLeastOne
