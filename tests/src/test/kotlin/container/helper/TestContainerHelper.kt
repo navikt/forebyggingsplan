@@ -10,11 +10,17 @@ import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
 import org.testcontainers.images.builder.ImageFromDockerfile
 import kotlin.io.path.Path
 
-class TestContainerHelper {
-    companion object {
+internal class TestContainerHelper {
+    internal companion object {
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
-        val forebyggingsplanContainer: GenericContainer<*> =
+        internal val forebyggingsplanContainer: GenericContainer<*> =
             GenericContainer(ImageFromDockerfile().withDockerfile(Path("../Dockerfile")))
+                .dependsOn(AuthContainer.server)
+                .withEnv(mapOf(
+                    "TOKEN_X_CLIENT_ID" to "hei",
+                    "TOKEN_X_ISSUER" to "tokenx",
+                    "TZ" to "Europe/Oslo"
+                ))
                 .withExposedPorts(8080)
                 .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer").withSeparateOutputStreams())
                 .withCreateContainerCmdModifier { cmd -> cmd.withName("forebyggingsplan-${System.currentTimeMillis()}") }
