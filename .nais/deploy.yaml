@@ -6,6 +6,8 @@ metadata:
   labels:
     "team": "pia"
 spec:
+  tokenx:
+    enabled: true
   image: {{image}}
   resources:
     limits:
