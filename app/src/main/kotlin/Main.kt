@@ -6,19 +6,21 @@ import com.auth0.jwk.JwkProviderBuilder
 import db.AktivitetRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.install
+import io.ktor.server.application.log
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import io.ktor.server.routing.routing
+import java.net.URI
 import java.util.concurrent.TimeUnit
 
 fun main() {
@@ -47,7 +49,7 @@ fun bootstrapServer() {
                 }
             }
         }
-        val jwkProvider = JwkProviderBuilder(Miljø.tokenxIssuer)
+        val jwkProvider = JwkProviderBuilder(URI(Miljø.tokenxJwkPath).toURL())
             .cached(10, 24, TimeUnit.HOURS)
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
@@ -66,9 +68,9 @@ fun bootstrapServer() {
         }
         routing {
             helseEndepunkter()
-            //authenticate("tokenx") {
+            authenticate("tokenx") {
                 aktivitetsmaler(aktivitetService = aktivitetService)
-            //}
+            }
             valgteAktiviteter(aktivitetService = aktivitetService)
             fullførteAktiviteter(aktivitetService = aktivitetService)
         }

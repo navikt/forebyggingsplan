@@ -6,7 +6,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 
 internal object TestHttpClient {
-    internal val client = HttpClient(CIO) {
+    internal val client = HttpClient(CIO.create {
+        requestTimeout = 0
+    }) {
         developmentMode = true
 
         install(ContentNegotiation) {

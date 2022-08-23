@@ -28,13 +28,15 @@ internal class TestContainerHelper {
                 .dependsOn(authServer.container)
                 .withEnv(mapOf(
                     "TOKEN_X_CLIENT_ID" to "hei",
-                    "TOKEN_X_ISSUER" to "tokenx",
-                    "TZ" to "Europe/Oslo"
+                    "TOKEN_X_ISSUER" to "http://authserver:6969/default",
+                    "TOKEN_X_JWKS_URI" to "http://authserver:6969/default/jwks",
+                    "TZ" to "Europe/Oslo",
+                    "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
                 ))
-                .withExposedPorts(8080)
+                .withExposedPorts(8080, 5005)
                 .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer").withSeparateOutputStreams())
                 .withCreateContainerCmdModifier { cmd -> cmd.withName("forebyggingsplan-${System.currentTimeMillis()}") }
-                .waitingFor(HttpWaitStrategy().forPath("/internal/isReady")).apply {
+                .waitingFor(HttpWaitStrategy().forPort(8080).forPath("/internal/isReady")).apply {
                     start()
                 }
 
