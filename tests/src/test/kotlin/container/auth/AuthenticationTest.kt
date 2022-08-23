@@ -51,4 +51,43 @@ internal class AuthenticationTest {
             }.status shouldBe HttpStatusCode.Unauthorized
         }
     }
+
+    @Test
+    fun `skal få 401 med ugyldig audience`() {
+        val accessToken = TestContainerHelper.accessToken(audience = "ugyldig audience")
+
+        runBlocking {
+            aktivitetApi.hentAktiviteter {
+                header(HttpHeaders.Authorization, "Bearer ${accessToken.serialize()}")
+            }.status shouldBe HttpStatusCode.Unauthorized
+        }
+    }
+
+    @Test
+    fun `skal få 401 uten acr satt til Level4`() {
+        runBlocking {
+            val gyldigToken = TestContainerHelper.accessToken()
+            gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
+
+            aktivitetApi.hentAktiviteter {
+                header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
+            }.status shouldBe HttpStatusCode.OK
+
+            val ugyldigToken = TestContainerHelper.accessToken(claims = mapOf(
+                "acr" to "Level3"
+            ))
+            ugyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level3"
+
+            aktivitetApi.hentAktiviteter {
+                header(HttpHeaders.Authorization, "Bearer ${ugyldigToken.serialize()}")
+            }.status shouldBe HttpStatusCode.Unauthorized
+
+            val ugyldigToken2 = TestContainerHelper.accessToken(claims = emptyMap())
+            ugyldigToken2.jwtClaimsSet.getStringClaim("acr") shouldBe null
+
+            aktivitetApi.hentAktiviteter {
+                header(HttpHeaders.Authorization, "Bearer ${ugyldigToken2.serialize()}")
+            }.status shouldBe HttpStatusCode.Unauthorized
+        }
+    }
 }
