@@ -70,9 +70,9 @@ fun bootstrapServer() {
             helseEndepunkter()
             authenticate("tokenx") {
                 aktivitetsmaler(aktivitetService = aktivitetService)
+                valgteAktiviteter(aktivitetService = aktivitetService)
+                fullførteAktiviteter(aktivitetService = aktivitetService)
             }
-            valgteAktiviteter(aktivitetService = aktivitetService)
-            fullførteAktiviteter(aktivitetService = aktivitetService)
         }
     }.start(wait = true)
 }
