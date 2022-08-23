@@ -66,9 +66,9 @@ fun bootstrapServer() {
         }
         routing {
             helseEndepunkter()
-            authenticate("tokenx") {
+            //authenticate("tokenx") {
                 aktivitetsmaler(aktivitetService = aktivitetService)
-            }
+            //}
             valgteAktiviteter(aktivitetService = aktivitetService)
             fullførteAktiviteter(aktivitetService = aktivitetService)
         }

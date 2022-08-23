@@ -3,6 +3,7 @@ package container.auth
 import container.helper.TestContainerHelper
 import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.runBlocking
 import request.AktivitetApi
 import kotlin.test.Test
 
@@ -12,6 +13,8 @@ internal class AuthenticationTest {
 
     @Test
     fun `happy path - skal få 200 ok ved henting av aktivitet`() {
-        aktivitetApi.hentAktiviteter().second.statusCode shouldBe HttpStatusCode.OK.value
+        runBlocking {
+            aktivitetApi.hentAktiviteter().status shouldBe HttpStatusCode.OK
+        }
     }
 }

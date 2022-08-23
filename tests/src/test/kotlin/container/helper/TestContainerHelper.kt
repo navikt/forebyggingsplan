@@ -1,7 +1,11 @@
 package container.helper
 
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.httpPost
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.request
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
+import io.ktor.http.contentType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
@@ -9,6 +13,7 @@ import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
 import org.testcontainers.images.builder.ImageFromDockerfile
+import request.TestHttpClient
 import kotlin.io.path.Path
 
 internal class TestContainerHelper {
@@ -34,8 +39,20 @@ internal class TestContainerHelper {
                 }
 
         private fun GenericContainer<*>.buildUrl(url: String) = "http://${this.host}:${this.getMappedPort(8080)}/$url"
-        fun GenericContainer<*>.performGet(url: String) = buildUrl(url = url).httpGet()
-        fun GenericContainer<*>.performPost(url: String) = buildUrl(url = url).httpPost()
+
+        private suspend fun GenericContainer<*>.performRequest(url: String, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse {
+            val urlToCall = buildUrl(url = url)
+            return TestHttpClient.client.request(urlString = urlToCall, block = block)
+        }
+        internal suspend fun GenericContainer<*>.performGet(url: String, block: HttpRequestBuilder.() -> Unit = {}) = performRequest(url = url) {
+            apply(block)
+            method = HttpMethod.Get
+        }
+        internal suspend fun GenericContainer<*>.performPost(url: String, block: HttpRequestBuilder.() -> Unit = {}) = performRequest(url) {
+            apply(block)
+            method = HttpMethod.Post
+            contentType(ContentType.Application.Json)
+        }
 
         internal fun accessToken(
             subject: String = "123",
