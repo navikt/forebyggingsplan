@@ -10,6 +10,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.engine.*
@@ -65,7 +66,9 @@ fun bootstrapServer() {
         }
         routing {
             helseEndepunkter()
-            aktivitetsmaler(aktivitetService = aktivitetService)
+            authenticate("tokenx") {
+                aktivitetsmaler(aktivitetService = aktivitetService)
+            }
             valgteAktiviteter(aktivitetService = aktivitetService)
             fullførteAktiviteter(aktivitetService = aktivitetService)
         }
