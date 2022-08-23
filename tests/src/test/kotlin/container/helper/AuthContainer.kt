@@ -8,6 +8,9 @@ import com.nimbusds.oauth2.sdk.TokenRequest
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic
 import com.nimbusds.oauth2.sdk.auth.Secret
 import com.nimbusds.oauth2.sdk.id.ClientID
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
 import no.nav.security.mock.oauth2.OAuth2Config
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -61,4 +64,8 @@ internal class AuthContainer(network: Network = Network.newNetwork()) {
         )
         return oAuth2Config.tokenProvider.accessToken(tokenRequest, issuerUrl.toHttpUrl(), tokenCallback, null)
     }
+}
+
+internal fun withToken(): HttpRequestBuilder.() -> Unit = {
+    header(HttpHeaders.Authorization, "Bearer ${TestContainerHelper.accessToken().serialize()}")
 }

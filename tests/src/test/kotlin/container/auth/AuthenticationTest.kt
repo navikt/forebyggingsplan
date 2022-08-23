@@ -1,9 +1,8 @@
 package container.auth
 
 import container.helper.TestContainerHelper
+import container.helper.withToken
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.header
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import request.AktivitetApi
@@ -16,10 +15,7 @@ internal class AuthenticationTest {
     @Test
     fun `happy path - skal få 200 ok ved henting av aktivitet`() {
         runBlocking {
-            aktivitetApi.hentAktiviteter() {
-                val token = TestContainerHelper.accessToken()
-                header(HttpHeaders.Authorization, "Bearer ${token.serialize()}")
-            }.status shouldBe HttpStatusCode.OK
+            aktivitetApi.hentAktiviteter(withToken()).status shouldBe HttpStatusCode.OK
         }
     }
 
