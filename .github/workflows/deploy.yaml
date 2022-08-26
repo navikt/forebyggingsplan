@@ -13,8 +13,8 @@ jobs:
     name: "build"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "navikt/pia-actions/forebyggingsplan-e2e@v1.0.1"
-        name: "e2e-tester for forebyggingsplan"
+#      - uses: "navikt/pia-actions/forebyggingsplan-e2e@v1.0.1"
+#        name: "e2e-tester for forebyggingsplan"
       - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
       - uses: "actions/cache@v3"
