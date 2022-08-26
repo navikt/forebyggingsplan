@@ -11,7 +11,7 @@ dependencies {
     implementation(project(":app"))
     testImplementation(kotlin("test"))
 
-    val kotestVerstion = "5.3.2"
+    val kotestVerstion = "5.4.2"
     testImplementation("io.kotest:kotest-assertions-core:$kotestVerstion")
 
     // Funksjonelle operatorer
@@ -22,11 +22,16 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
 
-    // Fuel HTTP client
-    val fuelVersion = "2.3.1"
-    testImplementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
-    testImplementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:$fuelVersion")
-    testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
+    // Ktor specific
+    val ktor_version = "2.1.0"
+    testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    testImplementation("io.ktor:ktor-client-core:$ktor_version")
+    testImplementation("io.ktor:ktor-client-cio:$ktor_version")
+    testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+
+    // Mock-oauth2-server
+    val mockOAuth2ServerVersion = "0.5.1"
+    testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
 
 }
 
