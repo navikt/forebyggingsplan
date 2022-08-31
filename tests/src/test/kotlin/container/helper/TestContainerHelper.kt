@@ -1,19 +1,25 @@
 package container.helper
 
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.testcontainers.Testcontainers
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
 import org.testcontainers.images.builder.ImageFromDockerfile
 import request.TestHttpClient
+import wiremock.com.google.common.net.HttpHeaders.CONTENT_TYPE
 import kotlin.io.path.Path
 
 internal class TestContainerHelper {
@@ -21,19 +27,35 @@ internal class TestContainerHelper {
         private val network = Network.newNetwork()
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         internal val authServer = AuthContainer(network = network)
-        internal val altinnProxyContainer = AltinnProxyMockContainer(network = network)
+        //internal val altinnProxyContainer = AltinnProxyMockContainer(network = network)
+        val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
+            it.stubFor(
+                WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
+                    .willReturn(
+                        WireMock.ok()
+                            .withHeader(CONTENT_TYPE, "application/json")
+                            .withBody("[]")
+                    )
+            )
+
+            if (!it.isRunning) {
+                it.start()
+            }
+            Testcontainers.exposeHostPorts(it.port())
+        }
+
         internal val forebyggingsplanContainer: GenericContainer<*> =
             GenericContainer(ImageFromDockerfile()
                 .withDockerfile(Path("../Dockerfile")))
                 .withNetwork(network)
-                .dependsOn(authServer.container, altinnProxyContainer.container)
+                .dependsOn(authServer.container)
                 .withEnv(mapOf(
                     "TOKEN_X_CLIENT_ID" to "hei",
                     "TOKEN_X_ISSUER" to "http://authserver:6969/default",
                     "TOKEN_X_JWKS_URI" to "http://authserver:6969/default/jwks",
                     "TZ" to "Europe/Oslo",
                     "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
-                    "ALTINN_RETTIGHETER_PROXY_URL" to altinnProxyContainer.baseUrl(),
+                    "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${altinnMock.port()}/altinn",
                 ))
                 .withExposedPorts(8080, 5005)
                 .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer").withSeparateOutputStreams())
