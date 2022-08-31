@@ -21,17 +21,19 @@ internal class TestContainerHelper {
         private val network = Network.newNetwork()
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         internal val authServer = AuthContainer(network = network)
+        internal val altinnProxyContainer = AltinnProxyMockContainer(network = network)
         internal val forebyggingsplanContainer: GenericContainer<*> =
             GenericContainer(ImageFromDockerfile()
                 .withDockerfile(Path("../Dockerfile")))
                 .withNetwork(network)
-                .dependsOn(authServer.container)
+                .dependsOn(authServer.container, altinnProxyContainer.container)
                 .withEnv(mapOf(
                     "TOKEN_X_CLIENT_ID" to "hei",
                     "TOKEN_X_ISSUER" to "http://authserver:6969/default",
                     "TOKEN_X_JWKS_URI" to "http://authserver:6969/default/jwks",
                     "TZ" to "Europe/Oslo",
-                    "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+                    "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
+                    "ALTINN_RETTIGHETER_PROXY_URL" to altinnProxyContainer.baseUrl(),
                 ))
                 .withExposedPorts(8080, 5005)
                 .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer").withSeparateOutputStreams())

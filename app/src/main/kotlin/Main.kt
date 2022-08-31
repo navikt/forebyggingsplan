@@ -27,6 +27,8 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.ProxyConfig
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.AltinnReportee
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.Subject
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -87,7 +89,7 @@ fun bootstrapServer() {
 }
 
 fun hentVirksomheterVedkommendeHarTilgangTil(token: String, payload: Payload): List<AltinnReportee> {
-    return AltinnrettigheterProxyKlient(
+    val hentOrganisasjoner = AltinnrettigheterProxyKlient(
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(
                 consumerId = "Forebyggingsplan",
@@ -98,5 +100,12 @@ fun hentVirksomheterVedkommendeHarTilgangTil(token: String, payload: Payload): L
         selvbetjeningToken = TokenXToken(value = token),
         subject = Subject(payload.subject),
         filtrerPåAktiveOrganisasjoner = true)
+
+    val log: Logger = LoggerFactory.getLogger("TEMP")
+    print("URL: ${Miljø.altinnRettigheterProxyUrl} ")
+    log.info("URL: ${Miljø.altinnRettigheterProxyUrl} ")
+    println("Organisasjoner???? ${hentOrganisasjoner.size}")
+    log.info("Organisasjoner???? ${hentOrganisasjoner.size}")
+    return hentOrganisasjoner
 }
 

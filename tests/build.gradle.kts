@@ -21,6 +21,8 @@ dependencies {
     val testcontainersVersion = "1.17.3"
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+    testImplementation( "org.testcontainers:mockserver:$testcontainersVersion")
+
 
     // Ktor specific
     val ktor_version = "2.1.0"
