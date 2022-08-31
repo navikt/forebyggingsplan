@@ -41,6 +41,7 @@ internal class TestContainerHelper {
             if (!it.isRunning) {
                 it.start()
             }
+
             Testcontainers.exposeHostPorts(it.port())
         }
 
