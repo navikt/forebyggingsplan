@@ -48,4 +48,11 @@ class AktivitetContainerTest {
             aktivitetApi.velgAktivitet(aktivitetsmalId = "yololoooo", orgnr = enVirksomhet.orgnr, withToken()).status shouldBe HttpStatusCode.NotFound
         }
     }
+
+    @Test
+    fun `skal få 403 Forbidden dersom man ikke har tilgang i Altinn`() {
+        runBlocking {
+            aktivitetApi.hentAktiviteter(withToken()).status shouldBe HttpStatusCode.Forbidden
+        }
+    }
 }

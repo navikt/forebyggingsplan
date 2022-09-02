@@ -3,7 +3,6 @@ import api.endepunkt.fullførteAktiviteter
 import api.endepunkt.helseEndepunkter
 import api.endepunkt.valgteAktiviteter
 import com.auth0.jwk.JwkProviderBuilder
-import com.auth0.jwt.interfaces.Payload
 import db.AktivitetRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
@@ -21,14 +20,6 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlient
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlientConfig
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.ProxyConfig
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.AltinnReportee
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.Subject
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -71,8 +62,6 @@ fun bootstrapServer() {
                     withClaim("acr", "Level4")
                 }
                 validate { token ->
-                    val bearer = this.request.headers[HttpHeaders.Authorization]
-                    hentVirksomheterVedkommendeHarTilgangTil(bearer!!.split(" ")[1], token.payload)
                     JWTPrincipal(token.payload)
                 }
             }
@@ -87,25 +76,3 @@ fun bootstrapServer() {
         }
     }.start(wait = true)
 }
-
-fun hentVirksomheterVedkommendeHarTilgangTil(token: String, payload: Payload): List<AltinnReportee> {
-    val hentOrganisasjoner = AltinnrettigheterProxyKlient(
-        AltinnrettigheterProxyKlientConfig(
-            ProxyConfig(
-                consumerId = "Forebyggingsplan",
-                url = Miljø.altinnRettigheterProxyUrl
-            )
-        )
-    ).hentOrganisasjoner(
-        selvbetjeningToken = TokenXToken(value = token),
-        subject = Subject(payload.subject),
-        filtrerPåAktiveOrganisasjoner = true)
-
-    val log: Logger = LoggerFactory.getLogger("TEMP")
-    print("URL: ${Miljø.altinnRettigheterProxyUrl} ")
-    log.info("URL: ${Miljø.altinnRettigheterProxyUrl} ")
-    println("Organisasjoner???? ${hentOrganisasjoner.size}")
-    log.info("Organisasjoner???? ${hentOrganisasjoner.size}")
-    return hentOrganisasjoner
-}
-
