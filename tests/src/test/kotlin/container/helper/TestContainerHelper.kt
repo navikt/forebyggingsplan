@@ -27,14 +27,23 @@ internal class TestContainerHelper {
         private val network = Network.newNetwork()
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         internal val authServer = AuthContainer(network = network)
-        //internal val altinnProxyContainer = AltinnProxyMockContainer(network = network)
+
         val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
                     .willReturn(
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")
-                            .withBody("[]")
+                            .withBody("""[
+                                {
+                                    "Name": "BALLSTAD OG HAMARØY",
+                                     "Type": "Business",
+                                     "OrganizationNumber": "811076732",
+                                     "ParentOrganizationNumber": "811076112",
+                                     "OrganizationForm": "BEDR",
+                                     "Status": "Active"
+                                }
+                            ]""".trimMargin())
                     )
             )
 
@@ -42,6 +51,7 @@ internal class TestContainerHelper {
                 it.start()
             }
 
+            println("Starter Wiremock på port ${it.port()}")
             Testcontainers.exposeHostPorts(it.port())
         }
 
@@ -59,7 +69,8 @@ internal class TestContainerHelper {
                     "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${altinnMock.port()}/altinn",
                 ))
                 .withExposedPorts(8080, 5005)
-                .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer").withSeparateOutputStreams())
+                .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer")
+                    .withSeparateOutputStreams())
                 .withCreateContainerCmdModifier { cmd -> cmd.withName("forebyggingsplan-${System.currentTimeMillis()}") }
                 .waitingFor(HttpWaitStrategy().forPort(8080).forPath("/internal/isReady")).apply {
                     start()
@@ -67,26 +78,33 @@ internal class TestContainerHelper {
 
         private fun GenericContainer<*>.buildUrl(url: String) = "http://${this.host}:${this.getMappedPort(8080)}/$url"
 
-        private suspend fun GenericContainer<*>.performRequest(url: String, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse {
+        private suspend fun GenericContainer<*>.performRequest(
+            url: String,
+            block: HttpRequestBuilder.() -> Unit = {},
+        ): HttpResponse {
             val urlToCall = buildUrl(url = url)
             return TestHttpClient.client.request(urlString = urlToCall, block = block)
         }
-        internal suspend fun GenericContainer<*>.performGet(url: String, block: HttpRequestBuilder.() -> Unit = {}) = performRequest(url = url) {
-            apply(block)
-            method = HttpMethod.Get
-        }
-        internal suspend fun GenericContainer<*>.performPost(url: String, block: HttpRequestBuilder.() -> Unit = {}) = performRequest(url) {
-            apply(block)
-            method = HttpMethod.Post
-            contentType(ContentType.Application.Json)
-        }
+
+        internal suspend fun GenericContainer<*>.performGet(url: String, block: HttpRequestBuilder.() -> Unit = {}) =
+            performRequest(url = url) {
+                apply(block)
+                method = HttpMethod.Get
+            }
+
+        internal suspend fun GenericContainer<*>.performPost(url: String, block: HttpRequestBuilder.() -> Unit = {}) =
+            performRequest(url) {
+                apply(block)
+                method = HttpMethod.Post
+                contentType(ContentType.Application.Json)
+            }
 
         internal fun accessToken(
             subject: String = "123",
             audience: String = "hei",
             claims: Map<String, String> = mapOf(
                 "acr" to "Level4"
-            )
+            ),
         ) = authServer.issueToken(
             subject = subject,
             audience = audience,
