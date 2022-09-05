@@ -81,8 +81,7 @@ fun bootstrapServer() {
     }.start(wait = true)
 }
 
-fun Route.medAltinnTilgang(authorizedRoutes: () -> Unit): Route {
+fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(selector).apply {
     install(AuthorizationPlugin)
     authorizedRoutes()
-    return this
 }
