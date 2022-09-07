@@ -1,13 +1,8 @@
 name: Build and deploy forebyggingsplan
-on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
+on: [push]
 env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
 jobs:
   build:
     name: build
