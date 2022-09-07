@@ -8,7 +8,6 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import org.slf4j.Logger
@@ -28,9 +27,9 @@ internal class TestContainerHelper {
     internal companion object {
         private val network = Network.newNetwork()
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
-        internal val authServer = AuthContainer(network = network)
+        private val authServer = AuthContainer(network = network)
 
-        val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
+        private val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
                     .withQueryParam("serviceCode", equalTo(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceCode))

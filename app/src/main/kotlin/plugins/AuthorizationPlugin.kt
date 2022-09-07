@@ -20,7 +20,7 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
 
 val SYKEFRAVÆRSSTATISTIKK_RETTIGHETER = AltinnRettighetKoder(
     serviceCode = "3403",
-    serviceEdition = "1"
+    serviceEdition = Miljø.altinnRettighetServiceEdition
 )
 
 val AuthorizationPlugin = createRouteScopedPlugin(
