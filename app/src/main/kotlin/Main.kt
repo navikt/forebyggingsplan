@@ -7,22 +7,20 @@ import db.AktivitetRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.jwt.jwt
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.response.respond
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.doublereceive.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import plugins.AuthorizationPlugin
 import java.net.URI
 import java.util.concurrent.TimeUnit
-import java.util.logging.Logger
 
 fun main() {
     bootstrapServer()
@@ -54,6 +52,7 @@ fun bootstrapServer() {
             .cached(10, 24, TimeUnit.HOURS)
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
+        install(DoubleReceive)
         install(Authentication) {
             jwt(name = "tokenx") {
                 val tokenFortsattGyldigFørUtløpISekunder = 3L
