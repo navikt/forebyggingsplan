@@ -44,7 +44,7 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:latest,${{ env.IMAGE }}
 
   "deployTilDev":
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/altinn-rettigheter'
     name: "Deploy app to dev"
     needs: "build"
     runs-on: "ubuntu-latest"
