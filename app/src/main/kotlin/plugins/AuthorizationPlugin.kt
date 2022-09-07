@@ -13,8 +13,15 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxy
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlientConfig
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.ProxyConfig
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.AltinnReportee
+import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.ServiceCode
+import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.ServiceEdition
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.Subject
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
+
+val SYKEFRAVÆRSSTATISTIKK_RETTIGHETER = AltinnRettighetKoder(
+    serviceCode = "3403",
+    serviceEdition = "1"
+)
 
 val AuthorizationPlugin = createRouteScopedPlugin(
     name = "AuthorizationPlugin",
@@ -53,7 +60,14 @@ private fun hentVirksomheterVedkommendeHarTilgangTil(token: String, subject: Str
     ).hentOrganisasjoner(
         selvbetjeningToken = TokenXToken(value = token),
         subject = Subject(subject),
+        serviceCode = ServiceCode(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceCode),
+        serviceEdition = ServiceEdition(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceEdition),
         filtrerPåAktiveOrganisasjoner = true)
 
     return hentOrganisasjoner
 }
+
+class AltinnRettighetKoder(
+    val serviceCode: String,
+    val serviceEdition: String
+)
