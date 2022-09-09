@@ -29,11 +29,19 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne hente og velge en aktivitet`() {
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken()).body<List<ValgtAktivitetDTO>>().shouldBeEmpty()
-            val aktivitetSomSkalVelges = aktivitetApi.hentAktiviteter(withToken()).body<List<AktivitetsmalDTO>>().first()
-            val valgtAktivitetDto = aktivitetApi.velgAktivitet(aktivitetsmalId = aktivitetSomSkalVelges.id, orgnr = enVirksomhet.orgnr, withToken()).body<ValgtAktivitetDTO>()
+            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
+                .body<List<ValgtAktivitetDTO>>().shouldBeEmpty()
+            val aktivitetSomSkalVelges =
+                aktivitetApi.hentAktiviteter(withToken()).body<List<AktivitetsmalDTO>>().first()
+            val valgtAktivitetDto = aktivitetApi.velgAktivitet(
+                aktivitetsmalId = aktivitetSomSkalVelges.id,
+                orgnr = enVirksomhet.orgnr,
+                withToken()
+            ).body<ValgtAktivitetDTO>()
             valgtAktivitetDto.aktivitetsmalId shouldBeEqualToComparingFields aktivitetSomSkalVelges
-            val alleValgteAktiviteter = aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken()).body<List<ValgtAktivitetDTO>>()
+            val alleValgteAktiviteter =
+                aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
+                    .body<List<ValgtAktivitetDTO>>()
             alleValgteAktiviteter.size shouldBeGreaterThanOrEqual 1
             alleValgteAktiviteter.forAtLeastOne {
                 it.aktivitetsmalId shouldBe aktivitetSomSkalVelges.id
@@ -45,7 +53,22 @@ class AktivitetContainerTest {
     @Test
     fun `skal få 404 dersom man ikke finner en aktivitet`() {
         runBlocking {
-            aktivitetApi.velgAktivitet(aktivitetsmalId = "yololoooo", orgnr = enVirksomhet.orgnr, withToken()).status shouldBe HttpStatusCode.NotFound
+            aktivitetApi.velgAktivitet(
+                aktivitetsmalId = "yololoooo",
+                orgnr = enVirksomhet.orgnr,
+                withToken()
+            ).status shouldBe HttpStatusCode.NotFound
+        }
+    }
+
+    @Test
+    fun `skal få 403 Forbidden dersom man ikke har tilgang i Altinn`() {
+
+        runBlocking {
+            aktivitetApi.hentValgteAktiviteterForVirksomhet(
+                orgnr = "999999999",
+                withToken()
+            ).status shouldBe HttpStatusCode.Forbidden
         }
     }
 }

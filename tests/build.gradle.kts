@@ -21,6 +21,7 @@ dependencies {
     val testcontainersVersion = "1.17.3"
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.33.2")
 
     // Ktor specific
     val ktor_version = "2.1.0"

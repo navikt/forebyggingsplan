@@ -30,6 +30,9 @@ spec:
     inbound:
       rules:
         - application: forebyggingsplan-frontend
+    outbound:
+      rules:
+        - application: altinn-rettigheter-proxy
   replicas:
     min: 1
     max: 2
@@ -37,3 +40,7 @@ spec:
   env:
     - name: SERVER_PORT
       value: "8080"
+    - name: ALTINN_RETTIGHETER_PROXY_URL
+      value: http://altinn-rettigheter-proxy.arbeidsgiver/altinn-rettigheter-proxy
+    - name: ALTINN_RETTIGHET_SERVICE_EDITION
+      value: {{altinnRettighetServiceEdition}}
