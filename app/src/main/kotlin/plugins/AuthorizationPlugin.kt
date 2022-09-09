@@ -29,12 +29,13 @@ val AuthorizationPlugin = createRouteScopedPlugin(
 
     pluginConfig.apply {
         on(AuthenticationChecked) { call ->
-            val subject = call.principal<JWTPrincipal>()?.subject
+            val subject = call.principal<JWTPrincipal>()?.subject ?: throw RuntimeException("Subject missing in JWT")
             val bearer = call.request.headers[HttpHeaders.Authorization]
-            val token = bearer!!.split(" ")[1]
+                ?: throw RuntimeException("No Authorization header found")
+            val token = removeBearerPrefix(bearer)
 
             val virksomheterVedkommendeHarTilgangTil =
-                hentVirksomheterVedkommendeHarTilgangTil(token, subject!!)
+                hentVirksomheterVedkommendeHarTilgangTil(token, subject)
 
             val orgnr =
                 if (call.parameters[ORGNR] != null)
@@ -49,8 +50,10 @@ val AuthorizationPlugin = createRouteScopedPlugin(
     }
 }
 
+private fun removeBearerPrefix(bearer: String) = bearer.split(" ")[1]
+
 private fun hentVirksomheterVedkommendeHarTilgangTil(token: String, subject: String): List<AltinnReportee> {
-    val hentOrganisasjoner = AltinnrettigheterProxyKlient(
+    return AltinnrettigheterProxyKlient(
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(
                 consumerId = "Forebyggingsplan",
@@ -62,9 +65,8 @@ private fun hentVirksomheterVedkommendeHarTilgangTil(token: String, subject: Str
         subject = Subject(subject),
         serviceCode = ServiceCode(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceCode),
         serviceEdition = ServiceEdition(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceEdition),
-        filtrerPåAktiveOrganisasjoner = true)
-
-    return hentOrganisasjoner
+        filtrerPåAktiveOrganisasjoner = true
+    )
 }
 
 class AltinnRettighetKoder(
