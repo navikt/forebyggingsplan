@@ -14,7 +14,7 @@ class ValgtAktivitet private constructor(
     fun fullførAktivitet() = fraValgtAktivitet(this)
 
     fun tilDto(): ValgtAktivitetDTO = ValgtAktivitetDTO(
-        aktivitetsmalId = aktivitetsmal.id,
+        aktivitetsmalId = aktivitetsmal.id.toString(),
         valgtTidspunkt = valgtTidspunkt.toKotlinInstant(),
         valgtAv = valgtAv.tilDto()
     )

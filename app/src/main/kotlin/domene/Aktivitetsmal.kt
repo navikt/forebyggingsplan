@@ -4,12 +4,9 @@ import api.dto.AktivitetsmalDTO
 import java.util.*
 
 class Aktivitetsmal(
-    val id: String = "randomId-${(0..1000).random()}", // TODO: bruk ULID i stedet
+    val id: UUID = UUID.randomUUID(),
     private val tittel: String
 ) {
-    fun tilDto() = AktivitetsmalDTO(id = id, tittel = tittel)
+    fun tilDto() = AktivitetsmalDTO(id = id.toString(), tittel = tittel)
 }
 
-// TODO: bruk ULID i stedet
-fun IntRange.random() =
-    Random().nextInt((endInclusive + 1) - start) + start

@@ -14,6 +14,7 @@ import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import request.AktivitetApi
+import java.util.UUID
 import kotlin.test.Test
 
 class AktivitetContainerTest {
@@ -54,7 +55,7 @@ class AktivitetContainerTest {
     fun `skal få 404 dersom man ikke finner en aktivitet`() {
         runBlocking {
             aktivitetApi.velgAktivitet(
-                aktivitetsmalId = "yololoooo",
+                aktivitetsmalId = UUID.randomUUID().toString(),
                 orgnr = enVirksomhet.orgnr,
                 withToken()
             ).status shouldBe HttpStatusCode.NotFound
