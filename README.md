@@ -1,7 +1,7 @@
 Forebyggingsplan
 ================
 
-Backend for forebyggingsplan. 
+Backend for forebyggingsplan 
 
 # Komme i gang
 
