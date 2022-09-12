@@ -4,6 +4,7 @@ import api.endepunkt.helseEndepunkter
 import api.endepunkt.valgteAktiviteter
 import com.auth0.jwk.JwkProviderBuilder
 import db.AktivitetRepository
+import db.DatabaseFactory
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
 import io.ktor.http.*
@@ -27,6 +28,7 @@ fun main() {
 }
 
 fun bootstrapServer() {
+    DatabaseFactory.init()
     val aktivitetService = AktivitetService(aktivitetRepository = AktivitetRepository())
 
     embeddedServer(factory = Netty, port = System.getenv("SERVER_PORT")?.toInt() ?: 8080) {
