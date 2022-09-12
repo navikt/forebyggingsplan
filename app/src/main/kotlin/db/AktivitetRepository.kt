@@ -2,7 +2,6 @@ package db
 
 import domene.Aktivitetsmal
 import domene.ArbeidsgiverRepresentant
-import domene.FullførtAktivitet
 import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
@@ -17,6 +16,7 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val uuid = uuid(name = "uuid")
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
     val fødselsnummer = varchar(name = "fødselsnummer", 11)
+    val fullført = bool("fullfoert")
 
     fun tilValgtAktivitet(it: ResultRow) =
         ArbeidsgiverRepresentant(it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
@@ -42,6 +42,7 @@ class AktivitetRepository {
                 it[uuid] = valgtAktivitet.aktivitetsmal.id
                 it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
                 it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
+                it[fullført] = valgtAktivitet.fullført
             }
         }
 
@@ -49,7 +50,7 @@ class AktivitetRepository {
     }
 
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
-        fullførteAktiviteter.filter { it.fullførtAv.virksomhet == virksomhet }
+        hentValgteAktiviteterForVirksomhet(virksomhet).filter { it.fullført }
 
     // MOCK DATA INNTIL VI HAR DB PÅ PLASS
     private var aktivitetsmaler: List<Aktivitetsmal> = listOf(
@@ -67,7 +68,6 @@ class AktivitetRepository {
         ),
     )
 
-    private var fullførteAktiviteter: MutableList<FullførtAktivitet> = mutableListOf()
     // SLUTT MOCK DATA
 
 }

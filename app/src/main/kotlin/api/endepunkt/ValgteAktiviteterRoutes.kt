@@ -2,7 +2,6 @@ package api.endepunkt
 
 import AktivitetService
 import api.dto.OpprettValgtAktivitetDTO
-import domene.FullførtAktivitet
 import domene.ValgtAktivitet
 import domene.Virksomhet
 import domene.enArbeidsgiverRepresentant
@@ -40,11 +39,10 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
 
     get("/$AKTIVITETSMALER_PATH/{$ORGNR}/$FULLFØRTE_PATH") {
         call.respond(aktivitetService.hentFullførteAktiviteterForVirksomhet(call.virksomhet)
-            .map(FullførtAktivitet::tilDto))
+            .map(ValgtAktivitet::tilDto))
     }
 }
 
 val ApplicationCall.virksomhet get() = Virksomhet(this.orgnr)
 val ApplicationCall.orgnr get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException()
-val ApplicationCall.aktivitetsmalId get() = this.parameters[AKTIVITETSMAL_ID] ?: throw UgyldigForespørselException()
 
