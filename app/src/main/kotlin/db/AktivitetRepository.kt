@@ -17,7 +17,7 @@ import java.time.Instant
 import java.util.UUID
 
 private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
-    val uuid = uuid(name = "uuid")
+    val aktivitetsmalID = uuid(name = "aktivitetsmal_id")
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
     val fødselsnummer = varchar(name = "fødselsnummer", 11)
     val fullført = bool("fullfoert")
@@ -26,7 +26,7 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     fun tilValgtAktivitet(it: ResultRow) =
         ArbeidsgiverRepresentant(fnr = it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
             .velgAktivitet(
-                aktivitetsmal = Aktivitetsmal(id = it[uuid], tittel = ""),
+                aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID], tittel = ""),
                 id = it[id].value,
                 fullført = it[fullført],
                 fullførtTidspunkt = it[fullførtTidspunkt]
@@ -48,7 +48,7 @@ class AktivitetRepository {
 
     fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet) = transaction {
         ValgtAktivitetTabell.tilValgtAktivitet(ValgtAktivitetTabell.insert {
-            it[uuid] = valgtAktivitet.aktivitetsmal.id
+            it[aktivitetsmalID] = valgtAktivitet.aktivitetsmal.id
             it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
             it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
             it[fullført] = valgtAktivitet.fullført
