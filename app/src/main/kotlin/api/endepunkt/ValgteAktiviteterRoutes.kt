@@ -14,7 +14,7 @@ import io.ktor.server.routing.*
 
 const val ORGNR = "orgnr"
 const val VALGTE_PATH = "valgteaktiviteter"
-const val FULLFØRTE_PATH = "fullførteaktiviteter"
+const val FULLFØRTE_PATH = "fullforteaktiviteter"
 
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH") {
@@ -33,13 +33,14 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
 
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
-    post("/$AKTIVITETSMALER_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETSMAL_ID}") {
-        call.respond(status = HttpStatusCode.NotImplemented, message = "")
-    }
-
-    get("/$AKTIVITETSMALER_PATH/{$ORGNR}/$FULLFØRTE_PATH") {
+    get("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH") {
         call.respond(aktivitetService.hentFullførteAktiviteterForVirksomhet(call.virksomhet)
             .map(ValgtAktivitet::tilDto))
+    }
+    post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETSMAL_ID}") {
+        val aktivitetId = call.parameters[AKTIVITETSMAL_ID] ?: throw UgyldigForespørselException()
+        aktivitetService.fullførAktivitet(orgnr = call.orgnr, aktivitetId = aktivitetId.toInt())
+        call.respond(status = HttpStatusCode.OK, message = "")
     }
 }
 

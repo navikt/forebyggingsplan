@@ -7,10 +7,12 @@ import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import java.time.Instant
 import java.util.UUID
 
@@ -56,6 +58,18 @@ class AktivitetRepository {
         }.resultedValues!!.first())
     }
 
+    fun fullfør(aktivitetId: Int, orgnr: String) {
+        transaction {
+            ValgtAktivitetTabell
+                .update(where = {
+                    ValgtAktivitetTabell.id eq aktivitetId and (ValgtAktivitetTabell.virksomhetsnummer eq orgnr)
+                }) {
+                    it[fullført] = true
+                    it[fullførtTidspunkt] = Instant.now()
+                }
+        }
+    }
+
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         hentValgteAktiviteterForVirksomhet(virksomhet).filter { it.fullført }
 
@@ -74,7 +88,4 @@ class AktivitetRepository {
             tittel = "Hvordan ta den vanskelige praten?"
         ),
     )
-
-    // SLUTT MOCK DATA
-
 }

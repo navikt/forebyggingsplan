@@ -18,6 +18,10 @@ class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         aktivitetRepository.hentFullførteAktiviteterForVirksomhet(virksomhet)
 
+    fun fullførAktivitet(aktivitetId: Int, orgnr: String) {
+        aktivitetRepository.fullfør(aktivitetId = aktivitetId, orgnr = orgnr)
+    }
+
     private fun velgAktivitet(
         arbeidsgiverRepresentant: ArbeidsgiverRepresentant,
         aktivitetsmal: Aktivitetsmal

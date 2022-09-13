@@ -23,17 +23,35 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne hente alle aktiviteter`() {
         runBlocking {
-            aktivitetApi.hentAktiviteter(withToken()).body<List<AktivitetsmalDTO>>().size shouldBeGreaterThanOrEqual 1
+            aktivitetApi.hentAktivitetsmaler(withToken()).body<List<AktivitetsmalDTO>>().size shouldBeGreaterThanOrEqual 1
+        }
+    }
+
+    @Test
+    fun `skal kunne fullføre en aktivitet`() {
+        runBlocking {
+            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
+                .body<List<ValgtAktivitetDTO>>().shouldBeEmpty()
+            val aktivitetSomSkalVelges =
+                aktivitetApi.hentAktivitetsmaler(withToken()).body<List<AktivitetsmalDTO>>().first()
+            val valgtAktivitetDto = aktivitetApi.velgAktivitet(
+                aktivitetsmalId = aktivitetSomSkalVelges.id,
+                orgnr = enVirksomhet.orgnr,
+                withToken()
+            ).body<ValgtAktivitetDTO>()
+            aktivitetApi
+                .fullførAktivitet(id = valgtAktivitetDto.id, orgnr = valgtAktivitetDto.valgtAv.orgnr, block = withToken())
+                .status shouldBe HttpStatusCode.OK
+            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
+                .body<List<ValgtAktivitetDTO>>().find { it.id == valgtAktivitetDto.id }!!.fullført shouldBe true
         }
     }
 
     @Test
     fun `skal kunne hente og velge en aktivitet`() {
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
-                .body<List<ValgtAktivitetDTO>>().shouldBeEmpty()
             val aktivitetSomSkalVelges =
-                aktivitetApi.hentAktiviteter(withToken()).body<List<AktivitetsmalDTO>>().first()
+                aktivitetApi.hentAktivitetsmaler(withToken()).body<List<AktivitetsmalDTO>>().first()
             val valgtAktivitetDto = aktivitetApi.velgAktivitet(
                 aktivitetsmalId = aktivitetSomSkalVelges.id,
                 orgnr = enVirksomhet.orgnr,
@@ -48,7 +66,6 @@ class AktivitetContainerTest {
                 it.aktivitetsmalId shouldBe aktivitetSomSkalVelges.id
             }
         }
-
     }
 
     @Test

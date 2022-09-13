@@ -18,14 +18,14 @@ internal class AuthenticationTest {
     @Test
     fun `happy path - skal få 200 ok ved henting av aktivitet`() {
         runBlocking {
-            aktivitetApi.hentAktiviteter(withToken()).status shouldBe HttpStatusCode.OK
+            aktivitetApi.hentAktivitetsmaler(withToken()).status shouldBe HttpStatusCode.OK
         }
     }
 
     @Test
     fun `skal få 401 unauthorized på kall uten token`() {
         runBlocking {
-            aktivitetApi.hentAktiviteter().status shouldBe HttpStatusCode.Unauthorized
+            aktivitetApi.hentAktivitetsmaler().status shouldBe HttpStatusCode.Unauthorized
         }
     }
 
@@ -34,18 +34,18 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken()
         val plainToken = PlainJWT(accessToken.jwtClaimsSet) // Token med "alg": "none"
         runBlocking {
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 header(HttpHeaders.Authorization, "Bearer ${plainToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 // "alg": "n0ne"
                 header(HttpHeaders.Authorization, "Bearer ewogICJhbGciOiAibjBuZSIKfQ.${plainToken.payload.toBase64URL()}")
             }.status shouldBe HttpStatusCode.Unauthorized
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 // "alg": "nonE"
                 header(HttpHeaders.Authorization, "Bearer ewogICJhbGciOiAibm9uRSIKfQ.${plainToken.payload.toBase64URL()}")
             }.status shouldBe HttpStatusCode.Unauthorized
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 // "alg": "NONE"
                 header(HttpHeaders.Authorization, "Bearer ewogICJhbGciOiAiTk9ORSIKfQ.${plainToken.payload.toBase64URL()}")
             }.status shouldBe HttpStatusCode.Unauthorized
@@ -57,7 +57,7 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken(audience = "ugyldig audience")
 
         runBlocking {
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 header(HttpHeaders.Authorization, "Bearer ${accessToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -69,7 +69,7 @@ internal class AuthenticationTest {
             val gyldigToken = TestContainerHelper.accessToken()
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
 
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.OK
 
@@ -78,14 +78,14 @@ internal class AuthenticationTest {
             ))
             ugyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level3"
 
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
 
             val ugyldigToken2 = TestContainerHelper.accessToken(claims = emptyMap())
             ugyldigToken2.jwtClaimsSet.getStringClaim("acr") shouldBe null
 
-            aktivitetApi.hentAktiviteter {
+            aktivitetApi.hentAktivitetsmaler {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken2.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
         }
