@@ -1,7 +1,7 @@
 create table valgtaktivitet
 (
     id                serial primary key,
-    uuid              varchar(40) unique,
+    aktivitetsmal_id              varchar(40),
     virksomhetsnummer varchar(20),
     fødselsnummer     varchar(11),
     fullfoert         boolean default false,
