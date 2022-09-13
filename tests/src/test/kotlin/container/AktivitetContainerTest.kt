@@ -48,6 +48,24 @@ class AktivitetContainerTest {
     }
 
     @Test
+    fun `skal ikke kunne fullføre aktiviteter som virksomheten ikke har tilgang til`() {
+        runBlocking {
+            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
+                .body<List<ValgtAktivitetDTO>>().shouldBeEmpty()
+            val aktivitetSomSkalVelges =
+                aktivitetApi.hentAktivitetsmaler(withToken()).body<List<AktivitetsmalDTO>>().first()
+            val valgtAktivitetDto = aktivitetApi.velgAktivitet(
+                aktivitetsmalId = aktivitetSomSkalVelges.id,
+                orgnr = enVirksomhet.orgnr,
+                withToken()
+            ).body<ValgtAktivitetDTO>()
+            aktivitetApi
+                .fullførAktivitet(id = valgtAktivitetDto.id, orgnr = "000000000", block = withToken())
+                .status shouldBe HttpStatusCode.Forbidden
+        }
+    }
+
+    @Test
     fun `skal kunne hente og velge en aktivitet`() {
         runBlocking {
             val aktivitetSomSkalVelges =
