@@ -27,6 +27,13 @@ dependencies {
     val altinnKlientVersion = "3.1.0"
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
 
+    // Database
+    implementation("org.postgresql:postgresql:42.5.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.flywaydb:flyway-core:9.2.2")
+    val jetbrainsExposedVersion = "0.39.2"
+    implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     // Logging
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")

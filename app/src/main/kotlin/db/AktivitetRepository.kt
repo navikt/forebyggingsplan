@@ -1,23 +1,56 @@
 package db
 
-import domene.*
+import domene.Aktivitetsmal
+import domene.ArbeidsgiverRepresentant
+import domene.ValgtAktivitet
+import domene.ValgtAktivitet.Companion.velgAktivitet
+import domene.Virksomhet
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.UUID
+
+private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
+    val uuid = uuid(name = "uuid")
+    val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
+    val fødselsnummer = varchar(name = "fødselsnummer", 11)
+    val fullført = bool("fullfoert")
+
+    fun tilValgtAktivitet(it: ResultRow) =
+        ArbeidsgiverRepresentant(it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
+            .velgAktivitet(Aktivitetsmal(id = it[uuid], tittel = ""))
+}
 
 class AktivitetRepository {
 
     fun hentAktivitetsmaler() = aktivitetsmaler
 
-    fun hentAktivitetsmal(aktivitetsmalId: String) = aktivitetsmaler.find { it.id == aktivitetsmalId }
+    fun hentAktivitetsmal(aktivitetsmalId: String) = aktivitetsmaler.find { it.id == UUID.fromString(aktivitetsmalId) }
 
-    fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
-        valgteAktiviteter.filter { it.valgtAv.virksomhet == virksomhet}
+    fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet): List<ValgtAktivitet> =
+        transaction {
+            ValgtAktivitetTabell.select {
+                ValgtAktivitetTabell.virksomhetsnummer eq virksomhet.orgnr
+            }.map(ValgtAktivitetTabell::tilValgtAktivitet)
+        }
 
     fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet): ValgtAktivitet {
-        valgteAktiviteter.add(valgtAktivitet)
+        transaction {
+            ValgtAktivitetTabell.insert {
+                it[uuid] = valgtAktivitet.aktivitetsmal.id
+                it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
+                it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
+                it[fullført] = valgtAktivitet.fullført
+            }
+        }
+
         return valgtAktivitet
     }
 
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
-        fullførteAktiviteter.filter { it.fullførtAv.virksomhet == virksomhet}
+        hentValgteAktiviteterForVirksomhet(virksomhet).filter { it.fullført }
 
     // MOCK DATA INNTIL VI HAR DB PÅ PLASS
     private var aktivitetsmaler: List<Aktivitetsmal> = listOf(
@@ -34,11 +67,7 @@ class AktivitetRepository {
             tittel = "Hvordan ta den vanskelige praten?"
         ),
     )
-    private val virksomhet = Virksomhet("123456789")
 
-    private val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678912", virksomhet = virksomhet)
-    private var valgteAktiviteter : MutableList<ValgtAktivitet> = mutableListOf()
-    private var fullførteAktiviteter : MutableList<FullførtAktivitet> = mutableListOf()
     // SLUTT MOCK DATA
 
 }

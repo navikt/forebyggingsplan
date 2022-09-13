@@ -28,6 +28,7 @@ internal class TestContainerHelper {
         private val network = Network.newNetwork()
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         private val authServer = AuthContainer(network = network)
+        private val database = PostgresContainer(network = network)
 
         private val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
@@ -62,8 +63,13 @@ internal class TestContainerHelper {
             GenericContainer(ImageFromDockerfile()
                 .withDockerfile(Path("../Dockerfile")))
                 .withNetwork(network)
-                .dependsOn(authServer.container)
+                .dependsOn(authServer.container, database.container)
                 .withEnv(mapOf(
+                    "DB_HOST" to database.postgresNetworkAlias,
+                    "DB_DATABASE_NAME" to database.dbName,
+                    "DB_PORT" to "5432",
+                    "DB_USERNAME" to database.container.username,
+                    "DB_PASSWORD" to database.container.password,
                     "TOKEN_X_CLIENT_ID" to "hei",
                     "TOKEN_X_ISSUER" to "http://authserver:6969/default",
                     "TOKEN_X_JWKS_URI" to "http://authserver:6969/default/jwks",
