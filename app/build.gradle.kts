@@ -34,6 +34,7 @@ dependencies {
     val jetbrainsExposedVersion = "0.39.2"
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
     // Logging
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")

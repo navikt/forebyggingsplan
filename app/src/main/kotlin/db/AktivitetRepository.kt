@@ -8,8 +8,10 @@ import domene.Virksomhet
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 import java.util.UUID
 
 private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
@@ -17,10 +19,16 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
     val fødselsnummer = varchar(name = "fødselsnummer", 11)
     val fullført = bool("fullfoert")
+    val fullførtTidspunkt = timestamp("fullfoert_tidspunkt")
 
     fun tilValgtAktivitet(it: ResultRow) =
-        ArbeidsgiverRepresentant(it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
-            .velgAktivitet(Aktivitetsmal(id = it[uuid], tittel = ""))
+        ArbeidsgiverRepresentant(fnr = it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
+            .velgAktivitet(
+                aktivitetsmal = Aktivitetsmal(id = it[uuid], tittel = ""),
+                id = it[id].value,
+                fullført = it[fullført],
+                fullførtTidspunkt = it[fullførtTidspunkt]
+            )
 }
 
 class AktivitetRepository {
@@ -36,17 +44,16 @@ class AktivitetRepository {
             }.map(ValgtAktivitetTabell::tilValgtAktivitet)
         }
 
-    fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet): ValgtAktivitet {
-        transaction {
-            ValgtAktivitetTabell.insert {
-                it[uuid] = valgtAktivitet.aktivitetsmal.id
-                it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
-                it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
-                it[fullført] = valgtAktivitet.fullført
+    fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet) = transaction {
+        ValgtAktivitetTabell.tilValgtAktivitet(ValgtAktivitetTabell.insert {
+            it[uuid] = valgtAktivitet.aktivitetsmal.id
+            it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
+            it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
+            it[fullført] = valgtAktivitet.fullført
+            if (valgtAktivitet.fullført) {
+                it[fullførtTidspunkt] = Instant.now()
             }
-        }
-
-        return valgtAktivitet
+        }.resultedValues!!.first())
     }
 
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
