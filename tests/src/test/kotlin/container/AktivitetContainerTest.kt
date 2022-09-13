@@ -50,10 +50,8 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne fullføre aktiviteter som virksomheten ikke har tilgang til`() {
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, withToken())
-                .body<List<ValgtAktivitetDTO>>().shouldBeEmpty()
             val aktivitetSomSkalVelges =
-                aktivitetApi.hentAktivitetsmaler(withToken()).body<List<AktivitetsmalDTO>>().first()
+                aktivitetApi.hentAktivitetsmaler(withToken()).body<List<AktivitetsmalDTO>>().random()
             val valgtAktivitetDto = aktivitetApi.velgAktivitet(
                 aktivitetsmalId = aktivitetSomSkalVelges.id,
                 orgnr = enVirksomhet.orgnr,
