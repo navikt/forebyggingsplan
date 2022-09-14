@@ -26,5 +26,6 @@ object DatabaseFactory {
             idleTimeout = 100000
             connectionTimeout = 100000
             maxLifetime = 300000
-        }    }
+        }
+    }
 }
