@@ -5,7 +5,7 @@ import java.util.*
 
 class Aktivitetsmal(
     val id: UUID = UUID.randomUUID(),
-    private val tittel: String
+    private val tittel: String = ""
 ) {
     fun tilDto() = AktivitetsmalDTO(id = id.toString(), tittel = tittel)
 }

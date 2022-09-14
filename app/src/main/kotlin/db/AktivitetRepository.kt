@@ -27,7 +27,7 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     fun tilValgtAktivitet(it: ResultRow) =
         ArbeidsgiverRepresentant(fnr = it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
             .velgAktivitet(
-                aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID], tittel = ""),
+                aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID]),
                 id = it[id].value,
                 fullført = it[fullført],
                 fullførtTidspunkt = it[fullførtTidspunkt],
@@ -78,15 +78,19 @@ class AktivitetRepository {
     // MOCK DATA INNTIL VI HAR DB PÅ PLASS
     private var aktivitetsmaler: List<Aktivitetsmal> = listOf(
         Aktivitetsmal(
+            id = UUID.fromString("93cea6df-6261-4e28-9ad2-9915cc3e6097"),
             tittel = "Pilotering av medarbeidersamtalen"
         ),
         Aktivitetsmal(
+            id = UUID.fromString("86b3ce04-7ff2-41a1-ab99-9493fd4afd62"),
             tittel = "Kartleggingsmøte med ansatt"
         ),
         Aktivitetsmal(
+            id = UUID.fromString("3ccee238-a5b6-41b1-98af-fb2243718e3e"),
             tittel = "Sinnemestring"
         ),
         Aktivitetsmal(
+            id = UUID.fromString("3ccee238-a5b6-41b1-98af-fb2243718e3e"),
             tittel = "Hvordan ta den vanskelige praten?"
         ),
     )
