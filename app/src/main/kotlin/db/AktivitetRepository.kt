@@ -22,6 +22,7 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val fødselsnummer = varchar(name = "fødselsnummer", 11)
     val fullført = bool("fullfoert")
     val fullførtTidspunkt = timestamp("fullfoert_tidspunkt")
+    val opprettelsesTidspunkt = timestamp("opprettelsestidspunkt")
 
     fun tilValgtAktivitet(it: ResultRow) =
         ArbeidsgiverRepresentant(fnr = it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
@@ -29,7 +30,8 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
                 aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID], tittel = ""),
                 id = it[id].value,
                 fullført = it[fullført],
-                fullførtTidspunkt = it[fullførtTidspunkt]
+                fullførtTidspunkt = it[fullførtTidspunkt],
+                opprettelsesTidspunkt = it[opprettelsesTidspunkt]
             )
 }
 

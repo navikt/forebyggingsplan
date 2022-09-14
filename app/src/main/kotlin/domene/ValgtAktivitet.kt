@@ -10,7 +10,8 @@ class ValgtAktivitet private constructor(
     val valgtAv: ArbeidsgiverRepresentant,
     val valgtTidspunkt: Instant = Instant.now(),
     val fullført: Boolean = false,
-    val fullførtTidspunkt: Instant? = null
+    val fullførtTidspunkt: Instant? = null,
+    val opprettelsesTidspunkt: Instant = Instant.now()
 ) {
 
     fun tilDto(): ValgtAktivitetDTO = ValgtAktivitetDTO(
@@ -19,7 +20,8 @@ class ValgtAktivitet private constructor(
         valgtTidspunkt = valgtTidspunkt.toKotlinInstant(),
         valgtAv = valgtAv.tilDto(),
         fullført = fullført,
-        fullførtTidspunkt = fullførtTidspunkt?.toKotlinInstant()
+        fullførtTidspunkt = fullførtTidspunkt?.toKotlinInstant(),
+        opprettelsesTidspunkt = opprettelsesTidspunkt.toKotlinInstant()
     )
 
     companion object {
@@ -27,14 +29,16 @@ class ValgtAktivitet private constructor(
             aktivitetsmal: Aktivitetsmal,
             id: Int = 0,
             fullført: Boolean = false,
-            fullførtTidspunkt: Instant? = null
+            fullførtTidspunkt: Instant? = null,
+            opprettelsesTidspunkt: Instant = Instant.now()
         ) =
             ValgtAktivitet(
                 aktivitetsmal = aktivitetsmal,
                 valgtAv = this,
                 id = id,
                 fullført = fullført,
-                fullførtTidspunkt = fullførtTidspunkt
+                fullførtTidspunkt = fullførtTidspunkt,
+                opprettelsesTidspunkt = opprettelsesTidspunkt
             )
     }
 }
