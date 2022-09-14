@@ -13,6 +13,10 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import request.AktivitetApi
 import java.util.UUID
 import kotlin.test.Test
@@ -80,6 +84,9 @@ class AktivitetContainerTest {
             alleValgteAktiviteter.size shouldBeGreaterThanOrEqual 1
             alleValgteAktiviteter.forAtLeastOne {
                 it.aktivitetsmalId shouldBe aktivitetSomSkalVelges.id
+                it.opprettelsesTidspunkt.toLocalDateTime(TimeZone.currentSystemDefault()).date shouldBe Clock.System.todayIn(
+                    TimeZone.currentSystemDefault()
+                )
             }
         }
     }

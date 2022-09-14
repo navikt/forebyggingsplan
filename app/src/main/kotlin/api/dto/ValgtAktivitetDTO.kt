@@ -1,5 +1,6 @@
 package api.dto
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
@@ -16,5 +17,6 @@ data class ValgtAktivitetDTO(
     val valgtTidspunkt: Instant,
     val valgtAv: ArbeidsgiverRepresentantDTO,
     val fullført: Boolean,
-    val fullførtTidspunkt: Instant? = null
+    val fullførtTidspunkt: Instant? = null,
+    val opprettelsesTidspunkt: Instant = Clock.System.now()
 )

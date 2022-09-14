@@ -30,6 +30,8 @@ dependencies {
     testImplementation("io.ktor:ktor-client-core:$ktor_version")
     testImplementation("io.ktor:ktor-client-cio:$ktor_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
 
     // Mock-oauth2-server
     val mockOAuth2ServerVersion = "0.5.1"
