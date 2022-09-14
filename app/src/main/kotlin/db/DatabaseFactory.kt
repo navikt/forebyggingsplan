@@ -20,7 +20,7 @@ object DatabaseFactory {
             addDataSourceProperty("portNumber", Miljø.dbPort)
             addDataSourceProperty("user", Miljø.dbUser)
             addDataSourceProperty("password", Miljø.dbPassword)
-            addDataSourceProperty("databaseName", Miljø.dbDatabaesName)
+            addDataSourceProperty("databaseName", Miljø.dbDatabaseName)
             maximumPoolSize = 10
             minimumIdle = 1
             idleTimeout = 100000

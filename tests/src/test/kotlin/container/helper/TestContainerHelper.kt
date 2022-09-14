@@ -66,7 +66,7 @@ internal class TestContainerHelper {
                 .dependsOn(authServer.container, database.container)
                 .withEnv(mapOf(
                     "DB_HOST" to database.postgresNetworkAlias,
-                    "DB_DATABASE_NAME" to database.dbName,
+                    "DB_DATABASE" to database.dbName,
                     "DB_PORT" to "5432",
                     "DB_USERNAME" to database.container.username,
                     "DB_PASSWORD" to database.container.password,

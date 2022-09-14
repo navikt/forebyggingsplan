@@ -5,7 +5,7 @@ internal object Miljø {
     val altinnRettigheterProxyUrl: String by lazy { System.getenv("ALTINN_RETTIGHETER_PROXY_URL")}
     val altinnRettighetServiceEdition: String by lazy { System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_EDITION", "2")}
     val dbHost: String by lazy { System.getenv("DB_HOST")}
-    val dbDatabaesName: String by lazy { System.getenv("DB_DATABASE_NAME")}
+    val dbDatabaseName: String by lazy { System.getenv("DB_DATABASE")}
     val dbPort: String by lazy { System.getenv("DB_PORT")}
     val dbUser: String by lazy { System.getenv("DB_USERNAME")}
     val dbPassword: String by lazy { System.getenv("DB_PASSWORD")}
