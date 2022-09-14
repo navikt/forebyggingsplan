@@ -6,6 +6,12 @@ metadata:
   labels:
     "team": "pia"
 spec:
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        databases:
+          - name: forebyggingsplan_db
+            envVarPrefix: DB
   tokenx:
     enabled: true
   image: {{image}}
@@ -33,10 +39,6 @@ spec:
     outbound:
       rules:
         - application: altinn-rettigheter-proxy
-  replicas:
-    min: 1
-    max: 2
-    cpuThresholdPercentage: 50
   env:
     - name: SERVER_PORT
       value: "8080"
