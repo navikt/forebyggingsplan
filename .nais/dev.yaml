@@ -1,2 +1,2 @@
-altinnRettighetServiceEdition: 1
-altinnRettigheterProxyClientId: dev-gcp:arbeidsgiver:altinn-rettigheter-proxy
+altinnRettighetServiceEdition: "1"
+altinnRettigheterProxyClientId: "dev-gcp:arbeidsgiver:altinn-rettigheter-proxy"
