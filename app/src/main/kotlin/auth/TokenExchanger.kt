@@ -29,6 +29,7 @@ object TokenExchanger {
                     withIssuer(Miljø.tokenxClientId)
                     withAudience(Miljø.tokenXTokenEndpoint)
                     withJWTId(UUID.randomUUID().toString())
+                    withIssuedAt(Date.from(now))
                     withNotBefore(Date.from(now))
                     withExpiresAt(Date.from(now.plusSeconds(120)))
                 }.sign(Algorithm.RSA256(null, privateKey))
