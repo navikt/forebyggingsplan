@@ -49,6 +49,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .nais/deploy.yaml
+          VARS: .nais/dev.yaml
 
   deployTilProd:
     if: github.ref == 'refs/heads/main'
@@ -63,3 +64,4 @@ jobs:
           "APIKEY": ${{ secrets.NAIS_DEPLOY_APIKEY }}
           "CLUSTER": prod-gcp
           "RESOURCE": .nais/deploy.yaml
+          VARS: .nais/prod.yaml
