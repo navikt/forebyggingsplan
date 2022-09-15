@@ -18,10 +18,11 @@ import java.util.UUID
 
 object TokenExchanger {
     private val privateKey = RSAKey.parse(Miljø.tokenxPrivateJwk).toRSAPrivateKey()
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     internal suspend fun exchangeToken(token: String, audience: String): String {
         return try {
-            HttpClient.client.post(URI.create(Miljø.tokenXTokenEndpoint).toURL()) {
+            val s = HttpClient.client.post(URI.create(Miljø.tokenXTokenEndpoint).toURL()) {
                 val now = Instant.now()
                 val clientAssertion = JWT.create().apply {
                     withSubject(Miljø.tokenxClientId)
@@ -40,9 +41,10 @@ object TokenExchanger {
                     append("subject_token", token)
                     append("audience", audience)
                 }))
-            }.body<Map<String, String>>()["access_token"] ?: throw IllegalStateException("Fikk ingen token i response")
+            }.body<Map<String, String>>()
+            logger.info("token response: $s")
+            s["access_token"] ?: throw IllegalStateException("Fikk ingen token i response")
         } catch (e: Exception) {
-            val logger = LoggerFactory.getLogger(this.javaClass)
             logger.error("Feil i token exchange", e)
             throw RuntimeException("Token exchange feil")
         }
