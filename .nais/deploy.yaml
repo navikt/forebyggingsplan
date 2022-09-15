@@ -49,4 +49,4 @@ spec:
     - name: ALTINN_RETTIGHETER_PROXY_URL
       value: "http://altinn-rettigheter-proxy.arbeidsgiver/altinn-rettigheter-proxy"
     - name: ALTINN_RETTIGHET_SERVICE_EDITION
-      value: {{altinnRettighetServiceEdition}}
+      value: "{{altinnRettighetServiceEdition}}"
