@@ -40,9 +40,12 @@ spec:
     outbound:
       rules:
         - application: altinn-rettigheter-proxy
+          namespace: arbeidsgiver
   env:
     - name: SERVER_PORT
       value: "8080"
+    - name: ALTINN_RETTIGHETER_PROXY_CLIENT_ID
+      value: {{altinnRettigheterProxyClientId}}
     - name: ALTINN_RETTIGHETER_PROXY_URL
       value: http://altinn-rettigheter-proxy.arbeidsgiver/altinn-rettigheter-proxy
     - name: ALTINN_RETTIGHET_SERVICE_EDITION

@@ -3,12 +3,15 @@ package plugins
 import Miljø
 import api.dto.OpprettValgtAktivitetDTO
 import api.endepunkt.ORGNR
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
+import auth.TokenExchanger
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.createRouteScopedPlugin
+import io.ktor.server.auth.AuthenticationChecked
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlient
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlientConfig
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.ProxyConfig
@@ -26,7 +29,6 @@ val SYKEFRAVÆRSSTATISTIKK_RETTIGHETER = AltinnRettighetKoder(
 val AuthorizationPlugin = createRouteScopedPlugin(
     name = "AuthorizationPlugin",
 ) {
-
     pluginConfig.apply {
         on(AuthenticationChecked) { call ->
             val subject = call.principal<JWTPrincipal>()?.subject ?: throw RuntimeException("Subject missing in JWT")
@@ -35,7 +37,12 @@ val AuthorizationPlugin = createRouteScopedPlugin(
             val token = removeBearerPrefix(bearer)
 
             val virksomheterVedkommendeHarTilgangTil =
-                hentVirksomheterVedkommendeHarTilgangTil(token, subject)
+                hentVirksomheterVedkommendeHarTilgangTil(
+                    token = TokenExchanger.exchangeToken(
+                        token = token,
+                        audience = Miljø.altinnRettigheterProxyClientId
+                    ), subject = subject
+                )
 
             val orgnr =
                 if (call.parameters[ORGNR] != null)
@@ -73,3 +80,4 @@ class AltinnRettighetKoder(
     val serviceCode: String,
     val serviceEdition: String
 )
+
