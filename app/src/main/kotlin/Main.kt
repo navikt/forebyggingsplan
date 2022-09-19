@@ -1,7 +1,4 @@
-import api.endepunkt.aktivitetsmaler
-import api.endepunkt.fullførteAktiviteter
-import api.endepunkt.helseEndepunkter
-import api.endepunkt.valgteAktiviteter
+import api.endepunkt.*
 import com.auth0.jwk.JwkProviderBuilder
 import db.AktivitetRepository
 import db.DatabaseFactory
@@ -13,6 +10,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
+import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.doublereceive.*
@@ -49,6 +47,9 @@ fun bootstrapServer() {
                     }
                 }
             }
+        }
+        install(MicrometerMetrics) {
+            registry = Metrics.appMicrometerRegistry
         }
         val jwkProvider = JwkProviderBuilder(URI(Miljø.tokenxJwkPath).toURL())
             .cached(10, 24, TimeUnit.HOURS)

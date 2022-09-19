@@ -33,6 +33,9 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 60
+  prometheus:
+    enabled: true
+    path: /metrics
   accessPolicy:
     inbound:
       rules:

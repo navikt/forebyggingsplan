@@ -51,6 +51,10 @@ dependencies {
 
     // Funksjonelle operatorer
     implementation("io.arrow-kt:arrow-core:1.1.2")
+
+    // metrics
+    implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.9.3")
 }
 
 application {
