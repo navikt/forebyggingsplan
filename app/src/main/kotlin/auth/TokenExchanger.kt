@@ -22,7 +22,7 @@ object TokenExchanger {
 
     internal suspend fun exchangeToken(token: String, audience: String): String {
         return try {
-            val s = HttpClient.client.post(URI.create(Miljø.tokenXTokenEndpoint).toURL()) {
+            HttpClient.client.post(URI.create(Miljø.tokenXTokenEndpoint).toURL()) {
                 val now = Instant.now()
                 val clientAssertion = JWT.create().apply {
                     withSubject(Miljø.tokenxClientId)
@@ -42,9 +42,7 @@ object TokenExchanger {
                     append("subject_token", token)
                     append("audience", audience)
                 }))
-            }.body<Map<String, String>>()
-            logger.info("token response: $s")
-            s["access_token"] ?: throw IllegalStateException("Fikk ingen token i response")
+            }.body<Map<String, String>>()["access_token"] ?: throw IllegalStateException("Fikk ingen token i response")
         } catch (e: Exception) {
             logger.error("Feil i token exchange", e)
             throw RuntimeException("Token exchange feil")
