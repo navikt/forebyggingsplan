@@ -72,6 +72,7 @@ fun bootstrapServer() {
         }
         routing {
             helseEndepunkter()
+            metrics()
             authenticate("tokenx") {
                 aktivitetsmaler(aktivitetService = aktivitetService)
                 medAltinnTilgang {
