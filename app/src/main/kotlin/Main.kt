@@ -67,8 +67,6 @@ fun bootstrapServer() {
                     withClaimPresence("sub")
                 }
                 validate { token ->
-                    application.log.info("request uri ${request.uri} in validate block")
-                    application.log.info("headers ${request.headers}")
                     JWTPrincipal(token.payload)
                 }
             }

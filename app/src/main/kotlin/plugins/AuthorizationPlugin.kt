@@ -32,7 +32,7 @@ val AuthorizationPlugin = createRouteScopedPlugin(
 ) {
     pluginConfig.apply {
         on(AuthenticationChecked) { call ->
-            val subject = call.principal<JWTPrincipal>()?.subject ?: throw RuntimeException("Subject missing in JWT for ${call.request.uri}")
+            val subject = call.principal<JWTPrincipal>()?.subject ?: throw RuntimeException("Subject missing in JWT")
             val bearer = call.request.headers[HttpHeaders.Authorization]
                 ?: throw RuntimeException("No Authorization header found")
             val token = removeBearerPrefix(bearer)
