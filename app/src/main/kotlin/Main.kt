@@ -15,6 +15,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.doublereceive.*
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.uri
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import plugins.AuthorizationPlugin
@@ -66,6 +67,8 @@ fun bootstrapServer() {
                     withClaimPresence("sub")
                 }
                 validate { token ->
+                    application.log.info("request uri ${request.uri} in validate block")
+                    application.log.info("headers ${request.headers}")
                     JWTPrincipal(token.payload)
                 }
             }
