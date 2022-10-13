@@ -11,6 +11,7 @@ import io.ktor.server.auth.AuthenticationChecked
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
+import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlient
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlientConfig
@@ -31,7 +32,7 @@ val AuthorizationPlugin = createRouteScopedPlugin(
 ) {
     pluginConfig.apply {
         on(AuthenticationChecked) { call ->
-            val subject = call.principal<JWTPrincipal>()?.subject ?: throw RuntimeException("Subject missing in JWT")
+            val subject = call.principal<JWTPrincipal>()?.subject ?: throw RuntimeException("Subject missing in JWT for ${call.request.uri}")
             val bearer = call.request.headers[HttpHeaders.Authorization]
                 ?: throw RuntimeException("No Authorization header found")
             val token = removeBearerPrefix(bearer)
