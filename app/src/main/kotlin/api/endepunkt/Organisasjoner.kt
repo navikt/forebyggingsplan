@@ -7,6 +7,7 @@ import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 const val ORGANISASJONER_PATH = "organisasjoner"
@@ -17,13 +18,13 @@ fun Route.organisasjoner() {
         val token = call.request.hentToken()
         val virksomheter = hentVirksomheterForBruker(token = token, subject = subject).map {
             AltinnVirksomhetDTO(
-                name = it.name,
+                navn = it.name,
                 type = it.type,
-                parentOrganizationNumber = it.parentOrganizationNumber,
-                organizationNumber = it.organizationNumber,
-                organizationForm = it.organizationForm,
+                juridiskEnhet = it.parentOrganizationNumber,
+                orgnummer = it.organizationNumber,
+                organisasjonsform = it.organizationForm,
                 status = it.status,
-                socialSecurityNumber = it.socialSecurityNumber
+                fødselsnummer = it.socialSecurityNumber
             )
         }
         call.respond(virksomheter)
@@ -32,11 +33,18 @@ fun Route.organisasjoner() {
 
 @Serializable
 data class AltinnVirksomhetDTO(
-    val name: String,
+    @SerialName("Name")
+    val navn: String,
+    @SerialName("Type")
     val type: String,
-    val parentOrganizationNumber: String? = null,
-    val organizationNumber: String? = null,
-    val organizationForm: String? = null,
+    @SerialName("ParentOrganizationNumber")
+    val juridiskEnhet: String? = null,
+    @SerialName("OrganizationNumber")
+    val orgnummer: String? = null,
+    @SerialName("OrganizationForm")
+    val organisasjonsform: String? = null,
+    @SerialName("Status")
     val status: String? = null,
-    val socialSecurityNumber: String? = null,
+    @SerialName("SocialSecurityNumber")
+    val fødselsnummer: String? = null,
 )
