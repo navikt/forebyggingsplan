@@ -1,6 +1,7 @@
 package api.endepunkt
 
 import api.hentVirksomheterForBruker
+import auth.TokenExchanger
 import http.hentToken
 import http.tokenSubject
 import io.ktor.server.application.call
@@ -16,7 +17,12 @@ fun Route.organisasjoner() {
     get("/$ORGANISASJONER_PATH") {
         val subject = call.request.tokenSubject()
         val token = call.request.hentToken()
-        val virksomheter = hentVirksomheterForBruker(token = token, subject = subject).map {
+        val virksomheter = hentVirksomheterForBruker(
+            token = TokenExchanger.exchangeToken(
+                token = token,
+                audience = Miljø.altinnRettigheterProxyClientId
+            ), subject = subject
+        ).map {
             AltinnVirksomhetDTO(
                 navn = it.name,
                 type = it.type,
