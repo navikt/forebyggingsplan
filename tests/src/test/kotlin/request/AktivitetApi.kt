@@ -2,11 +2,13 @@ package request
 
 import api.endepunkt.AKTIVITETSMALER_PATH
 import api.endepunkt.FULLFØRTE_PATH
+import api.endepunkt.ORGANISASJONER_PATH
 import api.endepunkt.VALGTE_PATH
 import container.helper.TestContainerHelper.Companion.performGet
 import container.helper.TestContainerHelper.Companion.performPost
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import org.testcontainers.containers.GenericContainer
 
 class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
@@ -32,6 +34,9 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
             """.trimIndent()
             )
         }
+
+    internal suspend fun hentVirksomheter(block: HttpRequestBuilder.() -> Unit = {}) =
+        forebyggingsplanContainer.performGet(ORGANISASJONER_PATH, block)
 
     internal suspend fun fullførAktivitet(id: Int, orgnr: String, block: HttpRequestBuilder.() -> Unit) =
         forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr/$FULLFØRTE_PATH/$id", block = block)
