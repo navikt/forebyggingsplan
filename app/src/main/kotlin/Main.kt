@@ -75,6 +75,7 @@ fun bootstrapServer() {
             helseEndepunkter()
             metrics()
             authenticate("tokenx") {
+                organisasjoner()
                 aktivitetsmaler(aktivitetService = aktivitetService)
                 medAltinnTilgang {
                     valgteAktiviteter(aktivitetService = aktivitetService)

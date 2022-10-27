@@ -1,5 +1,6 @@
 package container.helper
 
+import api.serviceCode
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -18,7 +19,6 @@ import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
 import org.testcontainers.images.builder.ImageFromDockerfile
-import plugins.SYKEFRAVÆRSSTATISTIKK_RETTIGHETER
 import request.TestHttpClient
 import wiremock.com.google.common.net.HttpHeaders.CONTENT_TYPE
 import kotlin.io.path.Path
@@ -33,8 +33,8 @@ internal class TestContainerHelper {
         private val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
-                    .withQueryParam("serviceCode", equalTo(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceCode))
-                    .withQueryParam("serviceEdition", equalTo(SYKEFRAVÆRSSTATISTIKK_RETTIGHETER.serviceEdition))
+                    .withQueryParam("serviceCode", equalTo(serviceCode))
+                    .withQueryParam("serviceEdition", equalTo("2"))
                     .willReturn(
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")
