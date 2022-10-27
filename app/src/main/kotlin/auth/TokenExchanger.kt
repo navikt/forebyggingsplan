@@ -44,8 +44,7 @@ object TokenExchanger {
                 }))
             }.body<Map<String, String>>()["access_token"] ?: throw IllegalStateException("Fikk ingen token i response")
         } catch (e: Exception) {
-            logger.error("Feil i token exchange", e)
-            throw RuntimeException("Token exchange feil")
+            throw RuntimeException("Token exchange feil", e)
         }
     }
 }

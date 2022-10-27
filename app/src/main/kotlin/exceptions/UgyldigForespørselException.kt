@@ -1,4 +1,4 @@
 package exceptions
 
 
-class UgyldigForespørselException(): Exception("Ugyldig forespørsel")
+class UgyldigForespørselException(override val message: String = "Ugyldig forespørsel"): Exception(message)

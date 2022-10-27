@@ -38,12 +38,12 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
             .map(ValgtAktivitet::tilDto))
     }
     post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETSMAL_ID}") {
-        val aktivitetId = call.parameters[AKTIVITETSMAL_ID] ?: throw UgyldigForespørselException()
+        val aktivitetId = call.parameters[AKTIVITETSMAL_ID] ?: throw UgyldigForespørselException("Manglende '$AKTIVITETSMAL_ID'")
         aktivitetService.fullførAktivitet(orgnr = call.orgnr, aktivitetId = aktivitetId.toInt())
         call.respond(status = HttpStatusCode.OK, message = "")
     }
 }
 
 val ApplicationCall.virksomhet get() = Virksomhet(this.orgnr)
-val ApplicationCall.orgnr get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException()
+val ApplicationCall.orgnr get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter 'orgnr'")
 
