@@ -11,9 +11,7 @@ class AktivitetTest {
 
     @Test
     fun `en aktivitet kan opprettes og velges`() {
-        val aktivitetsmal = Aktivitetsmal(
-            tittel = "Videokurs om mestring på jobb"
-        )
+        val aktivitetsmal = Aktivitetsmal("123")
         val virksomhet = Virksomhet(orgnr = "123456789")
         val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678911", virksomhet = virksomhet)
 

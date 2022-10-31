@@ -1,11 +1,14 @@
 package container.auth
 
+import api.dto.ValgtAktivitetDTO
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.withToken
 import domene.enVirksomhet
 import io.kotest.matchers.shouldBe
+import io.ktor.client.call.body
 import io.ktor.client.request.header
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
@@ -19,8 +22,11 @@ internal class AuthenticationTest {
     @Test
     fun `happy path - skal få 200 ok ved henting av aktivitet`() {
         runBlocking {
-            aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = "123123123", block = withToken())
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken()).status shouldBe HttpStatusCode.OK
+            aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+            val response =
+                aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
+            response.status shouldBe HttpStatusCode.OK
+            response.body<List<ValgtAktivitetDTO>>().size shouldBe 1
         }
     }
 

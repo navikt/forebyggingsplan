@@ -17,7 +17,7 @@ import java.time.Instant
 import java.util.UUID
 
 private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
-    val aktivitetsmalID = uuid(name = "aktivitetsmal_id")
+    val aktivitetsmalID = varchar(name = "aktivitetsmal_id", length = 45)
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
     val fødselsnummer = varchar(name = "fødselsnummer", 11)
     val fullført = bool("fullfoert")
@@ -47,6 +47,7 @@ class AktivitetRepository {
         ValgtAktivitetTabell.tilValgtAktivitet(ValgtAktivitetTabell.insert {
             it[aktivitetsmalID] = valgtAktivitet.aktivitetsmal.id
             it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
+            // TODO: Skal vi egentlig lagre fødselsnummer?
             it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
             it[fullført] = valgtAktivitet.fullført
             if (valgtAktivitet.fullført) {

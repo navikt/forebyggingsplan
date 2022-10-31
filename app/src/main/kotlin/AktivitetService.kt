@@ -6,6 +6,8 @@ class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         aktivitetRepository.hentValgteAktiviteterForVirksomhet(virksomhet)
 
+    fun lagreAktivitet(aktivitet: ValgtAktivitet) = aktivitetRepository.lagreValgtAktivitet(valgtAktivitet = aktivitet)
+
     fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         aktivitetRepository.hentFullførteAktiviteterForVirksomhet(virksomhet)
 

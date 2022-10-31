@@ -1,12 +1,17 @@
 package api.endepunkt
 
 import AktivitetService
+import api.dto.OpprettValgtAktivitetDTO
+import domene.Aktivitetsmal
+import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet
+import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
 import exceptions.UgyldigForespørselException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -18,8 +23,10 @@ const val FULLFØRTE_PATH = "fullforteaktiviteter"
 
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH") {
-        // FIXME
-        call.respond("OK")
+        val body = call.receive<OpprettValgtAktivitetDTO>()
+        val aktivitet = ArbeidsgiverRepresentant(fnr = "", virksomhet = Virksomhet(orgnr = body.orgnr))
+            .velgAktivitet(aktivitetsmal = Aktivitetsmal(id = body.aktivitetsmalId))
+        call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
     }
 
     get("/$VALGTE_PATH/{$ORGNR}") {
@@ -34,7 +41,6 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
             .map(ValgtAktivitet::tilDto))
     }
     post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{aktivitetId}") {
-        // FIXME
         call.respond(status = HttpStatusCode.OK, message = "")
     }
 }
