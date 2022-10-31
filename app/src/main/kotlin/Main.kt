@@ -1,23 +1,31 @@
-import api.endepunkt.*
+import api.endepunkt.Metrics
+import api.endepunkt.fullførteAktiviteter
+import api.endepunkt.helseEndepunkter
+import api.endepunkt.metrics
+import api.endepunkt.organisasjoner
+import api.endepunkt.valgteAktiviteter
 import com.auth0.jwk.JwkProviderBuilder
 import db.AktivitetRepository
 import db.DatabaseFactory
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.engine.*
-import io.ktor.server.metrics.micrometer.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.doublereceive.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.uri
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.install
+import io.ktor.server.application.log
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.metrics.micrometer.MicrometerMetrics
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.doublereceive.DoubleReceive
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.routing
 import plugins.AuthorizationPlugin
 import java.net.URI
 import java.util.concurrent.TimeUnit
@@ -42,6 +50,7 @@ fun bootstrapServer() {
                         status = HttpStatusCode.BadRequest,
                         message = cause.message!!
                     )
+
                     else -> {
                         this@embeddedServer.log.error("Uhåndtert feil", cause)
                         call.respond(status = HttpStatusCode.InternalServerError, "Uhåndtert feil")
@@ -76,7 +85,6 @@ fun bootstrapServer() {
             metrics()
             authenticate("tokenx") {
                 organisasjoner()
-                aktivitetsmaler(aktivitetService = aktivitetService)
                 medAltinnTilgang {
                     valgteAktiviteter(aktivitetService = aktivitetService)
                     fullførteAktiviteter(aktivitetService = aktivitetService)

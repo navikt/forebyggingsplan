@@ -1,16 +1,16 @@
 package api.endepunkt
 
 import AktivitetService
-import api.dto.OpprettValgtAktivitetDTO
 import domene.ValgtAktivitet
 import domene.Virksomhet
-import domene.enArbeidsgiverRepresentant
 import exceptions.UgyldigForespørselException
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 
 const val ORGNR = "orgnr"
 const val VALGTE_PATH = "valgteaktiviteter"
@@ -18,12 +18,8 @@ const val FULLFØRTE_PATH = "fullforteaktiviteter"
 
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH") {
-        val opprettValgtAktivitetDTO = call.receive<OpprettValgtAktivitetDTO>()
-        val valgtAktivitet = aktivitetService.velgAktivitet(
-            aktivitetsmalId = opprettValgtAktivitetDTO.aktivitetsmalId,
-            arbeidsgiverRepresentant = enArbeidsgiverRepresentant
-        )
-        call.respond(valgtAktivitet.tilDto())
+        // FIXME
+        call.respond("OK")
     }
 
     get("/$VALGTE_PATH/{$ORGNR}") {
@@ -37,9 +33,8 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
         call.respond(aktivitetService.hentFullførteAktiviteterForVirksomhet(call.virksomhet)
             .map(ValgtAktivitet::tilDto))
     }
-    post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETSMAL_ID}") {
-        val aktivitetId = call.parameters[AKTIVITETSMAL_ID] ?: throw UgyldigForespørselException("Manglende '$AKTIVITETSMAL_ID'")
-        aktivitetService.fullførAktivitet(orgnr = call.orgnr, aktivitetId = aktivitetId.toInt())
+    post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{aktivitetId}") {
+        // FIXME
         call.respond(status = HttpStatusCode.OK, message = "")
     }
 }
