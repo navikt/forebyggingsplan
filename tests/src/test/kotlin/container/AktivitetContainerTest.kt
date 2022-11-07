@@ -4,7 +4,7 @@ import api.dto.ValgtAktivitetDTO
 import container.helper.TestContainerHelper
 import container.helper.withToken
 import enVirksomhet
-import io.kotest.matchers.collections.shouldHaveAtLeastSize
+import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
 import io.ktor.http.*
@@ -17,24 +17,24 @@ class AktivitetContainerTest {
 
     @Test
     fun `skal kunne hente valgte aktiviteter`() {
-
         runBlocking {
-            aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
-                .body<ValgtAktivitetDTO>()
-            aktivitetApi.velgAktivitet(aktivitetsmalId = "1234", orgnr = enVirksomhet.orgnr, block = withToken())
-                .body<ValgtAktivitetDTO>()
+            val aktivitetsIder = listOf(
+                aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+                    .body<ValgtAktivitetDTO>().id,
+                aktivitetApi.velgAktivitet(aktivitetsmalId = "1234", orgnr = enVirksomhet.orgnr, block = withToken())
+                    .body<ValgtAktivitetDTO>().id
+            )
             val resultat = aktivitetApi.hentValgteAktiviteterForVirksomhet(
                 orgnr = enVirksomhet.orgnr,
                 withToken()
             )
             resultat.status shouldBe HttpStatusCode.OK
-            resultat.body<List<ValgtAktivitetDTO>>() shouldHaveAtLeastSize 2
+            resultat.body<List<ValgtAktivitetDTO>>().map { it.id } shouldContainAll aktivitetsIder
         }
     }
 
     @Test
     fun `skal få 403 Forbidden dersom man ikke har tilgang i Altinn`() {
-
         runBlocking {
             aktivitetApi.hentValgteAktiviteterForVirksomhet(
                 orgnr = "999999999",
@@ -50,10 +50,10 @@ class AktivitetContainerTest {
                 .body<ValgtAktivitetDTO>()
 
             val hentetAktivitet =
-                aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
-                    .body<List<ValgtAktivitetDTO>>().filter { it.id == aktivitet.id }.single()
+                aktivitetApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
+                    .body<ValgtAktivitetDTO>()
 
-            hentetAktivitet.fullført shouldBe false
+            aktivitet shouldBe hentetAktivitet
         }
     }
 
@@ -70,14 +70,12 @@ class AktivitetContainerTest {
         runBlocking {
             val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
-
             aktivitet.fullført shouldBe false
 
-            aktivitetApi.fullførAktivitet(id = aktivitet.id, orgnr = aktivitet.valgtAv.orgnr, block = withToken())
-            val aktivitetEtterFullfør =
-                aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
-                    .body<List<ValgtAktivitetDTO>>().filter { it.id == aktivitet.id }.single()
-
+            val aktivitetEtterFullfør = aktivitetApi.fullførAktivitet(
+                id = aktivitet.id,
+                orgnr = aktivitet.valgtAv.orgnr,
+                block = withToken()).body<ValgtAktivitetDTO>()
             aktivitetEtterFullfør.fullført shouldBe true
         }
     }

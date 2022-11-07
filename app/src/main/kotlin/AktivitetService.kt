@@ -11,6 +11,6 @@ class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
     fun fullførAktivitet(valgtAktivitet: ValgtAktivitet) =
         aktivitetRepository.fullfør(valgtAktivitet = valgtAktivitet)
 
-    fun hentValtgAktivitet(virksomhet: Virksomhet, aktivitetsId: Int) =
+    fun hentValgtAktivitet(virksomhet: Virksomhet, aktivitetsId: Int) =
         aktivitetRepository.hentValgtAktivitet(virksomhet, aktivitetsId)
 }

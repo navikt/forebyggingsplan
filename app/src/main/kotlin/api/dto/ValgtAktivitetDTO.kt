@@ -14,7 +14,6 @@ data class OpprettValgtAktivitetDTO(
 data class ValgtAktivitetDTO(
     val id: Int,
     val aktivitetsmalId: String,
-    val valgtTidspunkt: Instant,
     val valgtAv: ArbeidsgiverRepresentantDTO,
     val fullført: Boolean,
     val fullførtTidspunkt: Instant? = null,

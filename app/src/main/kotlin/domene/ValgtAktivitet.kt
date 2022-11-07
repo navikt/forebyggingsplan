@@ -8,7 +8,6 @@ class ValgtAktivitet private constructor(
     val id: Int = 0,
     val aktivitetsmal: Aktivitetsmal,
     val valgtAv: ArbeidsgiverRepresentant,
-    val valgtTidspunkt: Instant = Instant.now(),
     val fullført: Boolean = false,
     val fullførtTidspunkt: Instant? = null,
     val opprettelsesTidspunkt: Instant = Instant.now()
@@ -16,8 +15,7 @@ class ValgtAktivitet private constructor(
 
     fun tilDto(): ValgtAktivitetDTO = ValgtAktivitetDTO(
         id = id,
-        aktivitetsmalId = aktivitetsmal.id.toString(),
-        valgtTidspunkt = valgtTidspunkt.toKotlinInstant(),
+        aktivitetsmalId = aktivitetsmal.id,
         valgtAv = valgtAv.tilDto(),
         fullført = fullført,
         fullførtTidspunkt = fullførtTidspunkt?.toKotlinInstant(),
@@ -30,7 +28,7 @@ class ValgtAktivitet private constructor(
             id: Int = 0,
             fullført: Boolean = false,
             fullførtTidspunkt: Instant? = null,
-            opprettelsesTidspunkt: Instant = Instant.now()
+            opprettelsesTidspunkt: Instant = Instant.now(),
         ) =
             ValgtAktivitet(
                 aktivitetsmal = aktivitetsmal,
@@ -38,7 +36,7 @@ class ValgtAktivitet private constructor(
                 id = id,
                 fullført = fullført,
                 fullførtTidspunkt = fullførtTidspunkt,
-                opprettelsesTidspunkt = opprettelsesTidspunkt
+                opprettelsesTidspunkt = opprettelsesTidspunkt,
             )
     }
 }

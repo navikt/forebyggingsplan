@@ -18,6 +18,6 @@ class AktivitetTest {
         val valgtAktivitet = arbeidsgiverRepresentant.velgAktivitet(aktivitetsmal)
         valgtAktivitet.aktivitetsmal shouldBe aktivitetsmal
         valgtAktivitet.valgtAv shouldBe arbeidsgiverRepresentant
-        valgtAktivitet.valgtTidspunkt shouldBeBefore Instant.now()
+        valgtAktivitet.opprettelsesTidspunkt shouldBeBefore Instant.now()
     }
 }

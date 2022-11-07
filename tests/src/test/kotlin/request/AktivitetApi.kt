@@ -14,6 +14,9 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
     internal suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String, block: HttpRequestBuilder.() -> Unit = {}) =
         forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block)
 
+    internal suspend fun hentValgtAktivitet(orgnr:String, aktivitetsId: Int, block: HttpRequestBuilder.() -> Unit = {}) =
+        forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr/$aktivitetsId", block)
+
     internal suspend fun velgAktivitet(
         aktivitetsmalId: String,
         orgnr: String,

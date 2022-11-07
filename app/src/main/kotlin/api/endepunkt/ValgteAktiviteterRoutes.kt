@@ -8,14 +8,10 @@ import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
 import exceptions.UgyldigForespørselException
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.application.call
-import io.ktor.server.request.receive
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
@@ -33,13 +29,23 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     get("/$VALGTE_PATH/{$ORGNR}") {
         call.respond(aktivitetService.hentValgteAktiviteterForVirksomhet(call.virksomhet).map(ValgtAktivitet::tilDto))
     }
+
+    get("/$VALGTE_PATH/{$ORGNR}/{$AKTIVITETS_ID}") {
+        call.respond(aktivitetService.hentValgtAktivitet(
+            virksomhet = call.virksomhet,
+            aktivitetsId = call.aktivitetsId).tilDto()
+        )
+    }
 }
 
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETS_ID}") {
-        aktivitetService.fullførAktivitet(aktivitetService.hentValtgAktivitet(call.virksomhet, call.aktivitetsId))
-        call.respond(HttpStatusCode.OK)
+        aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(call.virksomhet, call.aktivitetsId))
+        call.respond(aktivitetService.hentValgtAktivitet(
+            virksomhet = call.virksomhet,
+            aktivitetsId = call.aktivitetsId).tilDto()
+        )
     }
 }
 
