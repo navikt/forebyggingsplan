@@ -8,10 +8,9 @@ class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
 
     fun lagreAktivitet(aktivitet: ValgtAktivitet) = aktivitetRepository.lagreValgtAktivitet(valgtAktivitet = aktivitet)
 
-    fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
-        aktivitetRepository.hentFullførteAktiviteterForVirksomhet(virksomhet)
+    fun fullførAktivitet(valgtAktivitet: ValgtAktivitet) =
+        aktivitetRepository.fullfør(valgtAktivitet = valgtAktivitet)
 
-    fun fullførAktivitet(aktivitetId: Int, orgnr: String) {
-        aktivitetRepository.fullfør(aktivitetId = aktivitetId, orgnr = orgnr)
-    }
+    fun hentValtgAktivitet(virksomhet: Virksomhet, aktivitetsId: Int) =
+        aktivitetRepository.hentValgtAktivitet(virksomhet, aktivitetsId)
 }

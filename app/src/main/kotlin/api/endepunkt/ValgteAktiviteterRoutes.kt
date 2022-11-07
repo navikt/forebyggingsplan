@@ -18,6 +18,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 
 const val ORGNR = "orgnr"
+const val AKTIVITETS_ID = "aktivitetId"
 const val VALGTE_PATH = "valgteaktiviteter"
 const val FULLFØRTE_PATH = "fullforteaktiviteter"
 
@@ -36,15 +37,13 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
 
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
-    get("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH") {
-        call.respond(aktivitetService.hentFullførteAktiviteterForVirksomhet(call.virksomhet)
-            .map(ValgtAktivitet::tilDto))
-    }
-    post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{aktivitetId}") {
-        call.respond(status = HttpStatusCode.OK, message = "")
+    post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETS_ID}") {
+        aktivitetService.fullførAktivitet(aktivitetService.hentValtgAktivitet(call.virksomhet, call.aktivitetsId))
+        call.respond(HttpStatusCode.OK)
     }
 }
 
 val ApplicationCall.virksomhet get() = Virksomhet(this.orgnr)
 val ApplicationCall.orgnr get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter 'orgnr'")
+val ApplicationCall.aktivitetsId get() = this.parameters[AKTIVITETS_ID]?.toInt() ?: throw UgyldigForespørselException("Manglende parameter 'aktivitetsId'")
 

@@ -6,15 +6,10 @@ import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.javatime.timestamp
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import java.time.Instant
-import java.util.UUID
 
 private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val aktivitetsmalID = varchar(name = "aktivitetsmal_id", length = 45)
@@ -56,11 +51,11 @@ class AktivitetRepository {
         }.resultedValues!!.first())
     }
 
-    fun fullfør(aktivitetId: Int, orgnr: String) {
+    fun fullfør(valgtAktivitet: ValgtAktivitet) {
         transaction {
             ValgtAktivitetTabell
                 .update(where = {
-                    ValgtAktivitetTabell.id eq aktivitetId and (ValgtAktivitetTabell.virksomhetsnummer eq orgnr)
+                    ValgtAktivitetTabell.id eq valgtAktivitet.id and (ValgtAktivitetTabell.virksomhetsnummer eq valgtAktivitet.valgtAv.virksomhet.orgnr)
                 }) {
                     it[fullført] = true
                     it[fullførtTidspunkt] = Instant.now()
@@ -68,6 +63,10 @@ class AktivitetRepository {
         }
     }
 
-    fun hentFullførteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
-        hentValgteAktiviteterForVirksomhet(virksomhet).filter { it.fullført }
+    fun hentValgtAktivitet(virksomhet: Virksomhet, aktivitetsId: Int): ValgtAktivitet =
+        transaction {
+            ValgtAktivitetTabell.select {
+                ValgtAktivitetTabell.virksomhetsnummer eq virksomhet.orgnr and (ValgtAktivitetTabell.id eq aktivitetsId)
+            }.map(ValgtAktivitetTabell::tilValgtAktivitet).single()
+        }
 }
