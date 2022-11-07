@@ -8,7 +8,3 @@ class ArbeidsgiverRepresentant(val fnr: String, val virksomhet: Virksomhet){
         orgnr = virksomhet.orgnr
     )
 }
-
-
-val enVirksomhet = Virksomhet("811076732")
-val enArbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678912", virksomhet = enVirksomhet)
