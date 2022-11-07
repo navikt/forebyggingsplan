@@ -5,6 +5,7 @@ import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.withToken
 import enVirksomhet
+import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -25,7 +26,7 @@ internal class AuthenticationTest {
             val response =
                 aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
             response.status shouldBe HttpStatusCode.OK
-            response.body<List<ValgtAktivitetDTO>>().size shouldBe 1
+            response.body<List<ValgtAktivitetDTO>>() shouldHaveAtLeastSize 1
         }
     }
 
