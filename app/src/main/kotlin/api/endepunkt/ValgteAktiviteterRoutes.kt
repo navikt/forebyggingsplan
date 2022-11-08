@@ -33,9 +33,11 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     }
 
     get("/$VALGTE_PATH/{$ORGNR}/{$AKTIVITETS_ID}") {
-        call.respond(aktivitetService.hentValgtAktivitet(
-            virksomhet = call.virksomhet,
-            aktivitetsId = call.aktivitetsId).tilDto()
+        call.respond(
+            aktivitetService.hentValgtAktivitet(
+                virksomhet = call.virksomhet,
+                aktivitetsId = call.aktivitetsId
+            ).tilDto()
         )
     }
 }
@@ -43,18 +45,13 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     post("/$FULLFØR_PATH/{$ORGNR}") {
-        println("fulførteAktiviteter...")
         val body = call.receive<FullførValgtAktivitetDTO>()
-        println("fulførteAktiviteter...2")
         val virksomhet = call.virksomhet
-        println("fulførteAktiviteter...3")
         aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(virksomhet, body.aktivitetsId))
-        println("fulførteAktiviteter...4")
         val hentValgtAktivitet = aktivitetService.hentValgtAktivitet(
             virksomhet = virksomhet,
             aktivitetsId = body.aktivitetsId
         )
-        println("fulførteAktiviteter...5")
         call.respond(
             hentValgtAktivitet.tilDto()
         )
@@ -62,6 +59,9 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
 }
 
 val ApplicationCall.virksomhet get() = Virksomhet(this.orgnr)
-val ApplicationCall.orgnr get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter 'orgnr'")
-val ApplicationCall.aktivitetsId get() = this.parameters[AKTIVITETS_ID]?.toInt() ?: throw UgyldigForespørselException("Manglende parameter 'aktivitetsId'")
+val ApplicationCall.orgnr
+    get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter 'orgnr'")
+val ApplicationCall.aktivitetsId
+    get() = this.parameters[AKTIVITETS_ID]?.toInt()
+        ?: throw UgyldigForespørselException("Manglende parameter 'aktivitetsId'")
 
