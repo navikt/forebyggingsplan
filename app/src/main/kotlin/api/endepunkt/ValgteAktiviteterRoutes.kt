@@ -1,6 +1,7 @@
 package api.endepunkt
 
 import AktivitetService
+import api.dto.FullførValgtAktivitetDTO
 import api.dto.OpprettValgtAktivitetDTO
 import domene.Aktivitetsmal
 import domene.ArbeidsgiverRepresentant
@@ -12,16 +13,17 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.Json
 
 const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
 const val VALGTE_PATH = "valgteaktiviteter"
-const val FULLFØRTE_PATH = "fullforteaktiviteter"
+const val FULLFØR_PATH = "fullfor"
 
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
-    post("/$VALGTE_PATH") {
+    post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
-        val aktivitet = ArbeidsgiverRepresentant(fnr = "", virksomhet = Virksomhet(orgnr = body.orgnr))
+        val aktivitet = ArbeidsgiverRepresentant(fnr = "", virksomhet = Virksomhet(orgnr = call.orgnr))
             .velgAktivitet(aktivitetsmal = Aktivitetsmal(id = body.aktivitetsmalId))
         call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
     }
@@ -40,11 +42,21 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
 
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
-    post("/$VALGTE_PATH/{$ORGNR}/$FULLFØRTE_PATH/{$AKTIVITETS_ID}") {
-        aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(call.virksomhet, call.aktivitetsId))
-        call.respond(aktivitetService.hentValgtAktivitet(
-            virksomhet = call.virksomhet,
-            aktivitetsId = call.aktivitetsId).tilDto()
+    post("/$FULLFØR_PATH/{$ORGNR}") {
+        println("fulførteAktiviteter...")
+        val body = call.receive<FullførValgtAktivitetDTO>()
+        println("fulførteAktiviteter...2")
+        val virksomhet = call.virksomhet
+        println("fulførteAktiviteter...3")
+        aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(virksomhet, body.aktivitetsId))
+        println("fulførteAktiviteter...4")
+        val hentValgtAktivitet = aktivitetService.hentValgtAktivitet(
+            virksomhet = virksomhet,
+            aktivitetsId = body.aktivitetsId
+        )
+        println("fulførteAktiviteter...5")
+        call.respond(
+            hentValgtAktivitet.tilDto()
         )
     }
 }

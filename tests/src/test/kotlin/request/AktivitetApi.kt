@@ -1,6 +1,6 @@
 package request
 
-import api.endepunkt.FULLFØRTE_PATH
+import api.endepunkt.FULLFØR_PATH
 import api.endepunkt.ORGANISASJONER_PATH
 import api.endepunkt.VALGTE_PATH
 import container.helper.TestContainerHelper.Companion.performGet
@@ -22,13 +22,12 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
         orgnr: String,
         block: HttpRequestBuilder.() -> Unit = {}
     ) =
-        forebyggingsplanContainer.performPost(VALGTE_PATH) {
+        forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr") {
             apply(block)
             setBody(
                 """
                 {
-                    "aktivitetsmalId": "$aktivitetsmalId",
-                    "orgnr": "$orgnr"
+                    "aktivitetsmalId": "$aktivitetsmalId"
                 }
             """.trimIndent()
             )
@@ -37,7 +36,17 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
     internal suspend fun hentVirksomheter(block: HttpRequestBuilder.() -> Unit = {}) =
         forebyggingsplanContainer.performGet(ORGANISASJONER_PATH, block)
 
-    internal suspend fun fullførAktivitet(id: Int, orgnr: String, block: HttpRequestBuilder.() -> Unit) =
-        forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr/$FULLFØRTE_PATH/$id", block = block)
+    internal suspend fun fullførAktivitet(id: Int, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) =
+        forebyggingsplanContainer.performPost("$FULLFØR_PATH/$orgnr") {
+            apply(block)
+            setBody(
+                """
+                    {
+                        "aktivitetsId": $id
+                    }
+                """.trimIndent()
+            )
+        }
 }
 

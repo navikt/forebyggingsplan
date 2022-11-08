@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OpprettValgtAktivitetDTO(
     val aktivitetsmalId: String,
-    val orgnr: String
 )
 
 @Serializable
