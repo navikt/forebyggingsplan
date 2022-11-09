@@ -36,14 +36,15 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
     internal suspend fun hentVirksomheter(block: HttpRequestBuilder.() -> Unit = {}) =
         forebyggingsplanContainer.performGet(ORGANISASJONER_PATH, block)
 
-    internal suspend fun fullførAktivitet(id: Int, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    internal suspend fun fullførAktivitet(aktivitetsId: Int?, aktivitetsmalId: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
     ) =
         forebyggingsplanContainer.performPost("$FULLFØR_PATH/$orgnr") {
             apply(block)
             setBody(
                 """
                     {
-                        "aktivitetsId": $id
+                        "aktivitetsId": $aktivitetsId
+                        "aktivitetsmalId": "$aktivitetsmalId"
                     }
                 """.trimIndent()
             )

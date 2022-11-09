@@ -13,7 +13,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.Json
+import io.ktor.util.pipeline.PipelineContext
 
 const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
@@ -23,8 +23,7 @@ const val FULLFØR_PATH = "fullfor"
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
-        val aktivitet = ArbeidsgiverRepresentant(fnr = "", virksomhet = Virksomhet(orgnr = call.orgnr))
-            .velgAktivitet(aktivitetsmal = Aktivitetsmal(id = body.aktivitetsmalId))
+        val aktivitet = velgAktivitet(body.aktivitetsmalId)
         call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
     }
 
@@ -42,18 +41,31 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     }
 }
 
+private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
+    aktivitetsmalId: String,
+    fullført: Boolean = false,
+) = ArbeidsgiverRepresentant(fnr = "", virksomhet = Virksomhet(orgnr = call.orgnr))
+    .velgAktivitet(fullført = fullført, aktivitetsmal = Aktivitetsmal(id = aktivitetsmalId))
+
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     post("/$FULLFØR_PATH/{$ORGNR}") {
         val body = call.receive<FullførValgtAktivitetDTO>()
         val virksomhet = call.virksomhet
-        aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(virksomhet, body.aktivitetsId))
-        val hentValgtAktivitet = aktivitetService.hentValgtAktivitet(
-            virksomhet = virksomhet,
-            aktivitetsId = body.aktivitetsId
-        )
-        call.respond(
-            hentValgtAktivitet.tilDto()
+        if (body.aktivitetsId != null) {
+            aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(virksomhet, body.aktivitetsId))
+            return@post call.respond(
+                aktivitetService.hentValgtAktivitet(
+                    virksomhet = virksomhet,
+                    aktivitetsId = body.aktivitetsId).tilDto()
+            )
+        }
+        val aktivitet = aktivitetService.lagreAktivitet(velgAktivitet(body.aktivitetsmalId, fullført = true))
+        return@post call.respond(
+            aktivitetService.hentValgtAktivitet(
+                virksomhet = virksomhet,
+                aktivitetsId = aktivitet.id
+            ).tilDto()
         )
     }
 }

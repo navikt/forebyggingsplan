@@ -5,10 +5,15 @@ import container.helper.TestContainerHelper
 import container.helper.withToken
 import enVirksomhet
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.ktor.client.call.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.minus
 import request.AktivitetApi
 import kotlin.test.Test
 
@@ -66,17 +71,35 @@ class AktivitetContainerTest {
     }
 
     @Test
-    fun `skal kunne sette en aktivitet til fullført`() {
+    fun `skal kunne sette en valgt aktivitet til fullført`() {
         runBlocking {
             val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
             aktivitet.fullført shouldBe false
+            aktivitet.fullførtTidspunkt shouldBe null
 
             val aktivitetEtterFullfør = aktivitetApi.fullførAktivitet(
-                id = aktivitet.id,
+                aktivitetsId = aktivitet.id,
+                aktivitetsmalId = aktivitet.aktivitetsmalId,
                 orgnr = aktivitet.valgtAv.orgnr,
                 block = withToken()).body<ValgtAktivitetDTO>()
             aktivitetEtterFullfør.fullført shouldBe true
+            aktivitetEtterFullfør.fullførtTidspunkt shouldNotBe null
+            aktivitetEtterFullfør.fullførtTidspunkt!! shouldBeGreaterThan Clock.System.now().minus(1, DateTimeUnit.MINUTE)
+        }
+    }
+
+    @Test
+    fun `skal kunne sette en ny aktivitet til fullført`() {
+        runBlocking {
+            val aktivitetEtterFullfør = aktivitetApi.fullførAktivitet(
+                aktivitetsId = null,
+                aktivitetsmalId = "123",
+                orgnr = enVirksomhet.orgnr,
+                block = withToken()).body<ValgtAktivitetDTO>()
+            aktivitetEtterFullfør.fullført shouldBe true
+            aktivitetEtterFullfør.fullførtTidspunkt shouldNotBe null
+            aktivitetEtterFullfør.fullførtTidspunkt!! shouldBeGreaterThan Clock.System.now().minus(1, DateTimeUnit.MINUTE)
         }
     }
 
@@ -88,7 +111,7 @@ class AktivitetContainerTest {
 
             aktivitet.fullført shouldBe false
 
-            aktivitetApi.fullførAktivitet(id = aktivitet.id, orgnr = "999999999", block = withToken())
+            aktivitetApi.fullførAktivitet(aktivitetsId = aktivitet.id, aktivitetsmalId = aktivitet.aktivitetsmalId, orgnr = "999999999", block = withToken())
                 .status shouldBe HttpStatusCode.Forbidden
         }
     }
