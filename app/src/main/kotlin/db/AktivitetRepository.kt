@@ -5,14 +5,18 @@ import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
+import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toKotlinLocalDate
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
 private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val aktivitetsmalID = varchar(name = "aktivitetsmal_id", length = 45)
+    val frist = date("frist").nullable()
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
     val fødselsnummer = varchar(name = "fødselsnummer", 11)
     val fullført = bool("fullfoert")
@@ -23,6 +27,7 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
         ArbeidsgiverRepresentant(fnr = it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
             .velgAktivitet(
                 aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID]),
+                frist = it[frist]?.toKotlinLocalDate(),
                 id = it[id].value,
                 fullført = it[fullført],
                 fullførtTidspunkt = it[fullførtTidspunkt],
@@ -41,6 +46,7 @@ class AktivitetRepository {
     fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet) = transaction {
         ValgtAktivitetTabell.tilValgtAktivitet(ValgtAktivitetTabell.insert {
             it[aktivitetsmalID] = valgtAktivitet.aktivitetsmal.id
+            it[frist] = valgtAktivitet.frist?.toJavaLocalDate()
             it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
             // TODO: Skal vi egentlig lagre fødselsnummer?
             it[fødselsnummer] = valgtAktivitet.valgtAv.fnr

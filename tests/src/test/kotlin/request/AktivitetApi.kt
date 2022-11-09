@@ -8,6 +8,7 @@ import container.helper.TestContainerHelper.Companion.performPost
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.setBody
 import org.testcontainers.containers.GenericContainer
+import kotlinx.datetime.LocalDate
 
 class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
 
@@ -19,6 +20,7 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
 
     internal suspend fun velgAktivitet(
         aktivitetsmalId: String,
+        frist: LocalDate? = null,
         orgnr: String,
         block: HttpRequestBuilder.() -> Unit = {}
     ) =
@@ -28,6 +30,7 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
                 """
                 {
                     "aktivitetsmalId": "$aktivitetsmalId"
+                    "frist": $frist
                 }
             """.trimIndent()
             )

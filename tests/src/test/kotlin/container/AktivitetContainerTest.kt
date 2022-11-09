@@ -5,6 +5,7 @@ import container.helper.TestContainerHelper
 import container.helper.withToken
 import enVirksomhet
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -14,7 +15,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
+import kotlinx.datetime.toKotlinLocalDate
 import request.AktivitetApi
+import java.time.LocalDate
 import kotlin.test.Test
 
 class AktivitetContainerTest {
@@ -49,7 +52,7 @@ class AktivitetContainerTest {
     }
 
     @Test
-    fun `skal kunne velge en aktivitet`() {
+    fun `skal kunne velge en aktivitet uten frist`() {
         runBlocking {
             val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
@@ -59,6 +62,24 @@ class AktivitetContainerTest {
                     .body<ValgtAktivitetDTO>()
 
             aktivitet shouldBe hentetAktivitet
+            aktivitet.frist shouldBe null
+        }
+    }
+
+    @Test
+    fun `skal kunne velge en aktivitet med frist`() {
+        runBlocking {
+            val idag = LocalDate.now().toKotlinLocalDate()
+            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", frist = idag, orgnr = enVirksomhet.orgnr, block = withToken())
+                .body<ValgtAktivitetDTO>()
+
+            val hentetAktivitet =
+                aktivitetApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
+                    .body<ValgtAktivitetDTO>()
+
+            aktivitet shouldBe hentetAktivitet
+            aktivitet.frist shouldNotBe null
+            aktivitet.frist!! shouldBeEqualComparingTo idag
         }
     }
 

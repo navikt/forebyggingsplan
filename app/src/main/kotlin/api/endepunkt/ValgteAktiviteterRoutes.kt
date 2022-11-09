@@ -14,6 +14,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.PipelineContext
+import kotlinx.datetime.LocalDate
 
 const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
@@ -23,7 +24,7 @@ const val FULLFØR_PATH = "fullfor"
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
-        val aktivitet = velgAktivitet(body.aktivitetsmalId)
+        val aktivitet = velgAktivitet(body.aktivitetsmalId, frist = body.frist)
         call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
     }
 
@@ -43,9 +44,10 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
 
 private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
     aktivitetsmalId: String,
+    frist: LocalDate? = null,
     fullført: Boolean = false,
 ) = ArbeidsgiverRepresentant(fnr = "", virksomhet = Virksomhet(orgnr = call.orgnr))
-    .velgAktivitet(fullført = fullført, aktivitetsmal = Aktivitetsmal(id = aktivitetsmalId))
+    .velgAktivitet(aktivitetsmal = Aktivitetsmal(id = aktivitetsmalId), frist = frist, fullført = fullført)
 
 
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
