@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FullførValgtAktivitetDTO (
-    val aktivitetsId: Int?,
+    val aktivitetsId: Int? = null,
     val aktivitetsmalId: String,
 )
