@@ -1,6 +1,6 @@
-FROM eclipse-temurin:17-alpine
-COPY app/build/libs/app-all.jar app.jar
+FROM gcr.io/distroless/java17-debian11:latest
 ENV TZ="Europe/Oslo"
-RUN addgroup -S app && adduser -S -G app app
-USER app
-CMD ["java", "-jar", "app.jar"]
+ENV JAVA_TOOL_OPTIONS="-XX:+UseParallelGC -XX:MaxRAMPercentage=75"
+COPY app/build/libs/app-all.jar /app/app.jar
+WORKDIR /app
+CMD ["app.jar"]
