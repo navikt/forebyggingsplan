@@ -2,7 +2,7 @@ package plugins
 
 import Miljø
 import api.endepunkt.ORGNR
-import api.hentVirksomheterForBruker
+import api.hentVirksomheterSomBrukerHarRiktigRolleI
 import auth.TokenExchanger
 import http.hentToken
 import http.tokenSubject
@@ -20,7 +20,7 @@ val AuthorizationPlugin = createRouteScopedPlugin(
             val token = call.request.hentToken()
 
             val virksomheterVedkommendeHarTilgangTil =
-                hentVirksomheterForBruker(
+                hentVirksomheterSomBrukerHarRiktigRolleI(
                     token = TokenExchanger.exchangeToken(
                         token = token,
                         audience = Miljø.altinnRettigheterProxyClientId
