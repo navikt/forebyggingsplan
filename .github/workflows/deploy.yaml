@@ -44,32 +44,20 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest,${{ env.IMAGE }}
 
-  deployTilDev:
+  deploy:
+    strategy:
+      matrix:
+        cluster: [dev, prod]
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/altinn-rettigheter'
-    name: Deploy app to dev
+    name: Deploy app to ${{ matrix.cluster }}
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Deploy to DEV
+      - name: Deploy to ${{ matrix.cluster }}
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
+          CLUSTER: ${{ matrix.cluster }}-gcp
           RESOURCE: .nais/deploy.yaml
-          VARS: .nais/dev.yaml
-
-  deployTilProd:
-    if: github.ref == 'refs/heads/main'
-    name: Deploy app to prod
-    needs: deployTilDev
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to PROD
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          "APIKEY": ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          "CLUSTER": prod-gcp
-          "RESOURCE": .nais/deploy.yaml
-          VARS: .nais/prod.yaml
+          VARS: .nais/${{ matrix.cluster }}.yaml
