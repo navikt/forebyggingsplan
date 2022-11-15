@@ -8,7 +8,9 @@ import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
-import exceptions.UgyldigForespørselException
+import http.aktivitetsId
+import http.orgnr
+import http.virksomhet
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -71,11 +73,4 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
         )
     }
 }
-
-val ApplicationCall.virksomhet get() = Virksomhet(this.orgnr)
-val ApplicationCall.orgnr
-    get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter 'orgnr'")
-val ApplicationCall.aktivitetsId
-    get() = this.parameters[AKTIVITETS_ID]?.toInt()
-        ?: throw UgyldigForespørselException("Manglende parameter 'aktivitetsId'")
 
