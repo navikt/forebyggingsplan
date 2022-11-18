@@ -1,2 +1,3 @@
 altinnRettighetServiceEdition: 2
 altinnRettigheterProxyClientId: "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
+dbTier: db-custom-2-3840
