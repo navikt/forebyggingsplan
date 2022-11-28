@@ -14,4 +14,10 @@ internal object Miljø {
     val dbPort: String by lazy { System.getenv("DB_PORT") }
     val dbUser: String by lazy { System.getenv("DB_USERNAME") }
     val dbPassword: String by lazy { System.getenv("DB_PASSWORD") }
+
+    val cluster: String by lazy { System.getenv("NAIS_CLUSTER_NAME") }
+}
+
+enum class Clusters(val clusterId: String) {
+    PROD_GCP("prod-gcp"), DEV_GCP("dev-gcp"), LOKAL("local")
 }

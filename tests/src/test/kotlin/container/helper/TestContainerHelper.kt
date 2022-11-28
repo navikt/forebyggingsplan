@@ -92,6 +92,7 @@ internal class TestContainerHelper {
                     "TZ" to "Europe/Oslo",
                     "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
                     "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${altinnMock.port()}/altinn",
+                    "NAIS_CLUSTER_NAME" to "local"
                 ))
                 .withExposedPorts(8080, 5005)
                 .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer")

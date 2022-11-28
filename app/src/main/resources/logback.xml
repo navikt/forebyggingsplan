@@ -4,16 +4,16 @@
     </appender>
 
     <appender name="auditLogger" class="com.papertrailapp.logback.Syslog4jAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-        <pattern>%d{MMM dd yyyy HH:mm:ss.SSS zzz} %level %msg%n</pattern>
-    </layout>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{MMM dd yyyy HH:mm:ss.SSS zzz} %level %msg%n</pattern>
+        </layout>
 
-    <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig">
-        <host>audit.nais</host>
-        <port>6514</port>
-        <ident>forebyggingsplan</ident>
-        <maxMessageLength>128000</maxMessageLength>
-    </syslogConfig>
+        <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig">
+            <host>audit.nais</host>
+            <port>6514</port>
+            <ident>forebyggingsplan</ident>
+            <maxMessageLength>128000</maxMessageLength>
+        </syslogConfig>
     </appender>
 
     <root level="INFO">
@@ -21,7 +21,7 @@
     </root>
     <logger name="io.netty" level="INFO"/>
     <logger level="INFO" name="auditLogger" additivity="false">
-        <appender-ref ref="auditLogger" />
+        <appender-ref ref="auditLogger"/>
     </logger>
 </configuration>
 

@@ -45,6 +45,7 @@ dependencies {
     // Logging
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
+    implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
     // Serialisering av dato-objekter
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
