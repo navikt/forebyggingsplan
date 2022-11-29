@@ -38,7 +38,8 @@ internal class TestContainerHelper {
                     .willReturn(
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")
-                            .withBody("""[
+                            .withBody(
+                                """[
                                 {
                                     "Name": "BALLSTAD OG HAMARØY",
                                      "Type": "Business",
@@ -47,7 +48,8 @@ internal class TestContainerHelper {
                                      "OrganizationForm": "BEDR",
                                      "Status": "Active"
                                 }
-                            ]""".trimMargin())
+                            ]""".trimMargin()
+                            )
                     )
             )
 
@@ -60,21 +62,24 @@ internal class TestContainerHelper {
         }
 
         internal val forebyggingsplanContainer: GenericContainer<*> =
-            GenericContainer(ImageFromDockerfile()
-                .withDockerfile(Path("../Dockerfile")))
+            GenericContainer(
+                ImageFromDockerfile()
+                    .withDockerfile(Path("../Dockerfile"))
+            )
                 .withNetwork(network)
                 .dependsOn(authServer.container, database.container)
-                .withEnv(mapOf(
-                    "DB_HOST" to database.postgresNetworkAlias,
-                    "DB_DATABASE" to database.dbName,
-                    "DB_PORT" to "5432",
-                    "DB_USERNAME" to database.container.username,
-                    "DB_PASSWORD" to database.container.password,
-                    "TOKEN_X_CLIENT_ID" to "hei",
-                    "TOKEN_X_ISSUER" to "http://authserver:6969/default",
-                    "TOKEN_X_JWKS_URI" to "http://authserver:6969/default/jwks",
-                    "TOKEN_X_TOKEN_ENDPOINT" to "http://authserver:6969/default/token",
-                    "TOKEN_X_PRIVATE_JWK" to """{
+                .withEnv(
+                    mapOf(
+                        "DB_HOST" to database.postgresNetworkAlias,
+                        "DB_DATABASE" to database.dbName,
+                        "DB_PORT" to "5432",
+                        "DB_USERNAME" to database.container.username,
+                        "DB_PASSWORD" to database.container.password,
+                        "TOKEN_X_CLIENT_ID" to "hei",
+                        "TOKEN_X_ISSUER" to "http://authserver:6969/default",
+                        "TOKEN_X_JWKS_URI" to "http://authserver:6969/default/jwks",
+                        "TOKEN_X_TOKEN_ENDPOINT" to "http://authserver:6969/default/token",
+                        "TOKEN_X_PRIVATE_JWK" to """{
                                                     "p": "1sKc9CQFXJ5q14wGjk6bAhIaWBiM2ZJHNCLcME0P60q_dNaC7osoj0-zDTwUWdiREIiI2y3DAArAGNlhyZqZwDNumL08_pM-ePXVoqiZWZ87Ch8g8csx27yU_AsDj6h64qRpV07x_TOzXRJdP5iQm_IO3qjyul9qlnXyd2X9h3c",
                                                     "kty": "RSA",
                                                     "q": "xkS_rKKUfowRYmHfha4birMJMvrRZEBmvOPs9gerRUyIy32R36UT5f2B8xwycExivtZpnlz-YgBrglIpWWXX1gUtgLb4dV_YQNE4rABQjWoa62NJeCeaL5mOoVJ-6Xx2mgt9Tb9JdZVyfQuC9-s74ImgKyYaN8y7LcW7EqxNa60",
@@ -88,15 +93,18 @@ internal class TestContainerHelper {
                                                     "dq": "Ccu_xKHLwGzfNwMq7gnqJnIuFCy8R72-1bpVLNq4JZZgc91iZbBcSVK7Ju3PuCiuAEvLsB1cHC91IF062cXkYhijZOalY_c2Ug2ERUtGr5X8eoDPUnZyccOefm37A0I5Aedra3n2AS8_FtqIwAMJVFC4bylUxkkBPoO0eHm24Yk",
                                                     "n": "plQx4or1C_Xany-wjM7mPHB4CAJPk3oOEdDSKpTwJ2dzGji5tEq7dUxExyhFN8f0PUjBjXyPph0gmDWaJG64fnhSSwVI-8Tdf2PppuK4rdCtWSPLgZ_DJ2DruxHgeXgwvJnX1HRfqhJF2p4ClkRUiVXZKFOhRPMGVgg18fnV9fXz5C4JacP_fmh498ktEohwcL3Pbv5DI_po_i0OiyF_M-9Iic3Ss80j22hs1wsNBGEMHvofWs7sl3ufwxmUCIstnDNSat840-n21Q4GV2v4L2kpROUw6l4ZmqZxoGl7eRSDS_VC5rPQoQEZYfyCiq6o1W5p9UXnoQin1zn0lr5Iaw"
                                                 }""".trimIndent(),
-                    "ALTINN_RETTIGHETER_PROXY_CLIENT_ID" to "hei",
-                    "TZ" to "Europe/Oslo",
-                    "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
-                    "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${altinnMock.port()}/altinn",
-                    "NAIS_CLUSTER_NAME" to "local"
-                ))
+                        "ALTINN_RETTIGHETER_PROXY_CLIENT_ID" to "hei",
+                        "TZ" to "Europe/Oslo",
+                        "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
+                        "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${altinnMock.port()}/altinn",
+                        "NAIS_CLUSTER_NAME" to "local"
+                    )
+                )
                 .withExposedPorts(8080, 5005)
-                .withLogConsumer(Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer")
-                    .withSeparateOutputStreams())
+                .withLogConsumer(
+                    Slf4jLogConsumer(log).withPrefix("forebyggingsplanContainer")
+                        .withSeparateOutputStreams()
+                )
                 .withCreateContainerCmdModifier { cmd -> cmd.withName("forebyggingsplan-${System.currentTimeMillis()}") }
                 .waitingFor(HttpWaitStrategy().forPort(8080).forPath("/internal/isReady")).apply {
                     start()
@@ -129,7 +137,8 @@ internal class TestContainerHelper {
             subject: String = "123",
             audience: String = "hei",
             claims: Map<String, String> = mapOf(
-                "acr" to "Level4"
+                "acr" to "Level4",
+                "pid" to subject
             ),
         ) = authServer.issueToken(
             subject = subject,
