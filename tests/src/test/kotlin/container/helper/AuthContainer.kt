@@ -66,6 +66,7 @@ internal class AuthContainer(network: Network = Network.newNetwork()) {
     }
 }
 
-internal fun withToken(): HttpRequestBuilder.() -> Unit = {
+internal fun withToken(block: HttpRequestBuilder.() -> Unit = {}): HttpRequestBuilder.() -> Unit = {
+    apply(block)
     header(HttpHeaders.Authorization, "Bearer ${TestContainerHelper.accessToken().serialize()}")
 }

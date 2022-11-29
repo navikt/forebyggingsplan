@@ -63,7 +63,7 @@ val AuthorizationPlugin = createRouteScopedPlugin(
 }
 
 
-private enum class AuditType {
+enum class AuditType {
     access, update, create, delete
 }
 
