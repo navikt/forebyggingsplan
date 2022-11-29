@@ -95,23 +95,23 @@ private fun ApplicationCall.auditLog(
     val severity = if (orgnummer.isNullOrEmpty()) "WARN" else "INFO"
     val appIdentifikator = "forebyggingsplan"
     val virksomheterSomBrukerRepresenterer = virksomheter.map { it.organizationNumber }.joinToString()
-    val logstring = "CEF:0|$appIdentifikator|auditLog|1.0|audit:${auditType.name}|$appIdentifikator|$severity|end=${System.currentTimeMillis()} " +
-            "suid=$fnr " +
-            (orgnummer?.let { "duid=$it " } ?: "") +
-            "sproc=${UUID.randomUUID()} " +
-            "requestMethod=$method " +
-            "request=${
-                uri.substring(
-                    0,
-                    uri.length.coerceAtMost(70)
-                )
-            } " +
-            "flexString1Label=Decision " +
-            "flexString1=${tillat.tillat} " +
-            "flexString2Label=Beskrivelse " +
-            "flexString2=${beskrivelse} " +
-            "flexString3Label=VirksomheterSomBrukerRepresenterer " +
-            "flexString3=${virksomheterSomBrukerRepresenterer} "
+    val logstring =
+        "CEF:0|$appIdentifikator|auditLog|1.0|audit:${auditType.name}|Sporingslogg|$severity|end=${System.currentTimeMillis()} " +
+                "suid=$fnr " +
+                (orgnummer?.let { "duid=$it " } ?: "") +
+                "sproc=${UUID.randomUUID()} " +
+                "requestMethod=$method " +
+                "request=${
+                    uri.substring(
+                        0,
+                        uri.length.coerceAtMost(70)
+                    )
+                } " +
+                "flexString1Label=Decision " +
+                "flexString1=${tillat.tillat} " +
+                "flexString2Label=VirksomheterSomBrukerRepresenterer " +
+                "flexString2=${virksomheterSomBrukerRepresenterer} " +
+                "msg=${beskrivelse} "
 
     when (Miljø.cluster) {
         PROD_GCP.clusterId -> auditLog.info(logstring)
