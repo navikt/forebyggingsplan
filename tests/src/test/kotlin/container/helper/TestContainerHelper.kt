@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import io.kotest.matchers.string.shouldContain
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
@@ -103,6 +104,8 @@ internal class TestContainerHelper {
                 }
 
         private fun GenericContainer<*>.buildUrl(url: String) = "http://${this.host}:${this.getMappedPort(8080)}/$url"
+
+        infix fun GenericContainer<*>.shouldContainLog(regex: Regex) = logs shouldContain regex
 
         private suspend fun GenericContainer<*>.performRequest(
             url: String,
