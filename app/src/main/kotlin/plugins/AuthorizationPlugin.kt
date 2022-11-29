@@ -54,7 +54,7 @@ val AuthorizationPlugin = createRouteScopedPlugin(
                     beskrivelse = "$fnr har gjort følgende mot organisajonsnummer $orgnr " +
                             "path: ${call.request.path()} " +
                             "arg: ${call.request.queryParameters.toMap()} " +
-                            "body: ${call.request.pipeline.attributes.allKeys}",
+                            "body: ${call.receiveText()}",
                     virksomheter = virksomheterVedkommendeHarTilgangTil
                 )
             }
