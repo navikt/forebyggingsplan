@@ -22,8 +22,23 @@ class AuditlogTest {
         }
     }
 
-    private suspend fun hentValgteAktiviteterForVirksomhet() = aktivitetApi.hentValgteAktiviteterForVirksomhet(
-        orgnr = enVirksomhet.orgnr,
+    @Test
+    fun `auditlogger feil ved manglende orgnummer`() {
+        runBlocking {
+            hentValgteAktiviteterForVirksomhet("null").status shouldBe HttpStatusCode.BadRequest
+            forebyggingsplanContainer shouldContainLog "\\?audit=1".toRegex()
+        }
+    }
+    @Test
+    fun `auditlogger feil ved feil i orgnummer`() {
+        runBlocking {
+            hentValgteAktiviteterForVirksomhet("1234").status shouldBe HttpStatusCode.BadRequest
+            forebyggingsplanContainer shouldContainLog "ugyldig organisjasjonsnummer 1234 i requesten fra bruker ".toRegex()
+        }
+    }
+
+    private suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String = enVirksomhet.orgnr) = aktivitetApi.hentValgteAktiviteterForVirksomhet(
+        orgnr = orgnr,
         block = withToken() { parameter("audit", "1") })
 
 //    private fun auditLog(

@@ -17,7 +17,7 @@ fun ApplicationRequest.tokenSubject() = call.principal<JWTPrincipal>()?.get("pid
 
 val ApplicationCall.virksomhet get() = Virksomhet(this.orgnr)
 val ApplicationCall.orgnr
-    get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter 'orgnr'")
+    get() = this.parameters[ORGNR] ?: throw UgyldigForespørselException("Manglende parameter '$ORGNR'")
 val ApplicationCall.aktivitetsId
     get() = this.parameters[AKTIVITETS_ID]?.toInt()
         ?: throw UgyldigForespørselException("Manglende parameter 'aktivitetsId'")

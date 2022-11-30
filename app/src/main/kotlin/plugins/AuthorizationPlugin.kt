@@ -1,6 +1,7 @@
 package plugins
 
 import Miljø
+import api.endepunkt.ORGNR
 import api.hentVirksomheterSomBrukerHarRiktigRolleI
 import auth.TokenExchanger
 import exceptions.UgyldigForespørselException
@@ -28,11 +29,15 @@ val AuthorizationPlugin = createRouteScopedPlugin(
                     ), subject = fnr
                 )
 
-            val orgnr: String = try {
-                call.orgnr
-            } catch (e: UgyldigForespørselException) {
+            val orgnr = kotlin.runCatching { call.orgnr }.getOrNull()
+            if (orgnr.isNullOrEmpty()) {
                 call.auditLogVedUkjentOrgnummer(fnr, virksomheterVedkommendeHarTilgangTil)
-                throw e
+                throw UgyldigForespørselException("Manglende parameter '$ORGNR'")
+            }
+
+            if (!orgnr.erEtOrgNummer()) {
+                call.auditLogVedUgyldigOrgnummer(fnr, orgnr, virksomheterVedkommendeHarTilgangTil)
+                throw UgyldigForespørselException("Ugyldig orgnummer '$ORGNR'")
             }
 
             if (virksomheterVedkommendeHarTilgangTil.none { it.organizationNumber == orgnr }) {
@@ -44,6 +49,8 @@ val AuthorizationPlugin = createRouteScopedPlugin(
         }
     }
 }
+
+private fun String.erEtOrgNummer() = this.matches("^[0-9]{9}$".toRegex())
 
 
 

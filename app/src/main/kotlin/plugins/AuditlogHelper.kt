@@ -46,6 +46,19 @@ fun ApplicationCall.auditLogVedUkjentOrgnummer(
     )
 }
 
+fun ApplicationCall.auditLogVedUgyldigOrgnummer(
+    fnr: String,
+    orgnr: String,
+    virksomheter: List<AltinnReportee>,
+) {
+    this.auditLog(
+        fnr = fnr,
+        tillat = Tillat.Nei,
+        beskrivelse = "ugyldig organisjasjonsnummer $orgnr i requesten fra bruker $fnr",
+        virksomheter = virksomheter,
+    )
+}
+
 fun ApplicationCall.auditLogVedIkkeTilgangTilOrg(
     fnr: String,
     orgnr: String,
