@@ -18,14 +18,14 @@ dependencies {
     implementation("io.arrow-kt:arrow-core:1.1.2")
 
     // Testcontainers
-    val testcontainersVersion = "1.17.3"
+    val testcontainersVersion = "1.17.6"
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.33.2")
+    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 
     // Ktor specific
-    val ktor_version = "2.1.0"
+    val ktor_version = "2.1.3"
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     testImplementation("io.ktor:ktor-client-core:$ktor_version")
     testImplementation("io.ktor:ktor-client-cio:$ktor_version")
@@ -34,7 +34,7 @@ dependencies {
 
 
     // Mock-oauth2-server
-    val mockOAuth2ServerVersion = "0.5.1"
+    val mockOAuth2ServerVersion = "0.5.6"
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
 
 }
