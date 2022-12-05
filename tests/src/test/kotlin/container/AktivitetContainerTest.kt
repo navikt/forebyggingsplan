@@ -18,6 +18,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.toKotlinLocalDate
 import request.AktivitetApi
 import java.time.LocalDate
+import java.util.UUID
 import kotlin.test.Test
 
 class AktivitetContainerTest {
@@ -27,9 +28,9 @@ class AktivitetContainerTest {
     fun `skal kunne hente valgte aktiviteter`() {
         runBlocking {
             val aktivitetsIder = listOf(
-                aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+                aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                     .body<ValgtAktivitetDTO>().id,
-                aktivitetApi.velgAktivitet(aktivitetsmalId = "1234", orgnr = enVirksomhet.orgnr, block = withToken())
+                aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                     .body<ValgtAktivitetDTO>().id
             )
             val resultat = aktivitetApi.hentValgteAktiviteterForVirksomhet(
@@ -54,7 +55,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne velge en aktivitet uten frist`() {
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
 
             val hentetAktivitet =
@@ -70,7 +71,7 @@ class AktivitetContainerTest {
     fun `skal kunne velge en aktivitet med frist`() {
         runBlocking {
             val idag = LocalDate.now().toKotlinLocalDate()
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", frist = idag, orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), frist = idag, orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
 
             val hentetAktivitet =
@@ -86,7 +87,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne velge en aktivitet i feil organisasjon`() {
         runBlocking {
-            aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = "999999999", block = withToken())
+            aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = "999999999", block = withToken())
                 .status shouldBe HttpStatusCode.Forbidden
         }
     }
@@ -94,7 +95,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne sette en valgt aktivitet til fullført`() {
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
             aktivitet.fullført shouldBe false
             aktivitet.fullførtTidspunkt shouldBe null
@@ -115,7 +116,7 @@ class AktivitetContainerTest {
         runBlocking {
             val aktivitetEtterFullfør = aktivitetApi.fullførAktivitet(
                 aktivitetsId = null,
-                aktivitetsmalId = "123",
+                aktivitetsmalId = UUID.randomUUID().toString(),
                 orgnr = enVirksomhet.orgnr,
                 block = withToken()).body<ValgtAktivitetDTO>()
             aktivitetEtterFullfør.fullført shouldBe true
@@ -127,7 +128,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne sette en aktivitet til fullført i feil organisasjon`() {
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
 
             aktivitet.fullført shouldBe false

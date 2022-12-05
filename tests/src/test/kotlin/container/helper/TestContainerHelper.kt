@@ -1,5 +1,6 @@
 package container.helper
 
+import api.sanity.SanityForebyggingsplan
 import api.serviceCode
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -31,7 +32,7 @@ internal class TestContainerHelper {
         private val authServer = AuthContainer(network = network)
         private val database = PostgresContainer(network = network)
 
-        private val altinnMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
+        private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
                     .withQueryParam("serviceCode", equalTo(serviceCode))
@@ -50,6 +51,71 @@ internal class TestContainerHelper {
                                      "Status": "Active"
                                 }
                             ]""".trimMargin()
+                            )
+                    )
+            )
+            it.stubFor(
+                WireMock.get(WireMock.urlPathEqualTo("/2022-10-28/data/query/${SanityForebyggingsplan.Dataset.Development.name.lowercase()}"))
+                    .willReturn(
+                        WireMock.ok()
+                            .withHeader(CONTENT_TYPE, "application/json")
+                            .withBody(
+                                """{
+                                    "ms": 710,
+                                    "query": "*[_type == 'Aktivitet' \u0026\u0026 _id == 'f9daa4cb-a432-4945-8436-6f7d3fa32a5d']",
+                                    "result": [
+                                        {
+                                            "_createdAt": "2022-11-30T09:31:05Z",
+                                            "_id": "f9daa4cb-a432-4945-8436-6f7d3fa32a5d",
+                                            "_rev": "3C549LRrvVH6gsnZfS148M",
+                                            "_type": "Aktivitet",
+                                            "_updatedAt": "2022-12-05T08:58:14Z",
+                                            "beskrivelse": "Første aktivitet har en beskrivelse",
+                                            "embeddedInnhold": [
+                                                {
+                                                    "_key": "e3d11e24ce68",
+                                                    "_type": "block",
+                                                    "children": [
+                                                        {
+                                                            "_key": "5ba6295a4490",
+                                                            "_type": "span",
+                                                            "marks": [],
+                                                            "text": "Hei, her er det noe tekst"
+                                                        }
+                                                    ],
+                                                    "markDefs": [],
+                                                    "style": "normal"
+                                                },
+                                                {
+                                                    "_key": "975c816813e3",
+                                                    "_type": "block",
+                                                    "children": [
+                                                        {
+                                                            "_key": "4c0cf96bedfb",
+                                                            "_type": "span",
+                                                            "marks": [],
+                                                            "text": ""
+                                                        }
+                                                    ],
+                                                    "markDefs": [],
+                                                    "style": "normal"
+                                                },
+                                                {
+                                                    "_key": "174b82d2c890",
+                                                    "_type": "seksjon",
+                                                    "seksjonInnhold": []
+                                                }
+                                            ],
+                                            "kategori": {
+                                                "_ref": "d1e19bae-4625-437f-8bba-4ec5d7825272",
+                                                "_type": "reference"
+                                            },
+                                            "maal": "Og et relativt enkelt mål",
+                                            "tittel": "Første aktivitet"
+                                        }
+                                    ]
+                                }
+                                """
                             )
                     )
             )
@@ -97,7 +163,8 @@ internal class TestContainerHelper {
                         "ALTINN_RETTIGHETER_PROXY_CLIENT_ID" to "hei",
                         "TZ" to "Europe/Oslo",
                         "JAVA_TOOL_OPTIONS" to "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
-                        "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${altinnMock.port()}/altinn",
+                        "ALTINN_RETTIGHETER_PROXY_URL" to "http://host.testcontainers.internal:${wireMock.port()}/altinn",
+                        "SANITY_HOST" to "http://host.testcontainers.internal:${wireMock.port()}",
                         "NAIS_CLUSTER_NAME" to "local"
                     )
                 )

@@ -1,5 +1,5 @@
 internal object Miljø {
-    val sanityProjectId: String by lazy { System.getenv("SANITY_PROJECT_ID") ?: "2u7e6oll" }
+    val sanityHost: String by lazy { System.getenv("SANITY_HOST") }
     val tokenxClientId: String by lazy { System.getenv("TOKEN_X_CLIENT_ID") }
     val tokenxIssuer: String by lazy { System.getenv("TOKEN_X_ISSUER") }
     val tokenxJwkPath: String by lazy { System.getenv("TOKEN_X_JWKS_URI") }

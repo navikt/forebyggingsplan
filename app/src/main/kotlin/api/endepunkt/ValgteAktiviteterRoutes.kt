@@ -3,6 +3,7 @@ package api.endepunkt
 import AktivitetService
 import api.dto.FullførValgtAktivitetDTO
 import api.dto.OpprettValgtAktivitetDTO
+import api.sanity.SanityForebyggingsplan
 import domene.Aktivitetsmal
 import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet
@@ -11,22 +12,28 @@ import domene.Virksomhet
 import http.aktivitetsId
 import http.orgnr
 import http.virksomhet
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.datetime.LocalDate
+import java.util.UUID
 
 const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
 const val VALGTE_PATH = "valgteaktiviteter"
 const val FULLFØR_PATH = "fullfor"
 
+private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
+
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
-        val aktivitet = velgAktivitet(body.aktivitetsmalId, frist = body.frist)
+        val aktivitetsmalId = UUID.fromString(body.aktivitetsmalId)
+        if(!sanityForebyggingsplan.eksisterer(aktivitetsmalId)) return@post call.respond(HttpStatusCode.NotFound, "Aktivitetsmal $aktivitetsmalId er ukjent")
+        val aktivitet = velgAktivitet(aktivitetsmalId.toString(), frist = body.frist)
         call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
     }
 
@@ -64,7 +71,9 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
                     aktivitetsId = body.aktivitetsId).tilDto()
             )
         }
-        val aktivitet = aktivitetService.lagreAktivitet(velgAktivitet(body.aktivitetsmalId, fullført = true))
+        val aktivitetsmalId = UUID.fromString(body.aktivitetsmalId)
+        if(!sanityForebyggingsplan.eksisterer(aktivitetsmalId)) return@post call.respond(HttpStatusCode.NotFound, "Aktivitetsmal $aktivitetsmalId er ukjent")
+        val aktivitet = aktivitetService.lagreAktivitet(velgAktivitet(aktivitetsmalId.toString(), fullført = true))
         return@post call.respond(
             aktivitetService.hentValgtAktivitet(
                 virksomhet = virksomhet,

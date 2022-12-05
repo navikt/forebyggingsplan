@@ -53,3 +53,5 @@ spec:
       value: "http://altinn-rettigheter-proxy.arbeidsgiver/altinn-rettigheter-proxy"
     - name: ALTINN_RETTIGHET_SERVICE_EDITION
       value: "{{altinnRettighetServiceEdition}}"
+    - name: SANITY_HOST
+      value: "https://2u7e6oll.api.sanity.io"

@@ -13,6 +13,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import request.AktivitetApi
+import java.util.UUID
 import kotlin.test.Test
 
 internal class AuthenticationTest {
@@ -22,7 +23,7 @@ internal class AuthenticationTest {
     @Test
     fun `happy path - skal få 200 ok ved henting av aktivitet`() {
         runBlocking {
-            aktivitetApi.velgAktivitet(aktivitetsmalId = "123", orgnr = enVirksomhet.orgnr, block = withToken())
+            aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
             val response =
                 aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
             response.status shouldBe HttpStatusCode.OK

@@ -5,13 +5,14 @@ import domene.Virksomhet
 import io.kotest.matchers.date.shouldBeBefore
 import io.kotest.matchers.shouldBe
 import java.time.Instant
+import java.util.UUID
 import kotlin.test.Test
 
 class AktivitetTest {
 
     @Test
     fun `en aktivitet kan opprettes og velges`() {
-        val aktivitetsmal = Aktivitetsmal("123")
+        val aktivitetsmal = Aktivitetsmal(UUID.randomUUID().toString())
         val virksomhet = Virksomhet(orgnr = "123456789")
         val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678911", virksomhet = virksomhet)
 
