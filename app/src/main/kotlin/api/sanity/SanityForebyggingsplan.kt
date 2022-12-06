@@ -1,12 +1,12 @@
 package api.sanity
 
+import Clusters.DEV_GCP
+import Clusters.PROD_GCP
 import Miljø
-import arrow.core.continuations.result
 import http.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.encodeURLParameter
 import kotlinx.serialization.Serializable
@@ -14,7 +14,8 @@ import java.util.UUID
 
 class SanityForebyggingsplan(apiVersion: String) {
     private val dataset = when (Miljø.cluster) {
-        Clusters.PROD_GCP.clusterId -> Dataset.Production
+        PROD_GCP.clusterId -> Dataset.Production
+        DEV_GCP.clusterId -> Dataset.Production
         else -> Dataset.Development
     }
     private val baseUrl = "${Miljø.sanityHost}/v$apiVersion/data/query/${this.dataset.name.lowercase()}?query="
@@ -24,12 +25,7 @@ class SanityForebyggingsplan(apiVersion: String) {
         val response = HttpClient.client.get(baseUrl + query.encodeURLParameter()) {
             accept(ContentType.Application.Json)
         }
-        val resultat = response.body<SanityResponse>().result
-        println("************************************************")
-        println(baseUrl + query.encodeURLParameter())
-        println(resultat.size)
-        println("************************************************")
-        return resultat.isNotEmpty()
+        return response.body<SanityResponse>().result.isNotEmpty()
     }
 
     enum class Dataset {
