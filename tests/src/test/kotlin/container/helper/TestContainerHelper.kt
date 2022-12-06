@@ -55,7 +55,7 @@ internal class TestContainerHelper {
                     )
             )
             it.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/2022-10-28/data/query/${SanityForebyggingsplan.Dataset.Development.name.lowercase()}"))
+                WireMock.get(WireMock.urlPathEqualTo("/v2022-10-28/data/query/${SanityForebyggingsplan.Dataset.Development.name.lowercase()}"))
                     .willReturn(
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")
