@@ -22,7 +22,7 @@ class SanityForebyggingsplan(apiVersion: String) {
         val response = HttpClient.client.get(baseUrl + query.encodeURLParameter()) {
             accept(ContentType.Application.Json)
         }
-        return response.body<SanityResponse>().result.isNotEmpty()
+        return response.body<List<SanityResult>>().isNotEmpty()
     }
 
     enum class Dataset {

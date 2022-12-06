@@ -60,10 +60,7 @@ internal class TestContainerHelper {
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")
                             .withBody(
-                                """{
-                                    "ms": 710,
-                                    "query": "*[_type == 'Aktivitet' \u0026\u0026 _id == 'f9daa4cb-a432-4945-8436-6f7d3fa32a5d']",
-                                    "result": [
+                                """[
                                         {
                                             "_createdAt": "2022-11-30T09:31:05Z",
                                             "_id": "f9daa4cb-a432-4945-8436-6f7d3fa32a5d",
@@ -114,7 +111,6 @@ internal class TestContainerHelper {
                                             "tittel": "Første aktivitet"
                                         }
                                     ]
-                                }
                                 """
                             )
                     )
