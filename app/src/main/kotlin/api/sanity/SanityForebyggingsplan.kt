@@ -15,14 +15,14 @@ class SanityForebyggingsplan(apiVersion: String) {
         Clusters.PROD_GCP.clusterId -> Dataset.Production
         else -> Dataset.Development
     }
-    private val baseUrl = "${Miljø.sanityHost}/$apiVersion/data/query/${this.dataset.name.lowercase()}?query="
+    private val baseUrl = "${Miljø.sanityHost}/v$apiVersion/data/query/${this.dataset.name.lowercase()}?query="
 
     suspend fun eksisterer(aktivitetsmalId: UUID): Boolean {
         val query = "*[_type == \"Aktivitet\" && _id == \"${aktivitetsmalId}\"]"
         val response = HttpClient.client.get(baseUrl + query.encodeURLParameter()) {
             accept(ContentType.Application.Json)
         }
-        return response.body<List<SanityResult>>().isNotEmpty()
+        return response.body<SanityResponse>().result.isNotEmpty()
     }
 
     enum class Dataset {
