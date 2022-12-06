@@ -20,6 +20,7 @@ import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.doublereceive.DoubleReceive
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -47,6 +48,10 @@ fun bootstrapServer() {
                 when (cause) {
                     is IkkeFunnetException -> call.respond(status = HttpStatusCode.NotFound, message = cause.message!!)
                     is UgyldigForespørselException -> call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        message = cause.message
+                    )
+                    is BadRequestException -> call.respond(
                         status = HttpStatusCode.BadRequest,
                         message = cause.message!!
                     )

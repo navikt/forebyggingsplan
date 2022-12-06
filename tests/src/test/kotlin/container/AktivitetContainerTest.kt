@@ -85,6 +85,31 @@ class AktivitetContainerTest {
     }
 
     @Test
+    fun `skal ikke kunne velge en aktivitet som ikke har en UUID formatert id`() {
+        runBlocking {
+            aktivitetApi.velgAktivitetMedTekstFrist(aktivitetsmalId = "suspektId", frist = "skjhdfgj", orgnr = enVirksomhet.orgnr, block = withToken())
+                .status shouldBe HttpStatusCode.BadRequest
+        }
+    }
+
+    @Test
+    fun `skal ikke kunne velge en aktivitet med feil frist`() {
+        runBlocking {
+            aktivitetApi.velgAktivitetMedTekstFrist(aktivitetsmalId = UUID.randomUUID().toString(), frist = "skjhdfgj", orgnr = enVirksomhet.orgnr, block = withToken())
+                .status shouldBe HttpStatusCode.BadRequest
+        }
+    }
+
+    @Test
+    fun `skal ikke kunne velge en aktivitet med frist i fortiden`() {
+        runBlocking {
+            val igår = LocalDate.now().minusDays(1).toKotlinLocalDate()
+            aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), frist = igår, orgnr = enVirksomhet.orgnr, block = withToken())
+                .status shouldBe HttpStatusCode.BadRequest
+        }
+    }
+
+    @Test
     fun `skal ikke kunne velge en aktivitet i feil organisasjon`() {
         runBlocking {
             aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = "999999999", block = withToken())

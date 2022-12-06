@@ -23,6 +23,18 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
         frist: LocalDate? = null,
         orgnr: String,
         block: HttpRequestBuilder.() -> Unit = {}
+    ) = velgAktivitetMedTekstFrist(
+            aktivitetsmalId,
+            frist?.toString(),
+            orgnr,
+            block
+        )
+
+    internal suspend fun velgAktivitetMedTekstFrist(
+        aktivitetsmalId: String,
+        frist: String?,
+        orgnr: String,
+        block: HttpRequestBuilder.() -> Unit = {}
     ) =
         forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr") {
             apply(block)

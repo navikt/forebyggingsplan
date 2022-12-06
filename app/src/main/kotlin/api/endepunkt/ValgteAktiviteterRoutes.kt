@@ -18,7 +18,10 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.PipelineContext
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.util.UUID
 
 const val ORGNR = "orgnr"
@@ -32,7 +35,10 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
         val aktivitetsmalId = UUID.fromString(body.aktivitetsmalId)
-        if(!sanityForebyggingsplan.eksisterer(aktivitetsmalId)) return@post call.respond(HttpStatusCode.NotFound, "Aktivitetsmal $aktivitetsmalId er ukjent")
+        if (!sanityForebyggingsplan.eksisterer(aktivitetsmalId))
+            return@post call.respond(HttpStatusCode.NotFound, "Aktivitetsmal $aktivitetsmalId er ukjent")
+        if (body.frist != null && body.frist < Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+            return@post call.respond(HttpStatusCode.BadRequest, "Frist kan ikke være i fortiden")
         val aktivitet = velgAktivitet(aktivitetsmalId.toString(), frist = body.frist)
         call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
     }
@@ -68,11 +74,13 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
             return@post call.respond(
                 aktivitetService.hentValgtAktivitet(
                     virksomhet = virksomhet,
-                    aktivitetsId = body.aktivitetsId).tilDto()
+                    aktivitetsId = body.aktivitetsId
+                ).tilDto()
             )
         }
         val aktivitetsmalId = UUID.fromString(body.aktivitetsmalId)
-        if(!sanityForebyggingsplan.eksisterer(aktivitetsmalId)) return@post call.respond(HttpStatusCode.NotFound, "Aktivitetsmal $aktivitetsmalId er ukjent")
+        if (!sanityForebyggingsplan.eksisterer(aktivitetsmalId))
+            return@post call.respond(HttpStatusCode.NotFound, "Aktivitetsmal $aktivitetsmalId er ukjent")
         val aktivitet = aktivitetService.lagreAktivitet(velgAktivitet(aktivitetsmalId.toString(), fullført = true))
         return@post call.respond(
             aktivitetService.hentValgtAktivitet(
