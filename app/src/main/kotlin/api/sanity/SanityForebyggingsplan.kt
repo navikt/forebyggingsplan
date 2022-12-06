@@ -1,10 +1,12 @@
 package api.sanity
 
 import Miljø
+import arrow.core.continuations.result
 import http.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.encodeURLParameter
 import kotlinx.serialization.Serializable
@@ -22,6 +24,9 @@ class SanityForebyggingsplan(apiVersion: String) {
         val response = HttpClient.client.get(baseUrl + query.encodeURLParameter()) {
             accept(ContentType.Application.Json)
         }
+        println("************************************************")
+        println(response.bodyAsText())
+        println("************************************************")
         return response.body<SanityResponse>().result.isNotEmpty()
     }
 
