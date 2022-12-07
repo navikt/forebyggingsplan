@@ -1,5 +1,11 @@
 <configuration>
-    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
@@ -17,7 +23,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="stdout_json"/>
+        <appender-ref ref="${ROOT_LOG_APPENDER:-STDOUT_JSON}"/>
     </root>
     <logger name="io.netty" level="INFO"/>
     <logger level="INFO" name="auditLogger" additivity="false">
