@@ -16,17 +16,17 @@ import java.time.Instant
 
 private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val aktivitetsmalID = varchar(name = "aktivitetsmal_id", length = 45)
+    val aktivitetsversjon = varchar(name = "aktivitetsversjon", length = 45)
     val frist = date("frist").nullable()
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
-    val fødselsnummer = varchar(name = "fødselsnummer", 11)
     val fullført = bool("fullfoert")
     val fullførtTidspunkt = timestamp("fullfoert_tidspunkt")
     val opprettelsesTidspunkt = timestamp("opprettelsestidspunkt")
 
     fun tilValgtAktivitet(it: ResultRow) =
-        ArbeidsgiverRepresentant(fnr = it[fødselsnummer], virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
+        ArbeidsgiverRepresentant(virksomhet = Virksomhet(orgnr = it[virksomhetsnummer]))
             .velgAktivitet(
-                aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID]),
+                aktivitetsmal = Aktivitetsmal(id = it[aktivitetsmalID], versjon = it[aktivitetsversjon]),
                 frist = it[frist]?.toKotlinLocalDate(),
                 id = it[id].value,
                 fullført = it[fullført],
@@ -46,10 +46,9 @@ class AktivitetRepository {
     fun lagreValgtAktivitet(valgtAktivitet: ValgtAktivitet) = transaction {
         ValgtAktivitetTabell.tilValgtAktivitet(ValgtAktivitetTabell.insert {
             it[aktivitetsmalID] = valgtAktivitet.aktivitetsmal.id
+            it[aktivitetsversjon] = valgtAktivitet.aktivitetsmal.versjon
             it[frist] = valgtAktivitet.frist?.toJavaLocalDate()
             it[virksomhetsnummer] = valgtAktivitet.valgtAv.virksomhet.orgnr
-            // TODO: Skal vi egentlig lagre fødselsnummer?
-            it[fødselsnummer] = valgtAktivitet.valgtAv.fnr
             it[fullført] = valgtAktivitet.fullført
             if (valgtAktivitet.fullført) {
                 it[fullførtTidspunkt] = Instant.now()

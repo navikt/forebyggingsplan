@@ -12,9 +12,9 @@ class AktivitetTest {
 
     @Test
     fun `en aktivitet kan opprettes og velges`() {
-        val aktivitetsmal = Aktivitetsmal(UUID.randomUUID().toString())
+        val aktivitetsmal = Aktivitetsmal(UUID.randomUUID().toString(), "versjon")
         val virksomhet = Virksomhet(orgnr = "123456789")
-        val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(fnr = "12345678911", virksomhet = virksomhet)
+        val arbeidsgiverRepresentant = ArbeidsgiverRepresentant(virksomhet = virksomhet)
 
         val valgtAktivitet = arbeidsgiverRepresentant.velgAktivitet(aktivitetsmal)
         valgtAktivitet.aktivitetsmal shouldBe aktivitetsmal

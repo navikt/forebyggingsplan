@@ -81,6 +81,7 @@ class AktivitetContainerTest {
             aktivitet shouldBe hentetAktivitet
             aktivitet.frist shouldNotBe null
             aktivitet.frist!! shouldBeEqualComparingTo idag
+            aktivitet.aktivitetsversjon shouldBe "3C549LRrvVH6gsnZfS148M"
         }
     }
 

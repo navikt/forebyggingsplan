@@ -18,6 +18,7 @@ class ValgtAktivitet private constructor(
     fun tilDto(): ValgtAktivitetDTO = ValgtAktivitetDTO(
         id = id,
         aktivitetsmalId = aktivitetsmal.id,
+        aktivitetsversjon = aktivitetsmal.versjon,
         valgtAv = valgtAv.tilDto(),
         frist = frist,
         fullført = fullført,

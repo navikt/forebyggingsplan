@@ -15,6 +15,7 @@ data class OpprettValgtAktivitetDTO(
 data class ValgtAktivitetDTO(
     val id: Int,
     val aktivitetsmalId: String,
+    val aktivitetsversjon: String,
     val valgtAv: ArbeidsgiverRepresentantDTO,
     val frist: LocalDate? = null,
     val fullført: Boolean,

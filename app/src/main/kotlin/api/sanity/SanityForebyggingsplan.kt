@@ -9,6 +9,7 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import io.ktor.http.encodeURLParameter
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -20,12 +21,12 @@ class SanityForebyggingsplan(apiVersion: String) {
     }
     private val baseUrl = "${Miljø.sanityHost}/v$apiVersion/data/query/${this.dataset.name.lowercase()}?query="
 
-    suspend fun eksisterer(aktivitetsmalId: UUID): Boolean {
+    suspend fun hentAktivitetsinfo(aktivitetsmalId: UUID): SanityResult? {
         val query = "*[_type == \"Aktivitet\" && _id == \"${aktivitetsmalId}\"]"
         val response = HttpClient.client.get(baseUrl + query.encodeURLParameter()) {
             accept(ContentType.Application.Json)
         }
-        return response.body<SanityResponse>().result.isNotEmpty()
+        return response.body<SanityResponse>().result.firstOrNull()
     }
 
     enum class Dataset {
@@ -37,6 +38,6 @@ class SanityForebyggingsplan(apiVersion: String) {
 class SanityResponse (val result: List<SanityResult>)
 
 @Serializable
-class SanityResult(val _id: String)
+class SanityResult( @SerialName("_id")val malId: String, @SerialName("_rev") val versjon: String)
 
 
