@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.postgresql.ds.PGSimpleDataSource
+import java.util.concurrent.TimeUnit.MINUTES
 
 object DatabaseFactory {
     internal fun init() {
@@ -25,7 +26,7 @@ object DatabaseFactory {
             minimumIdle = 1
             idleTimeout = 100000
             connectionTimeout = 100000
-            maxLifetime = 300000
+            maxLifetime = MINUTES.toMillis(30)
         }
     }
 }
