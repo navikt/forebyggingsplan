@@ -9,7 +9,6 @@ import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
-import http.aktivitetsId
 import http.orgnr
 import http.virksomhet
 import io.ktor.http.HttpStatusCode
@@ -50,15 +49,6 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
 
     get("/$VALGTE_PATH/{$ORGNR}") {
         call.respond(aktivitetService.hentValgteAktiviteterForVirksomhet(call.virksomhet).map(ValgtAktivitet::tilDto))
-    }
-
-    get("/$VALGTE_PATH/{$ORGNR}/{$AKTIVITETS_ID}") {
-        call.respond(
-            aktivitetService.hentValgtAktivitet(
-                virksomhet = call.virksomhet,
-                aktivitetsId = call.aktivitetsId
-            ).tilDto()
-        )
     }
 }
 

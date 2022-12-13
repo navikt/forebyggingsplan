@@ -1,10 +1,12 @@
 package request
 
+import api.dto.ValgtAktivitetDTO
 import api.endepunkt.FULLFØR_PATH
 import api.endepunkt.ORGANISASJONER_PATH
 import api.endepunkt.VALGTE_PATH
 import container.helper.TestContainerHelper.Companion.performGet
 import container.helper.TestContainerHelper.Companion.performPost
+import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.setBody
 import org.testcontainers.containers.GenericContainer
@@ -16,7 +18,7 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
         forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block)
 
     internal suspend fun hentValgtAktivitet(orgnr:String, aktivitetsId: Int, block: HttpRequestBuilder.() -> Unit = {}) =
-        forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr/$aktivitetsId", block)
+        forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block).body<List<ValgtAktivitetDTO>>().first{it.id == aktivitetsId}
 
     internal suspend fun velgAktivitet(
         aktivitetsmalId: String,

@@ -60,7 +60,6 @@ class AktivitetContainerTest {
 
             val hentetAktivitet =
                 aktivitetApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
-                    .body<ValgtAktivitetDTO>()
 
             aktivitet shouldBe hentetAktivitet
             aktivitet.frist shouldBe null
@@ -76,7 +75,6 @@ class AktivitetContainerTest {
 
             val hentetAktivitet =
                 aktivitetApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
-                    .body<ValgtAktivitetDTO>()
 
             aktivitet shouldBe hentetAktivitet
             aktivitet.frist shouldNotBe null
