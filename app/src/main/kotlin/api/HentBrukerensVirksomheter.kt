@@ -12,7 +12,22 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
 
 const val serviceCode = "3403"
 
-fun hentVirksomheterSomBrukerHarRiktigRolleI(token: String, subject: String): List<AltinnReportee> {
+fun hentVirksomheterSomBrukerRepresenterer(token: String, subject: String): List<AltinnReportee> {
+    return AltinnrettigheterProxyKlient(
+        AltinnrettigheterProxyKlientConfig(
+            ProxyConfig(
+                consumerId = "Forebyggingsplan",
+                url = Miljø.altinnRettigheterProxyUrl
+            )
+        )
+    ).hentOrganisasjoner(
+        selvbetjeningToken = TokenXToken(value = token),
+        subject = Subject(subject),
+        filtrerPåAktiveOrganisasjoner = true
+    )
+}
+
+fun hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(token: String, subject: String): List<AltinnReportee> {
     return AltinnrettigheterProxyKlient(
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(

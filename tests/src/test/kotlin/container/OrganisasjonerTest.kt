@@ -15,13 +15,14 @@ internal class OrganisasjonerTest {
     private val api = AktivitetApi(TestContainerHelper.forebyggingsplanContainer)
 
     @Test
-    internal fun `skal kunne hente organisasjoner som er tilknyttet en bruker`() {
+    internal fun `skal kunne hente alle organisasjoner som er tilknyttet en bruker`() {
         runBlocking {
             val response = api.hentVirksomheter(withToken())
             response.status shouldBe HttpStatusCode.OK
-            response.body<List<AltinnVirksomhetDTO>>() shouldHaveSize 1
+            response.body<List<AltinnVirksomhetDTO>>() shouldHaveSize 2
         }
     }
+
     @Test
     internal fun `skal få 401 unauthorized hvis man ikke har et token`() {
         runBlocking {

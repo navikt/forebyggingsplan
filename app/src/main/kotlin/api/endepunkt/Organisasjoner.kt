@@ -1,6 +1,7 @@
 package api.endepunkt
 
-import api.hentVirksomheterSomBrukerHarRiktigRolleI
+import Miljø
+import api.hentVirksomheterSomBrukerRepresenterer
 import auth.TokenExchanger
 import http.hentToken
 import http.tokenSubject
@@ -17,7 +18,7 @@ fun Route.organisasjoner() {
     get("/$ORGANISASJONER_PATH") {
         val subject = call.request.tokenSubject()
         val token = call.request.hentToken()
-        val virksomheter = hentVirksomheterSomBrukerHarRiktigRolleI(
+        val virksomheter = hentVirksomheterSomBrukerRepresenterer(
             token = TokenExchanger.exchangeToken(
                 token = token,
                 audience = Miljø.altinnRettigheterProxyClientId

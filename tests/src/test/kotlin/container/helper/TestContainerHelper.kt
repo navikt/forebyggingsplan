@@ -35,6 +35,33 @@ internal class TestContainerHelper {
         private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
+                    .willReturn(
+                        WireMock.ok()
+                            .withHeader(CONTENT_TYPE, "application/json")
+                            .withBody(
+                                """[
+                                {
+                                    "Name": "BALLSTAD OG HAMARØY",
+                                     "Type": "Business",
+                                     "OrganizationNumber": "811076732",
+                                     "ParentOrganizationNumber": "811076112",
+                                     "OrganizationForm": "BEDR",
+                                     "Status": "Active"
+                                }, 
+                                {
+                                    "Name": "FIKTIVIA",
+                                     "Type": "Business",
+                                     "OrganizationNumber": "315829062",
+                                     "ParentOrganizationNumber": "811076112",
+                                     "OrganizationForm": "BEDR",
+                                     "Status": "Active"
+                                }
+                            ]""".trimMargin()
+                            )
+                    )
+            )
+            it.stubFor(
+                WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
                     .withQueryParam("serviceCode", equalTo(serviceCode))
                     .withQueryParam("serviceEdition", equalTo("2"))
                     .willReturn(

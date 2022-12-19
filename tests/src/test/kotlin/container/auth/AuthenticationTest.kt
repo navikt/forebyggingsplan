@@ -39,6 +39,13 @@ internal class AuthenticationTest {
     }
 
     @Test
+    fun `skal få 403 forbidden på forsøk mot en bedrift brukeren ikke har enkel rettighet til`() {
+        runBlocking {
+            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "315829062", block = withToken()).status shouldBe HttpStatusCode.Forbidden
+        }
+    }
+
+    @Test
     fun `skal få 401 på et token uten signatur`() {
         val accessToken = TestContainerHelper.accessToken()
         val plainToken = PlainJWT(accessToken.jwtClaimsSet) // Token med "alg": "none"
