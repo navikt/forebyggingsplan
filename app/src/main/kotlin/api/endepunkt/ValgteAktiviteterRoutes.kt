@@ -33,7 +33,9 @@ private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
 fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
-        val aktivitetsmalId = UUID.fromString(body.aktivitetsmalId)
+        val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
+            HttpStatusCode.BadRequest, "Aktivitetsmal ${body.aktivitetsmalId} er ikke en UUID"
+        )
         val aktivitetsinfo = sanityForebyggingsplan.hentAktivitetsinfo(aktivitetsmalId) ?: return@post call.respond(
             HttpStatusCode.NotFound,
             "Aktivitetsmal $aktivitetsmalId er ukjent"
@@ -64,7 +66,6 @@ private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
         fullført = fullført
     )
 
-
 fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     post("/$FULLFØR_PATH/{$ORGNR}") {
         val body = call.receive<FullførValgtAktivitetDTO>()
@@ -78,7 +79,9 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
                 ).tilDto()
             )
         }
-        val aktivitetsmalId = UUID.fromString(body.aktivitetsmalId)
+        val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
+            HttpStatusCode.BadRequest, "Aktivitetsmal ${body.aktivitetsmalId} er ikke en UUID"
+        )
         val aktivitetsinfo = sanityForebyggingsplan.hentAktivitetsinfo(aktivitetsmalId) ?: return@post call.respond(
             HttpStatusCode.NotFound,
             "Aktivitetsmal $aktivitetsmalId er ukjent"
@@ -99,3 +102,6 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     }
 }
 
+private fun String.toUuidOrNull(): UUID? {
+    return kotlin.runCatching { UUID.fromString(this) }.getOrNull()
+}
