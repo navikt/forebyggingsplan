@@ -1,6 +1,7 @@
 package request
 
 import api.dto.ValgtAktivitetDTO
+import api.endepunkt.ENDRE_FRIST_PATH
 import api.endepunkt.FULLFØR_PATH
 import api.endepunkt.ORGANISASJONER_PATH
 import api.endepunkt.VALGTE_PATH
@@ -62,6 +63,21 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
                     {
                         "aktivitetsId": $aktivitetsId
                         "aktivitetsmalId": "$aktivitetsmalId"
+                    }
+                """.trimIndent()
+            )
+        }
+
+    internal suspend fun oppdaterFristPåAktivitet(frist: LocalDate?, aktivitetsId: Int?, aktivitetsmalId: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) =
+        forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr/$ENDRE_FRIST_PATH") {
+            apply(block)
+            setBody(
+                """
+                    {
+                        "aktivitetsId": $aktivitetsId
+                        "aktivitetsmalId": "$aktivitetsmalId"
+                        "frist": $frist
                     }
                 """.trimIndent()
             )

@@ -5,6 +5,7 @@ import domene.ArbeidsgiverRepresentant
 import domene.ValgtAktivitet
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toKotlinLocalDate
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -64,6 +65,17 @@ class AktivitetRepository {
                 }) {
                     it[fullført] = true
                     it[fullførtTidspunkt] = Instant.now()
+                }
+        }
+    }
+
+    fun endreFrist(valgtAktivitet: ValgtAktivitet, nyFrist: LocalDate?) {
+        transaction {
+            ValgtAktivitetTabell
+                .update(where = {
+                    ValgtAktivitetTabell.id eq valgtAktivitet.id and (ValgtAktivitetTabell.virksomhetsnummer eq valgtAktivitet.valgtAv.virksomhet.orgnr)
+                }) {
+                    it[frist] = nyFrist?.toJavaLocalDate()
                 }
         }
     }

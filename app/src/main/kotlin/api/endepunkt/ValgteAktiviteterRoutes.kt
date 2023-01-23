@@ -1,6 +1,7 @@
 package api.endepunkt
 
 import AktivitetService
+import api.dto.EndreFristDTO
 import api.dto.FullførValgtAktivitetDTO
 import api.dto.OpprettValgtAktivitetDTO
 import api.sanity.SanityForebyggingsplan
@@ -27,6 +28,7 @@ const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
 const val VALGTE_PATH = "valgteaktiviteter"
 const val FULLFØR_PATH = "fullfor"
+const val ENDRE_FRIST_PATH = "endre-frist"
 
 private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
 
@@ -47,6 +49,18 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
             aktivitetsversjon = aktivitetsinfo.versjon, frist = body.frist
         )
         call.respond(aktivitetService.lagreAktivitet(aktivitet = aktivitet).tilDto())
+    }
+
+    post("/$VALGTE_PATH/{$ORGNR}/$ENDRE_FRIST_PATH") {
+        val body = call.receive<EndreFristDTO>()
+        val virksomhet = call.virksomhet
+        aktivitetService.endreFrist(virksomhet, body.aktivitetsId, body.frist)
+        return@post call.respond(
+            aktivitetService.hentValgtAktivitet(
+                virksomhet = virksomhet,
+                aktivitetsId = body.aktivitetsId
+            ).tilDto()
+        )
     }
 
     get("/$VALGTE_PATH/{$ORGNR}") {
