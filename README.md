@@ -11,6 +11,15 @@ sørge for bedre innkapsling. Bare bruk testmappen `app/src/test` for å skrive 
 Noen tester kjører med [testcontainers](https://www.testcontainers.org/). Da må du ha en container runtime (Docker eller Colima) som kjører på din maskin.
 
 ---
+# Rettigheter i Altinn
+Vi sjekker enkelrettighet 'sykefraværsstatistikk' med følgende konfig: 
+ - prod: serviceCode 3403 og serviceEdition 2
+ - dev: serviceCode 3403 og serviceEdition 1
+
+Senere skal vi bruke ny enkelrettighet 'forebygge fravær' med konfig: 
+ - prod: __ikke klar enda__
+ - dev: serviceCode 5934 og serviceEdition 1
+
 
 # Henvendelser
 

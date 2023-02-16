@@ -38,7 +38,7 @@ fun hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(token: String, subject: St
     ).hentOrganisasjoner(
         selvbetjeningToken = TokenXToken(value = token),
         subject = Subject(subject),
-        serviceCode = ServiceCode(serviceCode), // Angir rolle
+        serviceCode = ServiceCode(Miljø.altinnRettighetServiceCode), // Enkelrettighet i Altinn
         serviceEdition = ServiceEdition(Miljø.altinnRettighetServiceEdition),
         filtrerPåAktiveOrganisasjoner = true
     )

@@ -1,3 +1,4 @@
 altinnRettighetServiceEdition: 2
+altinnRettighetServiceCode: 3403
 altinnRettigheterProxyClientId: "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
 dbTier: db-custom-2-3840

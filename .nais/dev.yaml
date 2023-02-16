@@ -1,3 +1,4 @@
 altinnRettighetServiceEdition: 1
+altinnRettighetServiceCode: 5934
 altinnRettigheterProxyClientId: "dev-gcp:arbeidsgiver:altinn-rettigheter-proxy"
 dbTier: db-f1-micro

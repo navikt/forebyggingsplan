@@ -6,6 +6,9 @@ internal object Miljø {
     val tokenxPrivateJwk: String by lazy { System.getenv("TOKEN_X_PRIVATE_JWK") }
     val tokenXTokenEndpoint: String by lazy { System.getenv("TOKEN_X_TOKEN_ENDPOINT") }
     val altinnRettigheterProxyUrl: String by lazy { System.getenv("ALTINN_RETTIGHETER_PROXY_URL") }
+    val altinnRettighetServiceCode: String by lazy {
+        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_CODE", "3403")
+    }
     val altinnRettighetServiceEdition: String by lazy {
         System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_EDITION", "2")
     }
