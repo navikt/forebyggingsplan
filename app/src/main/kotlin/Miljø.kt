@@ -7,10 +7,10 @@ internal object Miljø {
     val tokenXTokenEndpoint: String by lazy { System.getenv("TOKEN_X_TOKEN_ENDPOINT") }
     val altinnRettigheterProxyUrl: String by lazy { System.getenv("ALTINN_RETTIGHETER_PROXY_URL") }
     val altinnRettighetServiceCode: String by lazy {
-        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_CODE", "3403")
+        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_CODE", "5934")
     }
     val altinnRettighetServiceEdition: String by lazy {
-        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_EDITION", "2")
+        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_EDITION", "1")
     }
     val altinnRettigheterProxyClientId: String by lazy { System.getenv("ALTINN_RETTIGHETER_PROXY_CLIENT_ID") }
     val dbHost: String by lazy { System.getenv("DB_HOST") }
