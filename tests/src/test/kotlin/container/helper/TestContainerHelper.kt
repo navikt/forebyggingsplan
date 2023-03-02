@@ -1,7 +1,6 @@
 package container.helper
 
 import api.sanity.SanityForebyggingsplan
-import api.serviceCode
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -31,6 +30,8 @@ internal class TestContainerHelper {
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         private val authServer = AuthContainer(network = network)
         private val database = PostgresContainer(network = network)
+        private const val serviceCode = "5934"
+        private const val serviceEdition = "1"
 
         private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
@@ -63,7 +64,7 @@ internal class TestContainerHelper {
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
                     .withQueryParam("serviceCode", equalTo(serviceCode))
-                    .withQueryParam("serviceEdition", equalTo("2"))
+                    .withQueryParam("serviceEdition", equalTo(serviceEdition))
                     .willReturn(
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")

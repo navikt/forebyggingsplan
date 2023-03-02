@@ -10,7 +10,6 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.ServiceEdition
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.Subject
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
 
-const val serviceCode = "3403"
 
 fun hentVirksomheterSomBrukerRepresenterer(token: String, subject: String): List<AltinnReportee> {
     return AltinnrettigheterProxyKlient(

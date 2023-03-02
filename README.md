@@ -12,14 +12,10 @@ Noen tester kjører med [testcontainers](https://www.testcontainers.org/). Da m�
 
 ---
 # Rettigheter i Altinn
-Vi sjekker enkelrettighet 'sykefraværsstatistikk' med følgende konfig: 
- - prod: serviceCode 3403 og serviceEdition 2
- - dev: serviceCode 3403 og serviceEdition 1
-
-Senere skal vi bruke ny enkelrettighet 'forebygge fravær' med konfig: 
- - prod: __ikke klar enda__
- - dev: serviceCode 5934 og serviceEdition 1
-
+Vi sjekker enkelrettighet 'Forebygge fravær' med følgende konfig (i dev og prod): 
+ - serviceCode 5934
+ - serviceEdition 1
+ 
 
 # Henvendelser
 
