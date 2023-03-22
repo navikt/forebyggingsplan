@@ -1,10 +1,10 @@
-apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
-  name: "forebyggingsplan"
-  namespace: "pia"
+  name: forebyggingsplan
+  namespace: teamia
   labels:
-    "team": "pia"
+    team: teamia
 spec:
   gcp:
     sqlInstances:
