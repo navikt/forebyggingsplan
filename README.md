@@ -16,7 +16,6 @@ Vi sjekker enkelrettighet 'Forebygge fravær' med følgende konfig (i dev og pro
  - serviceCode 5934
  - serviceEdition 1
  
-
 # Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
