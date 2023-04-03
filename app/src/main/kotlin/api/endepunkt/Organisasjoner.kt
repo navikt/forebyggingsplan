@@ -1,6 +1,7 @@
 package api.endepunkt
 
 import Miljø
+import api.endepunkt.Logger.logger
 import api.hentVirksomheterSomBrukerRepresenterer
 import auth.TokenExchanger
 import http.hentToken
@@ -11,11 +12,17 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 const val ORGANISASJONER_PATH = "organisasjoner"
+object Logger {
+    val logger: Logger = LoggerFactory.getLogger(this::class.java)
+}
 
 fun Route.organisasjoner() {
     get("/$ORGANISASJONER_PATH") {
+        logger.info("[Organisajoner] GET ")
         val subject = call.request.tokenSubject()
         val token = call.request.hentToken()
         val virksomheter = hentVirksomheterSomBrukerRepresenterer(
@@ -34,6 +41,7 @@ fun Route.organisasjoner() {
                 fødselsnummer = it.socialSecurityNumber
             )
         }
+        logger.info("[Organisajoner] hentet ${virksomheter.size} virksomheter")
         call.respond(virksomheter)
     }
 }
