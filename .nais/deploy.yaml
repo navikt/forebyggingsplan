@@ -40,6 +40,7 @@ spec:
     inbound:
       rules:
         - application: forebyggingsplan-frontend
+          namespace: pia
     outbound:
       rules:
         - application: altinn-rettigheter-proxy
