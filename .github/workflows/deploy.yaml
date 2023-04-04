@@ -29,14 +29,14 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Docker Registry
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/flytte-eierskap-til-team-ia'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/flytte-frontend-til-teamia-namespace--konfig-i-backend'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push the Docker image
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/flytte-eierskap-til-team-ia'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/flytte-frontend-til-teamia-namespace--konfig-i-backend'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -68,6 +68,7 @@ jobs:
         cluster: [dev]
     name: Deploy app to ${{ matrix.cluster }}
     needs: build
+    # Husk å legge til samme feature-branch navn i steg 'Login to Github' og 'Build & push image to Docker'
     if: github.ref == 'refs/heads/flytte-frontend-til-teamia-namespace--konfig-i-backend'
     runs-on: ubuntu-latest
     steps:
