@@ -27,11 +27,11 @@ spec:
       action: "Sjekk app {{ $labels.app }} i namespace {{ $labels.kubernetes_namespace }} sine selftest for å se hva som er galt"
     - alert: Forebyggingsplan; Høy andel HTTP serverfeil (5xx responser)
       severity: danger
-      expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^5\\d\\d", namespace="teamia", app="forebyggingsplan"}[3m])) / sum by (backend) (rate(response_total{namespace="pia", app="forebyggingsplan"}[3m])))) > 1
+      expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^5\\d\\d", namespace="teamia", app="forebyggingsplan"}[3m])) / sum by (backend) (rate(response_total{namespace="teamia", app="forebyggingsplan"}[3m])))) > 1
       for: 3m
       action: "Sjekk loggene for å se hvorfor forebyggingsplanen returnerer HTTP feilresponser"
     - alert: Forebyggingsplan; Høy andel HTTP klientfeil (4xx responser)
       severity: warning
-      expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^4\\d\\d", namespace="teamia", app="forebyggingsplan"}[3m])) / sum by (backend) (rate(response_total{namespace="pia", app="forebyggingsplan"}[3m])))) > 10
+      expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^4\\d\\d", namespace="teamia", app="forebyggingsplan"}[3m])) / sum by (backend) (rate(response_total{namespace="teamia", app="forebyggingsplan"}[3m])))) > 10
       for: 3m
       action: "Sjekk loggene for å se hvorfor forebyggingsplanen returnerer HTTP feilresponser"
