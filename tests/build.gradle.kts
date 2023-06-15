@@ -25,7 +25,7 @@ dependencies {
     testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 
     // Ktor specific
-    val ktorVersion = "2.2.3"
+    val ktorVersion = "2.3.1"
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     testImplementation("io.ktor:ktor-client-core:$ktorVersion")
     testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
