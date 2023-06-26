@@ -36,7 +36,8 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
             )
 }
 
-class AktivitetRepository {
+@Deprecated("Bruk personlig aktivitetsrepository")
+class ValgtAktivitetRepository {
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet): List<ValgtAktivitet> =
         transaction {
             ValgtAktivitetTabell.select {

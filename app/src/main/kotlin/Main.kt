@@ -2,7 +2,7 @@ import api.endepunkt.*
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
-import db.AktivitetRepository
+import db.ValgtAktivitetRepository
 import db.DatabaseFactory
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
@@ -44,7 +44,7 @@ fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(sel
 }
 
 fun Application.forebyggingsplanApplicationModule() {
-    val aktivitetService = AktivitetService(aktivitetRepository = AktivitetRepository())
+    val aktivitetService = AktivitetService(aktivitetRepository = ValgtAktivitetRepository())
 
     install(ContentNegotiation) {
         json()
