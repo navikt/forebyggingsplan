@@ -1,0 +1,3 @@
+package db
+
+class AktiviteterRepositoryTest
