@@ -10,7 +10,7 @@ data class AktivitetDto(
     val orgnr: String,
     val aktivitetsid: String,
     val aktivitetsversjon: String,
-    val fullført: Boolean? = null,
+    val fullført: Boolean,
     val fullføringstidspunkt: Instant? = null
 ) {
     constructor(aktivitet: Aktivitet) : this(

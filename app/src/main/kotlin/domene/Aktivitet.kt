@@ -7,7 +7,7 @@ data class Aktivitet(
     val orgnr: String,
     val aktivitetsid: String,
     val aktivitetsversjon: String,
-    val fullført: Boolean?,
+    val fullført: Boolean,
     val fullføringstidspunkt: Instant?,
 ) {
     override fun equals(other: Any?): Boolean {

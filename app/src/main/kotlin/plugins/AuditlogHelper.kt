@@ -121,7 +121,7 @@ private fun ApplicationCall.auditLog(
                 "flexString2=${virksomheterSomBrukerRepresenterer} " +
                 "msg=${beskrivelse} "
 
-    when (Miljø.cluster) {
+    when (Systemmiljø.cluster) {
         PROD_GCP.clusterId -> auditLog.info(logstring)
         DEV_GCP.clusterId -> auditLog.info(logstring)
         LOKAL.clusterId -> fiaLog.info(logstring)
