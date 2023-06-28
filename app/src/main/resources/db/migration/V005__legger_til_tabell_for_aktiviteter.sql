@@ -5,5 +5,5 @@ create table "aktiviteter" (
     "aktivitetsversjon" varchar(45) not null,
     "fullfoert" boolean default false not null,
     "fullfoeringstidspunkt" timestamp default null,
-    primary key ("hashet_fodselsnummer", "aktivitetsid", aktivitetsversjon)
+    primary key ("hashet_fodselsnummer", "orgnr", "aktivitetsid")
 );

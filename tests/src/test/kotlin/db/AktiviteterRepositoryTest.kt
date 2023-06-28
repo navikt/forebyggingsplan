@@ -13,9 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(PostgresContainer::class)
 class AktiviteterRepositoryTest {
+    private val hashetFodselsnummer = byteArrayOf(1, 2, 3)
+    private val orgnr = "123"
     private val aktivitet = Aktivitet(
-        hashetFodselsnummer = byteArrayOf(1, 2, 3),
-        orgnr = "123",
+        hashetFodselsnummer = hashetFodselsnummer,
+        orgnr = orgnr,
         aktivitetsid = "aktivitetsid",
         aktivitetsversjon = "aktivitetsversjon",
         fullført = true,
@@ -41,6 +43,21 @@ class AktiviteterRepositoryTest {
         val alleAktiviteter = AktiviteterRepository.hentAlleAktiviteter()
 
         alleAktiviteter shouldContainExactly listOf(oppdatertAktivitet)
+    }
+
+    @Test
+    fun `hent alle fullførte aktiviteter burde hente alle aktiviteter for hashetFodselsnummer og orgnr`() {
+        val aktivitet2 = aktivitet.copy(aktivitetsid = "aktivitetsid2")
+        val aktivitetSomIkkeErFullført = aktivitet.copy(aktivitetsid = "ikkeFullfort", fullført = false)
+        val aktivitetMedAnnetOrgnr = aktivitet.copy(orgnr = "9999")
+        AktiviteterRepository.settAktivitet(aktivitet)
+        AktiviteterRepository.settAktivitet(aktivitet2)
+        AktiviteterRepository.settAktivitet(aktivitetSomIkkeErFullført)
+        AktiviteterRepository.settAktivitet(aktivitetMedAnnetOrgnr)
+
+        val resultat = AktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFodselsnummer, orgnr)
+
+        resultat shouldContainExactly listOf(aktivitet, aktivitet2)
     }
 
     private fun AktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet> = transaction {

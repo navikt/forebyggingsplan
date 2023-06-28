@@ -16,18 +16,20 @@ object AktiviteterRepository : Table("aktiviteter") {
     private val aktivitetsversjon = varchar("aktivitetsversjon", 45)
     private val fullført = bool("fullfoert")
     private val fullføringstidspunkt = timestamp("fullfoeringstidspunkt").nullable()
-    override val primaryKey = PrimaryKey(hashetFodselsnummer, aktivitetsid, aktivitetsversjon)
+    override val primaryKey = PrimaryKey(hashetFodselsnummer, orgnr, aktivitetsid)
 
     fun settAktivitet(aktivitet: Aktivitet) {
         settAktivitet(AktivitetDto(aktivitet))
     }
 
-    fun hentAktivitet(aktivitetsnøkkel: Aktivitetsnøkkel): List<Aktivitet> {
-        return select {
-            (hashetFodselsnummer eq aktivitetsnøkkel.hashetFødselsnummer) and
-                    (aktivitetsid eq aktivitetsnøkkel.aktivitetsid) and
-                    (aktivitetsversjon eq aktivitetsnøkkel.aktivitetsversjon)
-        }.map(::tilDomene)
+    fun hentAlleFullførteAktiviteterFor(hashetFødselsnummerQuery: ByteArray, orgnrQuery: String): List<Aktivitet> {
+        return transaction {
+            select {
+                (hashetFodselsnummer eq hashetFødselsnummerQuery) and
+                        (orgnr eq orgnrQuery) and
+                        (fullført eq true)
+            }.map(::tilDomene)
+        }
     }
 
     private fun settAktivitet(aktivitetDto: AktivitetDto) {
@@ -52,10 +54,3 @@ object AktiviteterRepository : Table("aktiviteter") {
         fullføringstidspunkt = it[fullføringstidspunkt]?.toKotlinInstant(),
     )
 }
-
-interface Aktivitetsnøkkel {
-    val hashetFødselsnummer: ByteArray
-    val aktivitetsid: String
-    val aktivitetsversjon: String
-}
-

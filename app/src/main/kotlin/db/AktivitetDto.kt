@@ -22,15 +22,6 @@ data class AktivitetDto(
         fullføringstidspunkt = aktivitet.fullføringstidspunkt?.toJavaInstant()
     )
 
-    fun tilDomene() = Aktivitet(
-        hashetFodselsnummer = hashetFodselsnummer,
-        orgnr = orgnr,
-        aktivitetsid = aktivitetsid,
-        aktivitetsversjon = aktivitetsversjon,
-        fullført = fullført,
-        fullføringstidspunkt = fullføringstidspunkt?.toKotlinInstant()
-    )
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
