@@ -7,10 +7,9 @@ class Sha3Hasher : Hasher {
     private val messageDigest get() = MessageDigest.getInstance("SHA3-256")
     private val charset = Charsets.UTF_8
 
-    override fun hash(data: String, salt: ByteArray): ByteArray {
+    override fun hash(data: String): ByteArray {
         val hashedData = messageDigest.apply {
             update(data.toByteArray(charset))
-            update(salt)
         }.digest()
 
         return hashedData
