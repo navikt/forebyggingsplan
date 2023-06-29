@@ -7,7 +7,7 @@ repositories {
     mavenCentral()
 }
 
-tasks.test {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
@@ -15,12 +15,10 @@ dependencies {
     implementation(project(":app"))
     testImplementation(kotlin("test"))
 
-    val jUnitVersion = "5.7.1"
-    testImplementation("org.junit.jupiter:junit-jupiter:$jUnitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
 
-    val kotestVersion = "5.4.2"
+    val kotestVersion = "5.6.2"
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
     // Testcontainers
     val testcontainersVersion = "1.17.6"
