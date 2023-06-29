@@ -1,8 +1,8 @@
-import db.AktivitetRepository
+import db.ValgtAktivitetRepository
 import domene.*
 import kotlinx.datetime.LocalDate
 
-class AktivitetService(private val aktivitetRepository: AktivitetRepository) {
+class AktivitetService(private val aktivitetRepository: ValgtAktivitetRepository) {
 
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         aktivitetRepository.hentValgteAktiviteterForVirksomhet(virksomhet)

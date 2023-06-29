@@ -1,6 +1,6 @@
 package plugins
 
-import Miljø
+import Systemmiljø
 import api.endepunkt.ORGNR
 import api.hentVirksomheterSomBrukerHarRiktigEnkelRettighetI
 import auth.TokenExchanger
@@ -25,7 +25,7 @@ val AuthorizationPlugin = createRouteScopedPlugin(
                 hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(
                     token = TokenExchanger.exchangeToken(
                         token = token,
-                        audience = Miljø.altinnRettigheterProxyClientId
+                        audience = Systemmiljø.altinnRettigheterProxyClientId
                     ), subject = fnr
                 )
 

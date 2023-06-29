@@ -2,7 +2,7 @@ import api.endepunkt.*
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
-import db.AktivitetRepository
+import db.ValgtAktivitetRepository
 import db.DatabaseFactory
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
@@ -29,7 +29,7 @@ fun main() {
 }
 
 fun bootstrapServer() {
-    DatabaseFactory.init()
+    DatabaseFactory(Systemmiljø).init()
 
     embeddedServer(
         factory = Netty,
@@ -44,7 +44,7 @@ fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(sel
 }
 
 fun Application.forebyggingsplanApplicationModule() {
-    val aktivitetService = AktivitetService(aktivitetRepository = AktivitetRepository())
+    val aktivitetService = AktivitetService(aktivitetRepository = ValgtAktivitetRepository())
 
     install(ContentNegotiation) {
         json()
@@ -73,7 +73,7 @@ fun Application.forebyggingsplanApplicationModule() {
     install(MicrometerMetrics) {
         registry = Metrics.appMicrometerRegistry
     }
-    val jwkProvider = JwkProviderBuilder(URI(Miljø.tokenxJwkPath).toURL())
+    val jwkProvider = JwkProviderBuilder(URI(Systemmiljø.tokenxJwkPath).toURL())
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -81,9 +81,9 @@ fun Application.forebyggingsplanApplicationModule() {
     install(Authentication) {
         jwt(name = "tokenx") {
             val tokenFortsattGyldigFørUtløpISekunder = 3L
-            verifier(jwkProvider, issuer = Miljø.tokenxIssuer) {
+            verifier(jwkProvider, issuer = Systemmiljø.tokenxIssuer) {
                 acceptLeeway(tokenFortsattGyldigFørUtløpISekunder)
-                withAudience(Miljø.tokenxClientId)
+                withAudience(Systemmiljø.tokenxClientId)
                 withClaim("acr") { claim: Claim, _: DecodedJWT ->
                     claim.asString().equals("Level4") || claim.asString().equals("idporten-loa-high")
                 }

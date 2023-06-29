@@ -1,6 +1,6 @@
 package auth
 
-import Miljø
+import Systemmiljø
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.nimbusds.jose.jwk.RSAKey
@@ -17,17 +17,17 @@ import java.util.Date
 import java.util.UUID
 
 object TokenExchanger {
-    private val privateKey = RSAKey.parse(Miljø.tokenxPrivateJwk).toRSAPrivateKey()
+    private val privateKey = RSAKey.parse(Systemmiljø.tokenxPrivateJwk).toRSAPrivateKey()
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     internal suspend fun exchangeToken(token: String, audience: String): String {
         return try {
-            HttpClient.client.post(URI.create(Miljø.tokenXTokenEndpoint).toURL()) {
+            HttpClient.client.post(URI.create(Systemmiljø.tokenXTokenEndpoint).toURL()) {
                 val now = Instant.now()
                 val clientAssertion = JWT.create().apply {
-                    withSubject(Miljø.tokenxClientId)
-                    withIssuer(Miljø.tokenxClientId)
-                    withAudience(Miljø.tokenXTokenEndpoint)
+                    withSubject(Systemmiljø.tokenxClientId)
+                    withIssuer(Systemmiljø.tokenxClientId)
+                    withAudience(Systemmiljø.tokenXTokenEndpoint)
                     withJWTId(UUID.randomUUID().toString())
                     withIssuedAt(Date.from(now))
                     withNotBefore(Date.from(now))

@@ -11,9 +11,9 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import kotlin.test.Test
 import request.AktivitetApi
 import java.util.*
-import kotlin.test.Test
 
 internal class AuthenticationTest {
 

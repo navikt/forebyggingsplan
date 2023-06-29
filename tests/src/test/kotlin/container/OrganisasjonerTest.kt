@@ -8,8 +8,8 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
-import request.AktivitetApi
 import kotlin.test.Test
+import request.AktivitetApi
 
 internal class OrganisasjonerTest {
     private val api = AktivitetApi(TestContainerHelper.forebyggingsplanContainer)

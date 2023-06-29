@@ -1,6 +1,6 @@
 package api
 
-import Miljø
+import Systemmiljø
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlient
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlientConfig
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.ProxyConfig
@@ -16,7 +16,7 @@ fun hentVirksomheterSomBrukerRepresenterer(token: String, subject: String): List
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(
                 consumerId = "Forebyggingsplan",
-                url = Miljø.altinnRettigheterProxyUrl
+                url = Systemmiljø.altinnRettigheterProxyUrl
             )
         )
     ).hentOrganisasjoner(
@@ -31,14 +31,14 @@ fun hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(token: String, subject: St
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(
                 consumerId = "Forebyggingsplan",
-                url = Miljø.altinnRettigheterProxyUrl
+                url = Systemmiljø.altinnRettigheterProxyUrl
             )
         )
     ).hentOrganisasjoner(
         selvbetjeningToken = TokenXToken(value = token),
         subject = Subject(subject),
-        serviceCode = ServiceCode(Miljø.altinnRettighetServiceCode), // Enkelrettighet i Altinn
-        serviceEdition = ServiceEdition(Miljø.altinnRettighetServiceEdition),
+        serviceCode = ServiceCode(Systemmiljø.altinnRettighetServiceCode), // Enkelrettighet i Altinn
+        serviceEdition = ServiceEdition(Systemmiljø.altinnRettighetServiceEdition),
         filtrerPåAktiveOrganisasjoner = true
     )
 }

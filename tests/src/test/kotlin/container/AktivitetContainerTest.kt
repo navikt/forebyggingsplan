@@ -16,10 +16,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 import kotlinx.datetime.toKotlinLocalDate
+import kotlin.test.Test
 import request.AktivitetApi
 import java.time.LocalDate
 import java.util.UUID
-import kotlin.test.Test
 
 class AktivitetContainerTest {
     private val aktivitetApi = AktivitetApi(TestContainerHelper.forebyggingsplanContainer)

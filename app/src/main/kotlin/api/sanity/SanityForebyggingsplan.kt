@@ -2,7 +2,7 @@ package api.sanity
 
 import Clusters.DEV_GCP
 import Clusters.PROD_GCP
-import Miljø
+import Systemmiljø
 import http.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
@@ -14,12 +14,12 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 class SanityForebyggingsplan(apiVersion: String) {
-    private val dataset = when (Miljø.cluster) {
+    private val dataset = when (Systemmiljø.cluster) {
         PROD_GCP.clusterId -> Dataset.Production
         DEV_GCP.clusterId -> Dataset.Production
         else -> Dataset.Development
     }
-    private val baseUrl = "${Miljø.sanityHost}/v$apiVersion/data/query/${this.dataset.name.lowercase()}?query="
+    private val baseUrl = "${Systemmiljø.sanityHost}/v$apiVersion/data/query/${this.dataset.name.lowercase()}?query="
 
     suspend fun hentAktivitetsinfo(aktivitetsmalId: UUID): SanityResult? {
         val query = "*[_type == \"Aktivitet\" && _id == \"${aktivitetsmalId}\"]"

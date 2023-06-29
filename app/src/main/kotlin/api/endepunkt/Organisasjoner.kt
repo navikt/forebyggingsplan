@@ -1,6 +1,6 @@
 package api.endepunkt
 
-import Miljø
+import Systemmiljø
 import api.endepunkt.Logger.logger
 import api.hentVirksomheterSomBrukerRepresenterer
 import auth.TokenExchanger
@@ -28,7 +28,7 @@ fun Route.organisasjoner() {
         val virksomheter = hentVirksomheterSomBrukerRepresenterer(
             token = TokenExchanger.exchangeToken(
                 token = token,
-                audience = Miljø.altinnRettigheterProxyClientId
+                audience = Systemmiljø.altinnRettigheterProxyClientId
             ), subject = subject
         ).map {
             AltinnVirksomhetDTO(

@@ -4,9 +4,9 @@ import domene.ValgtAktivitet.Companion.velgAktivitet
 import domene.Virksomhet
 import io.kotest.matchers.date.shouldBeBefore
 import io.kotest.matchers.shouldBe
+import kotlin.test.Test
 import java.time.Instant
 import java.util.UUID
-import kotlin.test.Test
 
 class AktivitetTest {
 
