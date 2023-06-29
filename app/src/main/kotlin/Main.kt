@@ -1,9 +1,11 @@
 import api.endepunkt.*
+import application.AktivitetService
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
 import db.ValgtAktivitetRepository
 import db.DatabaseFactory
+import db.SqlAktiviteterRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
 import io.ktor.http.*
@@ -44,7 +46,8 @@ fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(sel
 }
 
 fun Application.forebyggingsplanApplicationModule() {
-    val aktivitetService = AktivitetService(aktivitetRepository = ValgtAktivitetRepository())
+    val legacyAktivitetService = LegacyAktivitetService(aktivitetRepository = ValgtAktivitetRepository())
+    val aktivitetService = AktivitetService(aktivitetRepository = SqlAktiviteterRepository)
 
     install(ContentNegotiation) {
         json()
@@ -100,8 +103,9 @@ fun Application.forebyggingsplanApplicationModule() {
         authenticate("tokenx") {
             organisasjoner()
             medAltinnTilgang {
-                valgteAktiviteter(aktivitetService = aktivitetService)
-                fullførteAktiviteter(aktivitetService = aktivitetService)
+                valgteAktiviteter(aktivitetService = legacyAktivitetService)
+                fullførteAktiviteter(aktivitetService = legacyAktivitetService)
+                fullførAktivitet(aktivitetService = aktivitetService)
             }
         }
     }

@@ -2,7 +2,8 @@ import db.ValgtAktivitetRepository
 import domene.*
 import kotlinx.datetime.LocalDate
 
-class AktivitetService(private val aktivitetRepository: ValgtAktivitetRepository) {
+@Deprecated("Skal erstattes av personlige aktiviteter")
+class LegacyAktivitetService(private val aktivitetRepository: ValgtAktivitetRepository) {
 
     fun hentValgteAktiviteterForVirksomhet(virksomhet: Virksomhet) =
         aktivitetRepository.hentValgteAktiviteterForVirksomhet(virksomhet)

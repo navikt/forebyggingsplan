@@ -1,6 +1,6 @@
 package api.endepunkt
 
-import AktivitetService
+import LegacyAktivitetService
 import api.dto.EndreFristDTO
 import api.dto.FullførValgtAktivitetDTO
 import api.dto.OpprettValgtAktivitetDTO
@@ -32,7 +32,7 @@ const val ENDRE_FRIST_PATH = "endre-frist"
 
 private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
 
-fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
+fun Route.valgteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
         val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
@@ -80,7 +80,7 @@ private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
         fullført = fullført
     )
 
-fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
+fun Route.fullførteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$FULLFØR_PATH/{$ORGNR}") {
         val body = call.receive<FullførValgtAktivitetDTO>()
         val virksomhet = call.virksomhet
