@@ -14,8 +14,8 @@ object AktiviteterRepository : Table("aktiviteter") {
     private val orgnr = varchar("orgnr", 9)
     private val aktivitetsid = varchar("aktivitetsid", 45)
     private val aktivitetsversjon = varchar("aktivitetsversjon", 45)
-    private val fullført = bool("fullfoert")
-    private val fullføringstidspunkt = timestamp("fullfoeringstidspunkt").nullable()
+    private val fullført = bool("fullfort")
+    private val fullføringstidspunkt = timestamp("fullforingstidspunkt").nullable()
     override val primaryKey = PrimaryKey(hashetFodselsnummer, orgnr, aktivitetsid)
 
     fun settAktivitet(aktivitet: Aktivitet) {

@@ -20,8 +20,8 @@ private object ValgtAktivitetTabell : IntIdTable(name = "valgtaktivitet") {
     val aktivitetsversjon = varchar(name = "aktivitetsversjon", length = 45)
     val frist = date("frist").nullable()
     val virksomhetsnummer = varchar(name = "virksomhetsnummer", length = 20)
-    val fullført = bool("fullfoert")
-    val fullførtTidspunkt = timestamp("fullfoert_tidspunkt")
+    val fullført = bool("fullfort")
+    val fullførtTidspunkt = timestamp("fullfort_tidspunkt")
     val opprettelsesTidspunkt = timestamp("opprettelsestidspunkt")
 
     fun tilValgtAktivitet(it: ResultRow) =
