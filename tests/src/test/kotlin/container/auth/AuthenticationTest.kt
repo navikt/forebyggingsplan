@@ -11,7 +11,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import request.AktivitetApi
 import java.util.*
 

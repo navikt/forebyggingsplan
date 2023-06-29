@@ -16,7 +16,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 import kotlinx.datetime.toKotlinLocalDate
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import request.AktivitetApi
 import java.time.LocalDate
 import java.util.UUID

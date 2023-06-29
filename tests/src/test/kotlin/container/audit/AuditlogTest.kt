@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import request.AktivitetApi
 
 class AuditlogTest {

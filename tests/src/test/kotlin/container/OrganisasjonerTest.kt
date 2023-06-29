@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import request.AktivitetApi
 
 internal class OrganisasjonerTest {

@@ -8,8 +8,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.test.Test
 
 @ExtendWith(PostgresContainer::class)
 class AktiviteterRepositoryTest {

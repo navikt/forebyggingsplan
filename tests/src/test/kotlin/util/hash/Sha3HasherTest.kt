@@ -2,7 +2,7 @@ package util.hash
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class Sha3HasherTest {
     private val hasher = Sha3Hasher()
