@@ -15,6 +15,8 @@ fun Route.fullførAktivitet(aktivitetService: AktivitetService) {
                 ?: return@post call.respond(HttpStatusCode.BadRequest, "Mangler aktivitetsid")
             val aktivitetsversjon = call.parameters["aktivitetsversjon"]
                 ?: return@post call.respond(HttpStatusCode.BadRequest, "Mangler aktivitetsversjon")
+
+            // AuthorizationPlugin påser at brukeren representerer innsendt orgnr
             val orgnr = call.parameters["orgnr"]
                 ?: return@post call.respond(HttpStatusCode.BadRequest, "Mangler orgnr")
 
