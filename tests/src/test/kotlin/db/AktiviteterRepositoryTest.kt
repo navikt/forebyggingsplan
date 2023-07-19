@@ -28,7 +28,7 @@ class AktiviteterRepositoryKotest : FunSpec({
         selectAll().map(::tilDomene)
     }
 
-    test("set aktivitet burde skrive ny aktivitet til db") {
+    test("sett aktivitet burde skrive ny aktivitet til db") {
         AktiviteterRepository.settAktivitet(aktivitet)
 
         val alleAktiviteter = AktiviteterRepository.hentAlleAktiviteter()
@@ -36,7 +36,7 @@ class AktiviteterRepositoryKotest : FunSpec({
         alleAktiviteter shouldContainExactly listOf(aktivitet)
     }
 
-    test("set aktivitet burde oppdatere eksisterende aktivitet") {
+    test("sett aktivitet burde oppdatere eksisterende aktivitet") {
         val oppdatertAktivitet = aktivitet.copy(fullført = false)
 
         AktiviteterRepository.settAktivitet(aktivitet)
@@ -47,16 +47,18 @@ class AktiviteterRepositoryKotest : FunSpec({
         alleAktiviteter shouldContainExactly listOf(oppdatertAktivitet)
     }
 
-    test("hen alle fullførte aktiviteter burde hente alle aktiviteter for hashet fødselsnummer og orgnr") {
+    test("hent alle fullførte aktiviteter burde hente alle aktiviteter for hashet fødselsnummer og orgnr") {
         val aktivitet2 = aktivitet.copy(aktivitetsid = "aktivitetsid2")
-        val aktivitetSomIkkeErFullført = aktivitet.copy(aktivitetsid = "ikkeFullfort", fullført = false)
+        val aktivitetSomIkkeErFullført =
+            aktivitet.copy(aktivitetsid = "ikkeFullfort", fullført = false)
         val aktivitetMedAnnetOrgnr = aktivitet.copy(orgnr = "9999")
         AktiviteterRepository.settAktivitet(aktivitet)
         AktiviteterRepository.settAktivitet(aktivitet2)
         AktiviteterRepository.settAktivitet(aktivitetSomIkkeErFullført)
         AktiviteterRepository.settAktivitet(aktivitetMedAnnetOrgnr)
 
-        val resultat = AktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFodselsnummer, orgnr)
+        val resultat =
+            AktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFodselsnummer, orgnr)
 
         resultat shouldContainExactly listOf(aktivitet, aktivitet2)
     }
