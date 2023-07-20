@@ -26,11 +26,7 @@ class AktivitetService(private val aktivitetRepository: ValgtAktivitetRepository
         aktivitetRepository.hentValgtAktivitet(virksomhet, aktivitetsId)
 
     fun hentAlleFullførteAktiviteterFor(fnr: String, virksomhet: Virksomhet): List<Aktivitet> {
-        val hashetFnr =
-            Sha3Hasher().hash(
-                fnr,
-                "todosalt".toByteArray()
-            ) // kanskje bruke orgnr som salt? tror egentlig ikke vi trenger salt
+        val hashetFnr = Sha3Hasher().hash(fnr)
         return AktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFnr, virksomhet.orgnr)
     }
 }
