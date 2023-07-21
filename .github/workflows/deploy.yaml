@@ -1,5 +1,5 @@
 name: Build and deploy forebyggingsplan
-on: [push]
+on: [ push ]
 env:
   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
@@ -47,7 +47,7 @@ jobs:
   deploy:
     strategy:
       matrix:
-        cluster: [dev, prod]
+        cluster: [ dev, prod ]
     if: github.ref == 'refs/heads/main'
     name: Deploy app to ${{ matrix.cluster }}
     needs: build
@@ -65,11 +65,11 @@ jobs:
   deploy-to-dev:
     strategy:
       matrix:
-        cluster: [dev]
+        cluster: [ dev ]
     name: Deploy app to ${{ matrix.cluster }}
     needs: build
     # Husk å legge til samme feature-branch navn i steg 'Login to Github' og 'Build & push image to Docker'
-    if: github.ref == 'refs/heads/flytte-frontend-til-teamia-namespace--konfig-i-backend'
+    if: github.ref == 'refs/heads/personlige-aktiviteter-endepunkt'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
