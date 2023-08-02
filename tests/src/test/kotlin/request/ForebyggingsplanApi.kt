@@ -76,7 +76,7 @@ class ForebyggingsplanApi(private val forebyggingsplanContainer: GenericContaine
 
     internal suspend fun hentFullførteAktiviteter(
         orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
-    ) = forebyggingsplanContainer.performGet("/aktiviter/orgnr/$orgnr/fullforte", block)
+    ) = forebyggingsplanContainer.performGet("/aktiviteter/orgnr/$orgnr/fullforte", block)
 
     internal suspend fun fullførAktivitet(
         aktivitetsId: String, aktivitetsversjon: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}

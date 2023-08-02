@@ -1,5 +1,6 @@
 package api.endepunkt
 
+import api.dto.FullførtAktivitetDTO
 import application.AktivitetService
 import domene.Aktivitet
 import http.tokenSubject
@@ -36,6 +37,7 @@ fun Route.fullførAktivitet(aktivitetService: AktivitetService) {
         get("/fullforte") {
             val fnr = call.request.tokenSubject()
             val virksomhet = call.virksomhet
+            // TODO: Legg til riktig respons
             call.respond(
                 aktivitetService.hentAlleFullførteAktiviteterFor(fnr, virksomhet)
                     .map(Aktivitet::tilDto)
