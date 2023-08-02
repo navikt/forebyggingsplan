@@ -32,6 +32,7 @@ const val ENDRE_FRIST_PATH = "endre-frist"
 
 private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
 
+@Deprecated("Bruk AktivitetRoutes")
 fun Route.valgteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()

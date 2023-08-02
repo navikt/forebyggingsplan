@@ -17,23 +17,23 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 import kotlinx.datetime.toKotlinLocalDate
 import kotlin.test.Test
-import request.AktivitetApi
+import request.ForebyggingsplanApi
 import java.time.LocalDate
 import java.util.UUID
 
 class AktivitetContainerTest {
-    private val aktivitetApi = AktivitetApi(TestContainerHelper.forebyggingsplanContainer)
+    private val forebyggingsplanApi = ForebyggingsplanApi(TestContainerHelper.forebyggingsplanContainer)
 
     @Test
     fun `skal kunne hente valgte aktiviteter`() {
         runBlocking {
             val aktivitetsIder = listOf(
-                aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
+                forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                     .body<ValgtAktivitetDTO>().id,
-                aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
+                forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                     .body<ValgtAktivitetDTO>().id
             )
-            val resultat = aktivitetApi.hentValgteAktiviteterForVirksomhet(
+            val resultat = forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(
                 orgnr = enVirksomhet.orgnr,
                 withToken()
             )
@@ -45,7 +45,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal få 403 Forbidden dersom man ikke har tilgang i Altinn`() {
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(
                 orgnr = "999999999",
                 withToken()
             ).status shouldBe HttpStatusCode.Forbidden
@@ -55,11 +55,11 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne velge en aktivitet uten frist`() {
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
 
             val hentetAktivitet =
-                aktivitetApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
+                forebyggingsplanApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
 
             aktivitet shouldBe hentetAktivitet
             aktivitet.frist shouldBe null
@@ -70,11 +70,11 @@ class AktivitetContainerTest {
     fun `skal kunne velge en aktivitet med frist`() {
         runBlocking {
             val idag = LocalDate.now().toKotlinLocalDate()
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), frist = idag, orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), frist = idag, orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
 
             val hentetAktivitet =
-                aktivitetApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
+                forebyggingsplanApi.hentValgtAktivitet(orgnr = enVirksomhet.orgnr, aktivitetsId = aktivitet.id, block = withToken())
 
             aktivitet shouldBe hentetAktivitet
             aktivitet.frist shouldNotBe null
@@ -86,7 +86,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne velge en aktivitet som ikke har en UUID formatert id`() {
         runBlocking {
-            aktivitetApi.velgAktivitetMedTekstFrist(aktivitetsmalId = "suspektId", frist = "skjhdfgj", orgnr = enVirksomhet.orgnr, block = withToken())
+            forebyggingsplanApi.velgAktivitetMedTekstFrist(aktivitetsmalId = "suspektId", frist = "skjhdfgj", orgnr = enVirksomhet.orgnr, block = withToken())
                 .status shouldBe HttpStatusCode.BadRequest
         }
     }
@@ -94,7 +94,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne velge en aktivitet med feil frist`() {
         runBlocking {
-            aktivitetApi.velgAktivitetMedTekstFrist(aktivitetsmalId = UUID.randomUUID().toString(), frist = "skjhdfgj", orgnr = enVirksomhet.orgnr, block = withToken())
+            forebyggingsplanApi.velgAktivitetMedTekstFrist(aktivitetsmalId = UUID.randomUUID().toString(), frist = "skjhdfgj", orgnr = enVirksomhet.orgnr, block = withToken())
                 .status shouldBe HttpStatusCode.BadRequest
         }
     }
@@ -103,7 +103,7 @@ class AktivitetContainerTest {
     fun `skal ikke kunne velge en aktivitet med frist i fortiden`() {
         runBlocking {
             val igår = LocalDate.now().minusDays(1).toKotlinLocalDate()
-            aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), frist = igår, orgnr = enVirksomhet.orgnr, block = withToken())
+            forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), frist = igår, orgnr = enVirksomhet.orgnr, block = withToken())
                 .status shouldBe HttpStatusCode.BadRequest
         }
     }
@@ -111,7 +111,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne velge en aktivitet i feil organisasjon`() {
         runBlocking {
-            aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = "999999999", block = withToken())
+            forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = "999999999", block = withToken())
                 .status shouldBe HttpStatusCode.Forbidden
         }
     }
@@ -119,12 +119,12 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne sette en valgt aktivitet til fullført`() {
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
             aktivitet.fullført shouldBe false
             aktivitet.fullførtTidspunkt shouldBe null
 
-            val aktivitetEtterFullfør = aktivitetApi.fullførAktivitet(
+            val aktivitetEtterFullfør = forebyggingsplanApi.fullførAktivitet(
                 aktivitetsId = aktivitet.id,
                 aktivitetsmalId = aktivitet.aktivitetsmalId,
                 orgnr = aktivitet.valgtAv.orgnr,
@@ -139,11 +139,11 @@ class AktivitetContainerTest {
     fun `skal kunne oppdater dato frist til en valgt aktivitet`() {
         val idag = LocalDate.now().toKotlinLocalDate()
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
             aktivitet.frist shouldBe null
 
-            val oppdatertAktivitet = aktivitetApi.oppdaterFristPåAktivitet(
+            val oppdatertAktivitet = forebyggingsplanApi.oppdaterFristPåAktivitet(
                 frist = idag,
                 aktivitetsId = aktivitet.id,
                 aktivitetsmalId = aktivitet.aktivitetsmalId,
@@ -157,7 +157,7 @@ class AktivitetContainerTest {
     fun `skal kunne nullstille dato frist til en valgt aktivitet`() {
         val idag = LocalDate.now().toKotlinLocalDate()
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(
+            val aktivitet = forebyggingsplanApi.velgAktivitet(
                 frist = idag,
                 aktivitetsmalId = UUID.randomUUID().toString(),
                 orgnr = enVirksomhet.orgnr,
@@ -165,7 +165,7 @@ class AktivitetContainerTest {
             ).body<ValgtAktivitetDTO>()
             aktivitet.frist shouldBe idag
 
-            val oppdatertAktivitet = aktivitetApi.oppdaterFristPåAktivitet(
+            val oppdatertAktivitet = forebyggingsplanApi.oppdaterFristPåAktivitet(
                 frist = null,
                 aktivitetsId = aktivitet.id,
                 aktivitetsmalId = aktivitet.aktivitetsmalId,
@@ -178,7 +178,7 @@ class AktivitetContainerTest {
     @Test
     fun `skal kunne sette en ny aktivitet til fullført`() {
         runBlocking {
-            val aktivitetEtterFullfør = aktivitetApi.fullførAktivitet(
+            val aktivitetEtterFullfør = forebyggingsplanApi.fullførAktivitet(
                 aktivitetsId = null,
                 aktivitetsmalId = UUID.randomUUID().toString(),
                 orgnr = enVirksomhet.orgnr,
@@ -192,12 +192,12 @@ class AktivitetContainerTest {
     @Test
     fun `skal ikke kunne sette en aktivitet til fullført i feil organisasjon`() {
         runBlocking {
-            val aktivitet = aktivitetApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
+            val aktivitet = forebyggingsplanApi.velgAktivitet(aktivitetsmalId = UUID.randomUUID().toString(), orgnr = enVirksomhet.orgnr, block = withToken())
                 .body<ValgtAktivitetDTO>()
 
             aktivitet.fullført shouldBe false
 
-            aktivitetApi.fullførAktivitet(aktivitetsId = aktivitet.id, aktivitetsmalId = aktivitet.aktivitetsmalId, orgnr = "999999999", block = withToken())
+            forebyggingsplanApi.fullførAktivitet(aktivitetsId = aktivitet.id, aktivitetsmalId = aktivitet.aktivitetsmalId, orgnr = "999999999", block = withToken())
                 .status shouldBe HttpStatusCode.Forbidden
         }
     }

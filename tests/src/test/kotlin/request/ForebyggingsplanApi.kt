@@ -13,19 +13,16 @@ import io.ktor.client.request.setBody
 import org.testcontainers.containers.GenericContainer
 import kotlinx.datetime.LocalDate
 
-class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
+class ForebyggingsplanApi(private val forebyggingsplanContainer: GenericContainer<*>) {
 
-    internal suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String, block: HttpRequestBuilder.() -> Unit = {}) =
-        forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block)
+    internal suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) = forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block)
 
     internal suspend fun hentValgtAktivitet(orgnr:String, aktivitetsId: Int, block: HttpRequestBuilder.() -> Unit = {}) =
         forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block).body<List<ValgtAktivitetDTO>>().first{it.id == aktivitetsId}
 
     internal suspend fun velgAktivitet(
-        aktivitetsmalId: String,
-        frist: LocalDate? = null,
-        orgnr: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        aktivitetsmalId: String, frist: LocalDate? = null, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
     ) = velgAktivitetMedTekstFrist(
             aktivitetsmalId,
             frist?.toString(),
@@ -34,53 +31,59 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
         )
 
     internal suspend fun velgAktivitetMedTekstFrist(
-        aktivitetsmalId: String,
-        frist: String?,
-        orgnr: String,
-        block: HttpRequestBuilder.() -> Unit = {}
-    ) =
-        forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr") {
-            apply(block)
-            setBody(
-                """
+        aktivitetsmalId: String, frist: String?, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) = forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr") {
+        apply(block)
+        setBody(
+            """
                 {
                     "aktivitetsmalId": "$aktivitetsmalId"
                     "frist": $frist
                 }
             """.trimIndent()
-            )
-        }
+        )
+    }
 
     internal suspend fun hentVirksomheter(block: HttpRequestBuilder.() -> Unit = {}) =
         forebyggingsplanContainer.performGet(ORGANISASJONER_PATH, block)
 
     internal suspend fun fullførAktivitet(aktivitetsId: Int?, aktivitetsmalId: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
-    ) =
-        forebyggingsplanContainer.performPost("$FULLFØR_PATH/$orgnr") {
-            apply(block)
-            setBody(
-                """
+    ) = forebyggingsplanContainer.performPost("$FULLFØR_PATH/$orgnr") {
+        apply(block)
+        setBody(
+            """
                     {
                         "aktivitetsId": $aktivitetsId
                         "aktivitetsmalId": "$aktivitetsmalId"
                     }
                 """.trimIndent()
-            )
-        }
+        )
+    }
 
     internal suspend fun oppdaterFristPåAktivitet(frist: LocalDate?, aktivitetsId: Int?, aktivitetsmalId: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
-    ) =
-        forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr/$ENDRE_FRIST_PATH") {
-            apply(block)
-            setBody(
-                """
+    ) = forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr/$ENDRE_FRIST_PATH") {
+        apply(block)
+        setBody(
+            """
                     {
                         "aktivitetsId": $aktivitetsId
                         "aktivitetsmalId": "$aktivitetsmalId"
                         "frist": $frist
                     }
                 """.trimIndent()
-            )
-        }
+        )
+    }
+
+    internal suspend fun hentFullførteAktiviteter(
+        orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) = forebyggingsplanContainer.performGet("/aktiviter/orgnr/$orgnr/fullforte", block)
+
+    internal suspend fun fullførAktivitet(
+        aktivitetsId: String, aktivitetsversjon: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) =
+        forebyggingsplanContainer.performPost(
+            "/aktivitet/$aktivitetsId/versjon/$aktivitetsversjon/orgnr/$orgnr/fullfor",
+            block
+        )
 }
 
