@@ -11,7 +11,7 @@ class Sha3HasherTest {
     fun `hasher should always hash to the same value given the same salt`() {
         val data = "Data to be hashed"
         val salt = "Salt".toByteArray()
-        val result = hasher.hash(data, salt)
+        val result = hasher.hashWithSalt(data, salt)
 
         result shouldBe "4ce65935eb85af6941f49702d764b516ce12284b113f48871cfb76b763e1634a".hexStringToByteArray()
     }
@@ -21,8 +21,8 @@ class Sha3HasherTest {
         val data = "Data to be hashed"
         val firstSalt = hasher.generateRandomSalt()
         val secondSalt = hasher.generateRandomSalt()
-        val firstResult = hasher.hash(data, firstSalt)
-        val secondResult = hasher.hash(data, secondSalt)
+        val firstResult = hasher.hashWithSalt(data, firstSalt)
+        val secondResult = hasher.hashWithSalt(data, secondSalt)
 
         firstResult shouldNotBe secondResult
     }

@@ -1,5 +1,6 @@
 package domene
 
+import api.dto.FullførtAktivitetDTO
 import kotlinx.datetime.Instant
 
 data class Aktivitet(
@@ -33,4 +34,12 @@ data class Aktivitet(
         result = 31 * result + (fullføringstidspunkt?.hashCode() ?: 0)
         return result
     }
+
+    fun tilDto(): FullførtAktivitetDTO = FullførtAktivitetDTO(
+        orgnr = orgnr,
+        aktivitetsId = aktivitetsid,
+        aktivitetsversjon = aktivitetsversjon,
+        fullført = fullført,
+        fullførtTidspunkt = fullføringstidspunkt,
+    )
 }

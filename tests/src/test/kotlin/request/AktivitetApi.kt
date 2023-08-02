@@ -7,19 +7,26 @@ import api.endepunkt.ORGANISASJONER_PATH
 import api.endepunkt.VALGTE_PATH
 import container.helper.TestContainerHelper.Companion.performGet
 import container.helper.TestContainerHelper.Companion.performPost
-import io.ktor.client.call.body
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.setBody
-import org.testcontainers.containers.GenericContainer
+import io.ktor.client.call.*
+import io.ktor.client.request.*
 import kotlinx.datetime.LocalDate
+import org.testcontainers.containers.GenericContainer
 
 class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
 
-    internal suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String, block: HttpRequestBuilder.() -> Unit = {}) =
+    internal suspend fun hentValgteAktiviteterForVirksomhet(
+        orgnr: String,
+        block: HttpRequestBuilder.() -> Unit = {}
+    ) =
         forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block)
 
-    internal suspend fun hentValgtAktivitet(orgnr:String, aktivitetsId: Int, block: HttpRequestBuilder.() -> Unit = {}) =
-        forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block).body<List<ValgtAktivitetDTO>>().first{it.id == aktivitetsId}
+    internal suspend fun hentValgtAktivitet(
+        orgnr: String,
+        aktivitetsId: Int,
+        block: HttpRequestBuilder.() -> Unit = {}
+    ) =
+        forebyggingsplanContainer.performGet("$VALGTE_PATH/$orgnr", block)
+            .body<List<ValgtAktivitetDTO>>().first { it.id == aktivitetsId }
 
     internal suspend fun velgAktivitet(
         aktivitetsmalId: String,
@@ -27,11 +34,11 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
         orgnr: String,
         block: HttpRequestBuilder.() -> Unit = {}
     ) = velgAktivitetMedTekstFrist(
-            aktivitetsmalId,
-            frist?.toString(),
-            orgnr,
-            block
-        )
+        aktivitetsmalId,
+        frist?.toString(),
+        orgnr,
+        block
+    )
 
     internal suspend fun velgAktivitetMedTekstFrist(
         aktivitetsmalId: String,
@@ -54,7 +61,11 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
     internal suspend fun hentVirksomheter(block: HttpRequestBuilder.() -> Unit = {}) =
         forebyggingsplanContainer.performGet(ORGANISASJONER_PATH, block)
 
-    internal suspend fun fullførAktivitet(aktivitetsId: Int?, aktivitetsmalId: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    internal suspend fun fullførAktivitet(
+        aktivitetsId: Int?,
+        aktivitetsmalId: String,
+        orgnr: String,
+        block: HttpRequestBuilder.() -> Unit = {}
     ) =
         forebyggingsplanContainer.performPost("$FULLFØR_PATH/$orgnr") {
             apply(block)
@@ -68,7 +79,12 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
             )
         }
 
-    internal suspend fun oppdaterFristPåAktivitet(frist: LocalDate?, aktivitetsId: Int?, aktivitetsmalId: String, orgnr: String, block: HttpRequestBuilder.() -> Unit = {}
+    internal suspend fun oppdaterFristPåAktivitet(
+        frist: LocalDate?,
+        aktivitetsId: Int?,
+        aktivitetsmalId: String,
+        orgnr: String,
+        block: HttpRequestBuilder.() -> Unit = {}
     ) =
         forebyggingsplanContainer.performPost("$VALGTE_PATH/$orgnr/$ENDRE_FRIST_PATH") {
             apply(block)
@@ -82,5 +98,11 @@ class AktivitetApi(private val forebyggingsplanContainer: GenericContainer<*>) {
                 """.trimIndent()
             )
         }
+
+    internal suspend fun hentFullførteAktiviteter(
+        orgnr: String,
+        block: HttpRequestBuilder.() -> Unit = {}
+    ) =
+        forebyggingsplanContainer.performGet("$FULLFØR_PATH/$orgnr", block)
 }
 

@@ -5,24 +5,22 @@ import api.dto.EndreFristDTO
 import api.dto.FullførValgtAktivitetDTO
 import api.dto.OpprettValgtAktivitetDTO
 import api.sanity.SanityForebyggingsplan
-import domene.Aktivitetsmal
-import domene.ArbeidsgiverRepresentant
-import domene.ValgtAktivitet
+import domene.*
 import domene.ValgtAktivitet.Companion.velgAktivitet
-import domene.Virksomhet
 import http.orgnr
+import http.tokenSubject
 import http.virksomhet
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.pipeline.PipelineContext
+import io.ktor.util.pipeline.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import java.util.UUID
+import java.util.*
 
 const val ORGNR = "orgnr"
 const val AKTIVITETS_ID = "aktivitetId"
@@ -38,11 +36,14 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
         val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
             HttpStatusCode.BadRequest, "Aktivitetsmal ${body.aktivitetsmalId} er ikke en UUID"
         )
-        val aktivitetsinfo = sanityForebyggingsplan.hentAktivitetsinfo(aktivitetsmalId) ?: return@post call.respond(
-            HttpStatusCode.NotFound,
-            "Aktivitetsmal $aktivitetsmalId er ukjent"
+        val aktivitetsinfo =
+            sanityForebyggingsplan.hentAktivitetsinfo(aktivitetsmalId) ?: return@post call.respond(
+                HttpStatusCode.NotFound,
+                "Aktivitetsmal $aktivitetsmalId er ukjent"
+            )
+        if (body.frist != null && body.frist < Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault()).date
         )
-        if (body.frist != null && body.frist < Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
             return@post call.respond(HttpStatusCode.BadRequest, "Frist kan ikke være i fortiden")
         val aktivitet = velgAktivitet(
             aktivitetsmalId = aktivitetsmalId.toString(),
@@ -64,8 +65,12 @@ fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
     }
 
     get("/$VALGTE_PATH/{$ORGNR}") {
-        call.respond(aktivitetService.hentValgteAktiviteterForVirksomhet(call.virksomhet).map(ValgtAktivitet::tilDto))
+        call.respond(
+            aktivitetService.hentValgteAktiviteterForVirksomhet(call.virksomhet)
+                .map(ValgtAktivitet::tilDto)
+        )
     }
+
 }
 
 private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
@@ -85,7 +90,12 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
         val body = call.receive<FullførValgtAktivitetDTO>()
         val virksomhet = call.virksomhet
         if (body.aktivitetsId != null) {
-            aktivitetService.fullførAktivitet(aktivitetService.hentValgtAktivitet(virksomhet, body.aktivitetsId))
+            aktivitetService.fullførAktivitet(
+                aktivitetService.hentValgtAktivitet(
+                    virksomhet,
+                    body.aktivitetsId
+                )
+            )
             return@post call.respond(
                 aktivitetService.hentValgtAktivitet(
                     virksomhet = virksomhet,
@@ -96,10 +106,11 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
         val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
             HttpStatusCode.BadRequest, "Aktivitetsmal ${body.aktivitetsmalId} er ikke en UUID"
         )
-        val aktivitetsinfo = sanityForebyggingsplan.hentAktivitetsinfo(aktivitetsmalId) ?: return@post call.respond(
-            HttpStatusCode.NotFound,
-            "Aktivitetsmal $aktivitetsmalId er ukjent"
-        )
+        val aktivitetsinfo =
+            sanityForebyggingsplan.hentAktivitetsinfo(aktivitetsmalId) ?: return@post call.respond(
+                HttpStatusCode.NotFound,
+                "Aktivitetsmal $aktivitetsmalId er ukjent"
+            )
         val aktivitet = aktivitetService.lagreAktivitet(
             velgAktivitet(
                 aktivitetsmalId = aktivitetsmalId.toString(),
@@ -112,6 +123,15 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
                 virksomhet = virksomhet,
                 aktivitetsId = aktivitet.id
             ).tilDto()
+        )
+    }
+
+    get("/$FULLFØR_PATH/{$ORGNR}") {
+        val fnr = call.request.tokenSubject()
+        val virksomhet = call.virksomhet
+        call.respond(
+            aktivitetService.hentAlleFullførteAktiviteterFor(fnr, virksomhet)
+                .map(Aktivitet::tilDto)
         )
     }
 }
