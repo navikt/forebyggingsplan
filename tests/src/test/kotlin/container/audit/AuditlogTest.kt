@@ -9,10 +9,10 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
-import request.AktivitetApi
+import request.ForebyggingsplanApi
 
 class AuditlogTest {
-    private val aktivitetApi = AktivitetApi(forebyggingsplanContainer)
+    private val forebyggingsplanApi = ForebyggingsplanApi(forebyggingsplanContainer)
 
     @Test
     fun `auditlogger visning av valgte aktiviteter`() {
@@ -37,7 +37,7 @@ class AuditlogTest {
         }
     }
 
-    private suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String = enVirksomhet.orgnr) = aktivitetApi.hentValgteAktiviteterForVirksomhet(
+    private suspend fun hentValgteAktiviteterForVirksomhet(orgnr: String = enVirksomhet.orgnr) = forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(
         orgnr = orgnr,
         block = withToken() { parameter("audit", "1") })
 

@@ -1,7 +1,7 @@
 package container.helper
 
 import DbMiljø
-import db.AktiviteterRepository
+import db.SqlAktiviteterRepository
 import db.DatabaseFactory
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeSpecListener
@@ -52,11 +52,11 @@ class PostgresContainer(network: Network = Network.newNetwork()) : BeforeAllCall
     }
 
     override fun afterEach(context: ExtensionContext?) {
-        AktiviteterRepository.slettAlt()
+        SqlAktiviteterRepository.slettAlt()
     }
 
 
-    private fun AktiviteterRepository.slettAlt() {
+    private fun SqlAktiviteterRepository.slettAlt() {
         transaction {
             deleteAll()
         }
