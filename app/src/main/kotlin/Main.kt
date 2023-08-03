@@ -1,9 +1,11 @@
 import api.endepunkt.*
+import application.AktivitetService
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
-import db.ValgtAktivitetRepository
 import db.DatabaseFactory
+import db.SqlAktiviteterRepository
+import db.ValgtAktivitetRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
 import io.ktor.http.*
@@ -21,6 +23,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import plugins.AuthorizationPlugin
+import util.hash.Sha3Hasher
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -44,7 +47,10 @@ fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(sel
 }
 
 fun Application.forebyggingsplanApplicationModule() {
-    val aktivitetService = AktivitetService(aktivitetRepository = ValgtAktivitetRepository())
+    val legacyAktivitetService =
+        LegacyAktivitetService(aktivitetRepository = ValgtAktivitetRepository())
+    val aktivitetService =
+        AktivitetService(aktivitetRepository = SqlAktiviteterRepository, hasher = Sha3Hasher())
 
     install(ContentNegotiation) {
         json()
@@ -52,7 +58,11 @@ fun Application.forebyggingsplanApplicationModule() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             when (cause) {
-                is IkkeFunnetException -> call.respond(status = HttpStatusCode.NotFound, message = cause.message!!)
+                is IkkeFunnetException -> call.respond(
+                    status = HttpStatusCode.NotFound,
+                    message = cause.message!!
+                )
+
                 is UgyldigForespørselException -> call.respond(
                     status = HttpStatusCode.BadRequest,
                     message = cause.message
@@ -85,7 +95,8 @@ fun Application.forebyggingsplanApplicationModule() {
                 acceptLeeway(tokenFortsattGyldigFørUtløpISekunder)
                 withAudience(Systemmiljø.tokenxClientId)
                 withClaim("acr") { claim: Claim, _: DecodedJWT ->
-                    claim.asString().equals("Level4") || claim.asString().equals("idporten-loa-high")
+                    claim.asString().equals("Level4") || claim.asString()
+                        .equals("idporten-loa-high")
                 }
                 withClaimPresence("sub")
             }
@@ -100,7 +111,8 @@ fun Application.forebyggingsplanApplicationModule() {
         authenticate("tokenx") {
             organisasjoner()
             medAltinnTilgang {
-                valgteAktiviteter(aktivitetService = aktivitetService)
+                legacyValgteAktiviteter(aktivitetService = legacyAktivitetService)
+                legacyFullførteAktiviteter(aktivitetService = legacyAktivitetService)
                 fullførteAktiviteter(aktivitetService = aktivitetService)
             }
         }

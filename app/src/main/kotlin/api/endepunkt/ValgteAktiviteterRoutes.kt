@@ -1,6 +1,6 @@
 package api.endepunkt
 
-import AktivitetService
+import LegacyAktivitetService
 import api.dto.EndreFristDTO
 import api.dto.FullførValgtAktivitetDTO
 import api.dto.OpprettValgtAktivitetDTO
@@ -8,7 +8,6 @@ import api.sanity.SanityForebyggingsplan
 import domene.*
 import domene.ValgtAktivitet.Companion.velgAktivitet
 import http.orgnr
-import http.tokenSubject
 import http.virksomhet
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -30,7 +29,8 @@ const val ENDRE_FRIST_PATH = "endre-frist"
 
 private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
 
-fun Route.valgteAktiviteter(aktivitetService: AktivitetService) {
+@Deprecated("Bruk AktivitetRoutes")
+fun Route.legacyValgteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
         val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
@@ -85,7 +85,8 @@ private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
         fullført = fullført
     )
 
-fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
+@Deprecated("Bruk fullførteAktiviteter")
+fun Route.legacyFullførteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$FULLFØR_PATH/{$ORGNR}") {
         val body = call.receive<FullførValgtAktivitetDTO>()
         val virksomhet = call.virksomhet
@@ -123,15 +124,6 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
                 virksomhet = virksomhet,
                 aktivitetsId = aktivitet.id
             ).tilDto()
-        )
-    }
-
-    get("/$FULLFØR_PATH/{$ORGNR}") {
-        val fnr = call.request.tokenSubject()
-        val virksomhet = call.virksomhet
-        call.respond(
-            aktivitetService.hentAlleFullførteAktiviteterFor(fnr, virksomhet)
-                .map(Aktivitet::tilDto)
         )
     }
 }

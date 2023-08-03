@@ -24,14 +24,14 @@ class AktiviteterRepositoryKotest : FunSpec({
         fullføringstidspunkt = LocalDateTime(2023, 1, 1, 0, 0, 0).toInstant(TimeZone.UTC)
     )
 
-    fun AktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet> = transaction {
+    fun SqlAktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet> = transaction {
         selectAll().map(::tilDomene)
     }
 
     test("sett aktivitet burde skrive ny aktivitet til db") {
-        AktiviteterRepository.settAktivitet(aktivitet)
+        SqlAktiviteterRepository.settAktivitet(aktivitet)
 
-        val alleAktiviteter = AktiviteterRepository.hentAlleAktiviteter()
+        val alleAktiviteter = SqlAktiviteterRepository.hentAlleAktiviteter()
 
         alleAktiviteter shouldContainExactly listOf(aktivitet)
     }
@@ -39,10 +39,10 @@ class AktiviteterRepositoryKotest : FunSpec({
     test("sett aktivitet burde oppdatere eksisterende aktivitet") {
         val oppdatertAktivitet = aktivitet.copy(fullført = false)
 
-        AktiviteterRepository.settAktivitet(aktivitet)
-        AktiviteterRepository.settAktivitet(oppdatertAktivitet)
+        SqlAktiviteterRepository.settAktivitet(aktivitet)
+        SqlAktiviteterRepository.settAktivitet(oppdatertAktivitet)
 
-        val alleAktiviteter = AktiviteterRepository.hentAlleAktiviteter()
+        val alleAktiviteter = SqlAktiviteterRepository.hentAlleAktiviteter()
 
         alleAktiviteter shouldContainExactly listOf(oppdatertAktivitet)
     }
@@ -52,13 +52,13 @@ class AktiviteterRepositoryKotest : FunSpec({
         val aktivitetSomIkkeErFullført =
             aktivitet.copy(aktivitetsid = "ikkeFullfort", fullført = false)
         val aktivitetMedAnnetOrgnr = aktivitet.copy(orgnr = "9999")
-        AktiviteterRepository.settAktivitet(aktivitet)
-        AktiviteterRepository.settAktivitet(aktivitet2)
-        AktiviteterRepository.settAktivitet(aktivitetSomIkkeErFullført)
-        AktiviteterRepository.settAktivitet(aktivitetMedAnnetOrgnr)
+        SqlAktiviteterRepository.settAktivitet(aktivitet)
+        SqlAktiviteterRepository.settAktivitet(aktivitet2)
+        SqlAktiviteterRepository.settAktivitet(aktivitetSomIkkeErFullført)
+        SqlAktiviteterRepository.settAktivitet(aktivitetMedAnnetOrgnr)
 
         val resultat =
-            AktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFodselsnummer, orgnr)
+            SqlAktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFodselsnummer, orgnr)
 
         resultat shouldContainExactly listOf(aktivitet, aktivitet2)
     }

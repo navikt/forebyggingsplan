@@ -29,7 +29,7 @@ internal class TestContainerHelper {
         private val network = Network.newNetwork()
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         private val authServer = AuthContainer(network = network)
-        private val database = PostgresContainer(network = network)
+        val database = PostgresContainer(network = network)
         private const val serviceCode = "5934"
         private const val serviceEdition = "1"
 

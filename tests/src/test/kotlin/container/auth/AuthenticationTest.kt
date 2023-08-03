@@ -12,23 +12,23 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
-import request.AktivitetApi
+import request.ForebyggingsplanApi
 import java.util.*
 
 internal class AuthenticationTest {
 
-    private val aktivitetApi = AktivitetApi(TestContainerHelper.forebyggingsplanContainer)
+    private val forebyggingsplanApi = ForebyggingsplanApi(TestContainerHelper.forebyggingsplanContainer)
 
     @Test
     fun `happy path - skal få 200 ok ved henting av aktivitet`() {
         runBlocking {
-            aktivitetApi.velgAktivitet(
+            forebyggingsplanApi.velgAktivitet(
                 aktivitetsmalId = UUID.randomUUID().toString(),
                 orgnr = enVirksomhet.orgnr,
                 block = withToken()
             )
             val response =
-                aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
+                forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
             response.status shouldBe HttpStatusCode.OK
             response.body<List<ValgtAktivitetDTO>>() shouldHaveAtLeastSize 1
         }
@@ -37,14 +37,14 @@ internal class AuthenticationTest {
     @Test
     fun `skal få 401 unauthorized på kall uten token`() {
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1").status shouldBe HttpStatusCode.Unauthorized
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1").status shouldBe HttpStatusCode.Unauthorized
         }
     }
 
     @Test
     fun `skal få 403 forbidden på forsøk mot en bedrift brukeren ikke har enkel rettighet til`() {
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(
                 orgnr = "315829062",
                 block = withToken()
             ).status shouldBe HttpStatusCode.Forbidden
@@ -56,24 +56,24 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken()
         val plainToken = PlainJWT(accessToken.jwtClaimsSet) // Token med "alg": "none"
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
                 header(HttpHeaders.Authorization, "Bearer ${plainToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
                 // "alg": "n0ne"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAibjBuZSIKfQ.${plainToken.payload.toBase64URL()}"
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
                 // "alg": "nonE"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAibm9uRSIKfQ.${plainToken.payload.toBase64URL()}"
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
                 // "alg": "NONE"
                 header(
                     HttpHeaders.Authorization,
@@ -88,7 +88,7 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken(audience = "ugyldig audience")
 
         runBlocking {
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
                 header(HttpHeaders.Authorization, "Bearer ${accessToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -100,7 +100,7 @@ internal class AuthenticationTest {
             val gyldigToken = TestContainerHelper.accessToken()
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
 
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr) {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr) {
                 header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.OK
 
@@ -111,14 +111,14 @@ internal class AuthenticationTest {
             )
             ugyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level3"
 
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
 
             val ugyldigToken2 = TestContainerHelper.accessToken(claims = emptyMap())
             ugyldigToken2.jwtClaimsSet.getStringClaim("acr") shouldBe null
 
-            aktivitetApi.hentValgteAktiviteterForVirksomhet("1") {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet("1") {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken2.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -137,7 +137,7 @@ internal class AuthenticationTest {
             )
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "idporten-loa-high"
 
-            aktivitetApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr) {
+            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr) {
                 header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.OK
         }

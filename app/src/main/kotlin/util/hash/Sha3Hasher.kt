@@ -15,15 +15,6 @@ class Sha3Hasher : Hasher {
         return hashedData
     }
 
-    override fun hashWithSalt(data: String, salt: ByteArray): ByteArray {
-        val hashedData = messageDigest.apply {
-            update(data.toByteArray(charset))
-            update(salt)
-        }.digest()
-
-        return hashedData
-    }
-
     override fun generateRandomSalt(): ByteArray {
         val salt = ByteArray(32)
         SecureRandom().nextBytes(salt)

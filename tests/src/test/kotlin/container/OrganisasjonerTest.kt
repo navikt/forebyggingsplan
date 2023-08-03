@@ -9,10 +9,10 @@ import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
-import request.AktivitetApi
+import request.ForebyggingsplanApi
 
 internal class OrganisasjonerTest {
-    private val api = AktivitetApi(TestContainerHelper.forebyggingsplanContainer)
+    private val api = ForebyggingsplanApi(TestContainerHelper.forebyggingsplanContainer)
 
     @Test
     internal fun `skal kunne hente alle organisasjoner som er tilknyttet en bruker`() {

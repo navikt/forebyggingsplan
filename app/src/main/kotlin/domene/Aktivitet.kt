@@ -30,13 +30,12 @@ data class Aktivitet(
         result = 31 * result + orgnr.hashCode()
         result = 31 * result + aktivitetsid.hashCode()
         result = 31 * result + aktivitetsversjon.hashCode()
-        result = 31 * result + (fullført?.hashCode() ?: 0)
+        result = 31 * result + fullført.hashCode()
         result = 31 * result + (fullføringstidspunkt?.hashCode() ?: 0)
         return result
     }
 
     fun tilDto(): FullførtAktivitetDTO = FullførtAktivitetDTO(
-        orgnr = orgnr,
         aktivitetsId = aktivitetsid,
         aktivitetsversjon = aktivitetsversjon,
         fullført = fullført,
