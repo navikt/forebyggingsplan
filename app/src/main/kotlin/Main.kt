@@ -111,9 +111,9 @@ fun Application.forebyggingsplanApplicationModule() {
         authenticate("tokenx") {
             organisasjoner()
             medAltinnTilgang {
-                valgteAktiviteter(aktivitetService = legacyAktivitetService)
-                fullførteAktiviteter(aktivitetService = legacyAktivitetService)
-                fullførAktivitet(aktivitetService = aktivitetService)
+                legacyValgteAktiviteter(aktivitetService = legacyAktivitetService)
+                legacyFullførteAktiviteter(aktivitetService = legacyAktivitetService)
+                fullførteAktiviteter(aktivitetService = aktivitetService)
             }
         }
     }

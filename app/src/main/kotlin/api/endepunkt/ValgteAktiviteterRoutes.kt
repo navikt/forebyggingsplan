@@ -30,7 +30,7 @@ const val ENDRE_FRIST_PATH = "endre-frist"
 private val sanityForebyggingsplan = SanityForebyggingsplan("2022-10-28")
 
 @Deprecated("Bruk AktivitetRoutes")
-fun Route.valgteAktiviteter(aktivitetService: LegacyAktivitetService) {
+fun Route.legacyValgteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$VALGTE_PATH/{$ORGNR}") {
         val body = call.receive<OpprettValgtAktivitetDTO>()
         val aktivitetsmalId = body.aktivitetsmalId.toUuidOrNull() ?: return@post call.respond(
@@ -85,7 +85,8 @@ private fun PipelineContext<Unit, ApplicationCall>.velgAktivitet(
         fullført = fullført
     )
 
-fun Route.fullførteAktiviteter(aktivitetService: LegacyAktivitetService) {
+@Deprecated("Bruk fullførteAktiviteter")
+fun Route.legacyFullførteAktiviteter(aktivitetService: LegacyAktivitetService) {
     post("/$FULLFØR_PATH/{$ORGNR}") {
         val body = call.receive<FullførValgtAktivitetDTO>()
         val virksomhet = call.virksomhet

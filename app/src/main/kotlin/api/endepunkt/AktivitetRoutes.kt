@@ -9,7 +9,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.fullførAktivitet(aktivitetService: AktivitetService) {
+fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     route("/aktivitet/{aktivitetsid}/versjon/{aktivitetsversjon}/orgnr/{orgnr}") {
         post("/fullfor") {
             val fødselsnummer = call.request.tokenSubject()
