@@ -36,7 +36,6 @@ data class Aktivitet(
     }
 
     fun tilDto(): FullførtAktivitetDTO = FullførtAktivitetDTO(
-        orgnr = orgnr,
         aktivitetsId = aktivitetsid,
         aktivitetsversjon = aktivitetsversjon,
         fullført = fullført,
