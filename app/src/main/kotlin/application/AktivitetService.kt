@@ -1,7 +1,6 @@
 package application
 
 import db.AktiviteterRepository
-import db.SqlAktiviteterRepository
 import domene.Aktivitet
 import domene.Virksomhet
 import kotlinx.datetime.Clock
@@ -22,7 +21,7 @@ class AktivitetService(
 
     fun hentAlleFullførteAktiviteterFor(fnr: String, virksomhet: Virksomhet): List<Aktivitet.Aktivitetskort> {
         val hashetFnr = Sha3Hasher().hash(fnr)
-        return SqlAktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFnr, virksomhet.orgnr)
+        return aktivitetRepository.hentAlleFullførteAktiviteterFor(hashetFnr, virksomhet.orgnr)
     }
 
     fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {

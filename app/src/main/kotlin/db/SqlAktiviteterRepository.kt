@@ -45,6 +45,7 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
     private fun settAktivitet(aktivitetDto: AktivitetDto) {
         transaction {
             upsert {
+                Clock.system(ZoneOffset.UTC).instant()
                 it[hashetFodselsnummer] = aktivitetDto.hashetFodselsnummer
                 it[organisasjonsnummer] = aktivitetDto.orgnr
                 it[aktivitetsid] = aktivitetDto.aktivitetsid
