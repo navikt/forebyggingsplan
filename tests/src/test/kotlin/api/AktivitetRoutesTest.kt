@@ -1,6 +1,6 @@
 package api
 
-import api.dto.FullførtAktivitetDTO
+import api.dto.FullførtAktivitetJson
 import container.helper.TestContainerHelper
 import container.helper.withToken
 import io.kotest.core.spec.style.FunSpec
@@ -22,12 +22,12 @@ internal class AktivitetRoutesTest : FunSpec({
     val aktivitetsId = "aktivitetsid"
     val aktivitetsVersjon = "aktivitetsversjon"
 
-    fun alleFelterLikeIgnorerDato(fullførtAktivitetDTO: FullførtAktivitetDTO) = Matcher<FullførtAktivitetDTO> {
+    fun alleFelterLikeIgnorerDato(fullførtAktivitetJson: FullførtAktivitetJson) = Matcher<FullførtAktivitetJson> {
         MatcherResult(
-            fullførtAktivitetDTO.aktivitetsId == it.aktivitetsId &&
-                    fullførtAktivitetDTO.aktivitetsversjon == it.aktivitetsversjon &&
-                    fullførtAktivitetDTO.fullført == it.fullført,
-            { "Objektene er ikke like. Fikk $it men forventet $fullførtAktivitetDTO." },
+            fullførtAktivitetJson.aktivitetsId == it.aktivitetsId &&
+                    fullførtAktivitetJson.aktivitetsversjon == it.aktivitetsversjon &&
+                    fullførtAktivitetJson.fullført == it.fullført,
+            { "Objektene er ikke like. Fikk $it men forventet $fullførtAktivitetJson." },
             { "Objetene er like." },
         )
     }
@@ -69,12 +69,12 @@ internal class AktivitetRoutesTest : FunSpec({
         val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
 
         resultat.status shouldBe HttpStatusCode.OK
-        val fullførte: List<FullførtAktivitetDTO> = resultat.body()
+        val fullførte: List<FullførtAktivitetJson> = resultat.body()
         fullførte shouldHaveSize 0
     }
 
     test("hent fullførte aktiviteter returnerer 200 og en liste med fullførte aktiviteter") {
-        val fullført = FullførtAktivitetDTO(
+        val fullført = FullførtAktivitetJson(
             aktivitetsId,
             aktivitetsVersjon,
             true,
@@ -86,7 +86,7 @@ internal class AktivitetRoutesTest : FunSpec({
 
 
         resultat.status shouldBe HttpStatusCode.OK
-        val fullførte: List<FullførtAktivitetDTO> = resultat.body()
+        val fullførte: List<FullførtAktivitetJson> = resultat.body()
         fullførte shouldHaveSize 1
         fullførte.first() shouldHave alleFelterLikeIgnorerDato(fullført)
     }

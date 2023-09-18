@@ -15,7 +15,7 @@ class AktiviteterRepositoryKotest : FunSpec({
 
     val hashetFodselsnummer = byteArrayOf(1, 2, 3)
     val orgnr = "123"
-    val aktivitet = Aktivitet(
+    val aktivitet = Aktivitet.Aktivitetskort(
         hashetFodselsnummer = hashetFodselsnummer,
         orgnr = orgnr,
         aktivitetsid = "aktivitetsid",
@@ -24,7 +24,7 @@ class AktiviteterRepositoryKotest : FunSpec({
         fullføringstidspunkt = LocalDateTime(2023, 1, 1, 0, 0, 0).toInstant(TimeZone.UTC)
     )
 
-    fun SqlAktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet> = transaction {
+    fun SqlAktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet.Aktivitetskort> = transaction {
         selectAll().map(::tilDomene)
     }
 

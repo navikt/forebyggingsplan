@@ -2,47 +2,42 @@ package db
 
 import domene.Aktivitet
 import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toKotlinInstant
 import java.time.Instant
 
-data class AktivitetDto(
-    val hashetFodselsnummer: ByteArray,
-    val orgnr: String,
-    val aktivitetsid: String,
-    val aktivitetsversjon: String,
-    val fullført: Boolean,
-    val fullføringstidspunkt: Instant? = null
+class AktivitetDto(
+    aktivitet: Aktivitet
 ) {
-    constructor(aktivitet: Aktivitet) : this(
-        hashetFodselsnummer = aktivitet.hashetFodselsnummer,
-        orgnr = aktivitet.orgnr,
-        aktivitetsid = aktivitet.aktivitetsid,
-        aktivitetsversjon = aktivitet.aktivitetsversjon,
-        fullført = aktivitet.fullført,
-        fullføringstidspunkt = aktivitet.fullføringstidspunkt?.toJavaInstant()
-    )
+    val hashetFodselsnummer: ByteArray = aktivitet.hashetFodselsnummer
+    val orgnr: String = aktivitet.orgnr
+    val aktivitetsid: String = aktivitet.aktivitetsid
+    val aktivitetsversjon: String = aktivitet.aktivitetsversjon
+    private val aktivitetstype: Aktivitetstype
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    val fullført: Boolean?
+    val fullføringstidspunkt: Instant?
+    val status: String?
 
-        other as AktivitetDto
-
-        if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
-        if (orgnr != other.orgnr) return false
-        if (aktivitetsid != other.aktivitetsid) return false
-        if (aktivitetsversjon != other.aktivitetsversjon) return false
-        if (fullført != other.fullført) return false
-        return fullføringstidspunkt == other.fullføringstidspunkt
+    enum class Aktivitetstype {
+        AKTIVITETSKORT, OPPGAVE
     }
 
-    override fun hashCode(): Int {
-        var result = hashetFodselsnummer.contentHashCode()
-        result = 31 * result + orgnr.hashCode()
-        result = 31 * result + aktivitetsid.hashCode()
-        result = 31 * result + aktivitetsversjon.hashCode()
-        result = 31 * result + (fullført?.hashCode() ?: 0)
-        result = 31 * result + (fullføringstidspunkt?.hashCode() ?: 0)
-        return result
+    init {
+        when (aktivitet) {
+            is Aktivitet.Aktivitetskort -> {
+                fullført = aktivitet.fullført
+                fullføringstidspunkt = aktivitet.fullføringstidspunkt?.toJavaInstant()
+                aktivitetstype = Aktivitetstype.AKTIVITETSKORT
+
+                status = null
+            }
+
+            is Aktivitet.Oppgave -> {
+                status = aktivitet.status.toString()
+                aktivitetstype = Aktivitetstype.OPPGAVE
+
+                fullført = null
+                fullføringstidspunkt = null
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
     private val organisasjonsnummer = varchar("orgnr", 9)
     private val aktivitetsid = varchar("aktivitetsid", 45)
     private val aktivitetsversjon = varchar("aktivitetsversjon", 45)
-    private val fullført = bool("fullfort")
+    private val fullført = bool("fullfort").nullable()
     private val fullføringstidspunkt = timestamp("fullforingstidspunkt").nullable()
     override val primaryKey = PrimaryKey(hashetFodselsnummer, organisasjonsnummer, aktivitetsid)
 
@@ -22,7 +22,7 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
         settAktivitet(AktivitetDto(aktivitet))
     }
 
-    override fun hentAlleFullførteAktiviteterFor(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
+    override fun hentAlleFullførteAktiviteterFor(hashetFnr: ByteArray, orgnr: String): List<Aktivitet.Aktivitetskort> {
         return transaction {
             select {
                 (hashetFodselsnummer eq hashetFnr) and
@@ -45,12 +45,12 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
         }
     }
 
-    fun tilDomene(it: ResultRow) = Aktivitet(
+    fun tilDomene(it: ResultRow) = Aktivitet.Aktivitetskort(
         hashetFodselsnummer = it[hashetFodselsnummer],
         orgnr = it[organisasjonsnummer],
         aktivitetsid = it[aktivitetsid],
         aktivitetsversjon = it[aktivitetsversjon],
-        fullført = it[fullført],
+        fullført = it[fullført]!!,
         fullføringstidspunkt = it[fullføringstidspunkt]?.toKotlinInstant(),
     )
 }

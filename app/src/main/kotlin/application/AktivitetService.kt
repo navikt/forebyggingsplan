@@ -16,11 +16,11 @@ class AktivitetService(
         val hashetFødselsnummer = hasher.hash(fødselsnummer)
         val fullføringstidspunkt = Clock.System.now()
         val aktivitet =
-            Aktivitet(hashetFødselsnummer, orgnr, aktivitetsid, aktivitetsversjon, true, fullføringstidspunkt)
+            Aktivitet.Aktivitetskort(hashetFødselsnummer, orgnr, aktivitetsid, aktivitetsversjon, true, fullføringstidspunkt)
         aktivitetRepository.settAktivitet(aktivitet)
     }
 
-    fun hentAlleFullførteAktiviteterFor(fnr: String, virksomhet: Virksomhet): List<Aktivitet> {
+    fun hentAlleFullførteAktiviteterFor(fnr: String, virksomhet: Virksomhet): List<Aktivitet.Aktivitetskort> {
         val hashetFnr = Sha3Hasher().hash(fnr)
         return SqlAktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFnr, virksomhet.orgnr)
     }

@@ -1,7 +1,7 @@
 package api.endepunkt
 
+import api.dto.FullførtAktivitetJson
 import application.AktivitetService
-import domene.Aktivitet
 import http.tokenSubject
 import http.virksomhet
 import io.ktor.http.*
@@ -38,7 +38,7 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
             val virksomhet = call.virksomhet
             call.respond(
                 aktivitetService.hentAlleFullførteAktiviteterFor(fnr, virksomhet)
-                    .map(Aktivitet::tilDto)
+                    .map(FullførtAktivitetJson::fraDomene)
             )
         }
     }
