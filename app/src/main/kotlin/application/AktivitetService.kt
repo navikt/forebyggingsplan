@@ -12,16 +12,20 @@ class AktivitetService(
     private val aktivitetRepository: AktiviteterRepository,
     private val hasher: Hasher,
 ) {
-    fun fullførAktivitet(fødselsnummer: String, aktivitetsid: String, orgnr: String, aktivitetsversjon: String) {
+    fun fullførAktivitet(fødselsnummer: String, aktivitetsid: String, orgnr: String) {
         val hashetFødselsnummer = hasher.hash(fødselsnummer)
         val fullføringstidspunkt = Clock.System.now()
         val aktivitet =
-            Aktivitet.Aktivitetskort(hashetFødselsnummer, orgnr, aktivitetsid, aktivitetsversjon, true, fullføringstidspunkt)
+            Aktivitet.Aktivitetskort(hashetFødselsnummer, orgnr, aktivitetsid, true, fullføringstidspunkt)
         aktivitetRepository.settAktivitet(aktivitet)
     }
 
     fun hentAlleFullførteAktiviteterFor(fnr: String, virksomhet: Virksomhet): List<Aktivitet.Aktivitetskort> {
         val hashetFnr = Sha3Hasher().hash(fnr)
         return SqlAktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFnr, virksomhet.orgnr)
+    }
+
+    fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {
+        return aktivitetRepository.oppdaterOppgave(oppgave)
     }
 }

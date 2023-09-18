@@ -8,4 +8,6 @@ interface AktiviteterRepository {
         hashetFnr: ByteArray,
         orgnr: String
     ): List<Aktivitet.Aktivitetskort>
+
+    fun oppdaterOppgave(oppgave: Aktivitet.Oppgave)
 }

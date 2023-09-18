@@ -10,8 +10,7 @@ class AktivitetDto(
     val hashetFodselsnummer: ByteArray = aktivitet.hashetFodselsnummer
     val orgnr: String = aktivitet.orgnr
     val aktivitetsid: String = aktivitet.aktivitetsid
-    val aktivitetsversjon: String = aktivitet.aktivitetsversjon
-    private val aktivitetstype: Aktivitetstype
+    val aktivitetstype: Aktivitetstype
 
     val fullført: Boolean?
     val fullføringstidspunkt: Instant?

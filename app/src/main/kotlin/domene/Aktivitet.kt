@@ -6,14 +6,12 @@ sealed class Aktivitet {
     abstract val hashetFodselsnummer: ByteArray
     abstract val orgnr: String
     abstract val aktivitetsid: String
-    abstract val aktivitetsversjon: String
 
 
     data class Aktivitetskort(
         override val hashetFodselsnummer: ByteArray,
         override val orgnr: String,
         override val aktivitetsid: String,
-        override val aktivitetsversjon: String,
         val fullført: Boolean,
         val fullføringstidspunkt: Instant?,
     ) : Aktivitet() {
@@ -26,7 +24,6 @@ sealed class Aktivitet {
             if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
             if (orgnr != other.orgnr) return false
             if (aktivitetsid != other.aktivitetsid) return false
-            if (aktivitetsversjon != other.aktivitetsversjon) return false
             if (fullført != other.fullført) return false
             if (fullføringstidspunkt != other.fullføringstidspunkt) return false
 
@@ -37,7 +34,6 @@ sealed class Aktivitet {
             var result = hashetFodselsnummer.contentHashCode()
             result = 31 * result + orgnr.hashCode()
             result = 31 * result + aktivitetsid.hashCode()
-            result = 31 * result + aktivitetsversjon.hashCode()
             result = 31 * result + fullført.hashCode()
             result = 31 * result + (fullføringstidspunkt?.hashCode() ?: 0)
             return result
@@ -48,7 +44,6 @@ sealed class Aktivitet {
         override val hashetFodselsnummer: ByteArray,
         override val orgnr: String,
         override val aktivitetsid: String,
-        override val aktivitetsversjon: String,
         val status: Status,
     ) : Aktivitet() {
 
@@ -65,7 +60,6 @@ sealed class Aktivitet {
             if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
             if (orgnr != other.orgnr) return false
             if (aktivitetsid != other.aktivitetsid) return false
-            if (aktivitetsversjon != other.aktivitetsversjon) return false
             if (status != other.status) return false
 
             return true
@@ -75,7 +69,6 @@ sealed class Aktivitet {
             var result = hashetFodselsnummer.contentHashCode()
             result = 31 * result + orgnr.hashCode()
             result = 31 * result + aktivitetsid.hashCode()
-            result = 31 * result + aktivitetsversjon.hashCode()
             result = 31 * result + status.hashCode()
             return result
         }
