@@ -69,7 +69,7 @@ jobs:
     name: Deploy app to ${{ matrix.cluster }}
     needs: build
     # Husk å legge til samme feature-branch navn i steg 'Login to Github' og 'Build & push image to Docker'
-    if: github.ref == 'refs/heads/personlige-aktiviteter-endepunkt'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
