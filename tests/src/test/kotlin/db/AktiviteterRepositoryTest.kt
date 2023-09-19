@@ -62,4 +62,31 @@ class AktiviteterRepositoryKotest : FunSpec({
         resultat shouldContainExactly listOf(aktivitet, aktivitet2)
     }
 
+    context("sett oppgave") {
+        val startetOppgave = Aktivitet.Oppgave(
+            hashetFodselsnummer,
+            orgnr,
+            aktivitetsid = "aktivitetsid",
+            status = Aktivitet.Oppgave.Status.STARTET
+        )
+
+        test("burde skrive ny status til db") {
+            SqlAktiviteterRepository.settAktivitet(startetOppgave)
+
+            val resultat = SqlAktiviteterRepository.hentAlleAktiviteter(hashetFodselsnummer, orgnr)
+
+            resultat shouldContainExactly listOf(startetOppgave)
+        }
+
+        test("burde oppdatere status i db") {
+            SqlAktiviteterRepository.settAktivitet(startetOppgave.copy(status = Aktivitet.Oppgave.Status.STARTET))
+            val fullførtOppgave = startetOppgave.copy(status = Aktivitet.Oppgave.Status.FULLFØRT)
+            SqlAktiviteterRepository.settAktivitet(fullførtOppgave)
+
+            val resultat = SqlAktiviteterRepository.hentAlleAktiviteter(hashetFodselsnummer, orgnr)
+
+            resultat shouldContainExactly listOf(fullførtOppgave)
+        }
+    }
+
 })

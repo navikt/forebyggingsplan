@@ -24,7 +24,7 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
     override val primaryKey = PrimaryKey(hashetFodselsnummer, organisasjonsnummer, aktivitetsid)
 
     override fun settAktivitet(aktivitet: Aktivitet) {
-        settAktivitet(AktivitetDto(aktivitet))
+        settAktivitet(AktivitetDto.fromDomain(aktivitet))
     }
 
     override fun hentAlleFullførteAktiviteterFor(hashetFnr: ByteArray, orgnr: String): List<Aktivitet.Aktivitetskort> {
@@ -37,9 +37,31 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
         }
     }
 
-    override fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {
-        settAktivitet(AktivitetDto(oppgave))
+    fun hentAlleAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
+        return transaction {
+            select {
+                (hashetFodselsnummer eq hashetFnr) and
+                        (organisasjonsnummer eq orgnr)
+            }
+                .map(::tilDto)
+                .map(AktivitetDto::tilDomene)
+        }
     }
+
+    override fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {
+        settAktivitet(AktivitetDto.fromDomain(oppgave))
+    }
+
+    private fun tilDto(resultRow: ResultRow) = AktivitetDto(
+        hashetFodselsnummer = resultRow[hashetFodselsnummer],
+        orgnr = resultRow[organisasjonsnummer],
+        aktivitetsid = resultRow[aktivitetsid],
+        // Kun "aktivitetskort" kan ha aktivitetsype lik null
+        aktivitetstype = resultRow[aktivitetstype] ?: AktivitetDto.Aktivitetstype.AKTIVITETSKORT,
+        fullført = resultRow[fullført],
+        fullføringstidspunkt = resultRow[fullføringstidspunkt],
+        status = resultRow[status],
+    )
 
     private fun settAktivitet(aktivitetDto: AktivitetDto) {
         transaction {
