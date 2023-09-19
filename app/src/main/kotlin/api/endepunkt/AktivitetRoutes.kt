@@ -7,7 +7,6 @@ import http.tokenSubject
 import http.virksomhet
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import util.hash.Hasher
@@ -47,8 +46,8 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
 data class OppdaterAktivitetJson(val status: String)
 
 fun Route.aktiviteter(aktivitetService: AktivitetService, hasher: Hasher) {
-    route("aktivitet/{aktivitetId}/orgnr/{orgnr}") {
-        post("/oppdater") {
+    route("/aktivitet/{aktivitetId}/orgnr/{orgnr}") {
+        post<OppdaterAktivitetJson>("/oppdater") {
             val fødselsnummer = call.request.tokenSubject()
             val aktivitetId = call.parameters["aktivitetId"] ?: return@post call.respond(
                 HttpStatusCode.BadRequest,
@@ -57,13 +56,11 @@ fun Route.aktiviteter(aktivitetService: AktivitetService, hasher: Hasher) {
             val orgnr = call.parameters["orgnr"]
                 ?: return@post call.respond(HttpStatusCode.BadRequest, "Mangler orgnr")
 
-            val status = call.receive<OppdaterAktivitetJson>().status
-
             val oppgave = Aktivitet.Oppgave(
                 hashetFodselsnummer = hasher.hash(fødselsnummer),
                 orgnr = orgnr,
                 aktivitetsid = aktivitetId,
-                status = Aktivitet.Oppgave.Status.valueOf(status.uppercase())
+                status = Aktivitet.Oppgave.Status.valueOf(it.status.uppercase())
             )
 
             aktivitetService.oppdaterOppgave(oppgave)

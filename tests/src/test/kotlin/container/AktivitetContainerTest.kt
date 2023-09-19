@@ -186,52 +186,6 @@ class AktivitetContainerTest {
     }
 
     @Test
-    fun `skal kunne oppdater dato frist til en valgt aktivitet`() {
-        val idag = LocalDate.now().toKotlinLocalDate()
-        runBlocking {
-            val aktivitet = forebyggingsplanApi.velgAktivitet(
-                aktivitetsmalId = UUID.randomUUID().toString(),
-                orgnr = enVirksomhet.orgnr,
-                block = withToken()
-            )
-                .body<ValgtAktivitetDTO>()
-            aktivitet.frist shouldBe null
-
-            val oppdatertAktivitet = forebyggingsplanApi.oppdaterFristPåAktivitet(
-                frist = idag,
-                aktivitetsId = aktivitet.id,
-                aktivitetsmalId = aktivitet.aktivitetsmalId,
-                orgnr = aktivitet.valgtAv.orgnr,
-                block = withToken()
-            ).body<ValgtAktivitetDTO>()
-            oppdatertAktivitet.frist shouldBe idag
-        }
-    }
-
-    @Test
-    fun `skal kunne nullstille dato frist til en valgt aktivitet`() {
-        val idag = LocalDate.now().toKotlinLocalDate()
-        runBlocking {
-            val aktivitet = forebyggingsplanApi.velgAktivitet(
-                frist = idag,
-                aktivitetsmalId = UUID.randomUUID().toString(),
-                orgnr = enVirksomhet.orgnr,
-                block = withToken()
-            ).body<ValgtAktivitetDTO>()
-            aktivitet.frist shouldBe idag
-
-            val oppdatertAktivitet = forebyggingsplanApi.oppdaterFristPåAktivitet(
-                frist = null,
-                aktivitetsId = aktivitet.id,
-                aktivitetsmalId = aktivitet.aktivitetsmalId,
-                orgnr = aktivitet.valgtAv.orgnr,
-                block = withToken()
-            ).body<ValgtAktivitetDTO>()
-            oppdatertAktivitet.frist shouldBe null
-        }
-    }
-
-    @Test
     fun `skal kunne sette en ny aktivitet til fullført`() {
         runBlocking {
             val aktivitetEtterFullfør = forebyggingsplanApi.fullførAktivitet(

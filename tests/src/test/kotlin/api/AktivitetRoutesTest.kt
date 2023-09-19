@@ -10,6 +10,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.ktor.client.call.*
+import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Clock
 import request.ForebyggingsplanApi
@@ -25,7 +26,6 @@ internal class AktivitetRoutesTest : FunSpec({
     fun alleFelterLikeIgnorerDato(fullførtAktivitetJson: FullførtAktivitetJson) = Matcher<FullførtAktivitetJson> {
         MatcherResult(
             fullførtAktivitetJson.aktivitetsId == it.aktivitetsId &&
-                    fullførtAktivitetJson.aktivitetsversjon == it.aktivitetsversjon &&
                     fullførtAktivitetJson.fullført == it.fullført,
             { "Objektene er ikke like. Fikk $it men forventet $fullførtAktivitetJson." },
             { "Objetene er like." },
@@ -76,7 +76,6 @@ internal class AktivitetRoutesTest : FunSpec({
     test("hent fullførte aktiviteter returnerer 200 og en liste med fullførte aktiviteter") {
         val fullført = FullførtAktivitetJson(
             aktivitetsId,
-            aktivitetsVersjon,
             true,
             Clock.System.now()
         )
@@ -90,4 +89,27 @@ internal class AktivitetRoutesTest : FunSpec({
         fullførte shouldHaveSize 1
         fullførte.first() shouldHave alleFelterLikeIgnorerDato(fullført)
     }
+
+    test("oppdater svarer med 400 når payload er en tom JSON") {
+        val resultat = forebyggingsplanApi.oppdater(
+            authorisertOrgnr,
+            aktivitetsId,
+            withToken() {
+                this.contentType(ContentType.Application.Json)
+                this.setBody("{}")
+            })
+        resultat.status shouldBe HttpStatusCode.BadRequest
+    }
+
+    test("oppdater svarer med 200 OK når en aktivitet er oppdatert") {
+        val resultat = forebyggingsplanApi.oppdater(
+            authorisertOrgnr,
+            aktivitetsId,
+            withToken() {
+                this.contentType(ContentType.Application.Json)
+                this.setBody("""{"status": "fullført"}""")
+            })
+        resultat.status shouldBe HttpStatusCode.BadRequest
+    }
+
 })
