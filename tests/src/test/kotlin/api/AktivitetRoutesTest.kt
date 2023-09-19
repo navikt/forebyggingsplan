@@ -97,7 +97,6 @@ internal class AktivitetRoutesTest : FunSpec({
             authorisertOrgnr,
             aktivitetsId,
             withToken() {
-                contentType(ContentType.Application.Json)
                 setBody("{}")
             })
         resultat.status shouldBe HttpStatusCode.BadRequest
@@ -109,9 +108,8 @@ internal class AktivitetRoutesTest : FunSpec({
             aktivitetsId,
             withToken() {
                 setBody(OppdaterAktivitetJson(status = "fullført"))
-
             })
-        resultat.bodyAsText() shouldBe "OK"
+        resultat.bodyAsText() shouldBe ""
         resultat.status shouldBe HttpStatusCode.OK
     }
 
