@@ -9,7 +9,6 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Clock
-import java.time.ZoneOffset
 
 object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
     private val hashetFodselsnummer = binary("hashet_fodselsnummer", 64)
@@ -45,7 +44,6 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
     private fun settAktivitet(aktivitetDto: AktivitetDto) {
         transaction {
             upsert {
-                Clock.system(ZoneOffset.UTC).instant()
                 it[hashetFodselsnummer] = aktivitetDto.hashetFodselsnummer
                 it[organisasjonsnummer] = aktivitetDto.orgnr
                 it[aktivitetsid] = aktivitetDto.aktivitetsid

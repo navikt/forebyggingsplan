@@ -1,6 +1,7 @@
 package api
 
 import api.dto.FullførtAktivitetJson
+import api.endepunkt.json.OppdaterAktivitetJson
 import container.helper.TestContainerHelper
 import container.helper.withToken
 import io.kotest.core.spec.style.FunSpec
@@ -11,6 +12,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.datetime.Clock
 import request.ForebyggingsplanApi
@@ -95,8 +97,8 @@ internal class AktivitetRoutesTest : FunSpec({
             authorisertOrgnr,
             aktivitetsId,
             withToken() {
-                this.contentType(ContentType.Application.Json)
-                this.setBody("{}")
+                contentType(ContentType.Application.Json)
+                setBody("{}")
             })
         resultat.status shouldBe HttpStatusCode.BadRequest
     }
@@ -106,10 +108,11 @@ internal class AktivitetRoutesTest : FunSpec({
             authorisertOrgnr,
             aktivitetsId,
             withToken() {
-                this.contentType(ContentType.Application.Json)
-                this.setBody("""{"status": "fullført"}""")
+                setBody(OppdaterAktivitetJson(status = "fullført"))
+
             })
-        resultat.status shouldBe HttpStatusCode.BadRequest
+        resultat.bodyAsText() shouldBe "OK"
+        resultat.status shouldBe HttpStatusCode.OK
     }
 
 })

@@ -1,6 +1,7 @@
 package api.endepunkt
 
 import api.dto.FullførtAktivitetJson
+import api.endepunkt.json.OppdaterAktivitetJson
 import application.AktivitetService
 import domene.Aktivitet
 import http.tokenSubject
@@ -43,8 +44,6 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
     }
 }
 
-data class OppdaterAktivitetJson(val status: String)
-
 fun Route.aktiviteter(aktivitetService: AktivitetService, hasher: Hasher) {
     route("/aktivitet/{aktivitetId}/orgnr/{orgnr}") {
         post<OppdaterAktivitetJson>("/oppdater") {
@@ -64,6 +63,8 @@ fun Route.aktiviteter(aktivitetService: AktivitetService, hasher: Hasher) {
             )
 
             aktivitetService.oppdaterOppgave(oppgave)
+
+            call.response.status(HttpStatusCode.OK)
         }
     }
 }
