@@ -92,25 +92,36 @@ internal class AktivitetRoutesTest : FunSpec({
         fullførte.first() shouldHave alleFelterLikeIgnorerDato(fullført)
     }
 
-    test("oppdater svarer med 400 når payload er en tom JSON") {
-        val resultat = forebyggingsplanApi.oppdater(
-            authorisertOrgnr,
-            aktivitetsId,
-            withToken() {
-                setBody("{}")
-            })
-        resultat.status shouldBe HttpStatusCode.BadRequest
-    }
+    context("oppdater aktivitet") {
+        test("svarer med 400 når payload er en tom JSON") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken() {
+                    setBody("{}")
+                })
+            resultat.status shouldBe HttpStatusCode.BadRequest
+        }
 
-    test("oppdater svarer med 200 OK når en aktivitet er oppdatert") {
-        val resultat = forebyggingsplanApi.oppdater(
-            authorisertOrgnr,
-            aktivitetsId,
-            withToken() {
-                setBody(OppdaterAktivitetJson(status = "fullført"))
-            })
-        resultat.bodyAsText() shouldBe ""
-        resultat.status shouldBe HttpStatusCode.OK
-    }
+        test("svarer med 400 når status er ugyldig") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken() {
+                    setBody(OppdaterAktivitetJson(status = "ikke_en_status_jeg_har_sett"))
+                })
+            resultat.status shouldBe HttpStatusCode.BadRequest
+        }
 
+        test("svarer med 200 OK når en aktivitet er oppdatert") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken() {
+                    setBody(OppdaterAktivitetJson(status = "fullført"))
+                })
+            resultat.bodyAsText() shouldBe ""
+            resultat.status shouldBe HttpStatusCode.OK
+        }
+    }
 })

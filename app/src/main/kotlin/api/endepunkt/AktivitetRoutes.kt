@@ -55,11 +55,16 @@ fun Route.aktiviteter(aktivitetService: AktivitetService, hasher: Hasher) {
             val orgnr = call.parameters["orgnr"]
                 ?: return@post call.respond(HttpStatusCode.BadRequest, "Mangler orgnr")
 
+            val status = runCatching {
+                Aktivitet.Oppgave.Status.valueOf(it.status.uppercase())
+            }.getOrElse {
+                return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${Aktivitet.Oppgave.Status.values().joinToString()}")
+            }
             val oppgave = Aktivitet.Oppgave(
                 hashetFodselsnummer = hasher.hash(fødselsnummer),
                 orgnr = orgnr,
                 aktivitetsid = aktivitetId,
-                status = Aktivitet.Oppgave.Status.valueOf(it.status.uppercase())
+                status = status
             )
 
             aktivitetService.oppdaterOppgave(oppgave)
