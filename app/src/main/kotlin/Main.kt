@@ -49,8 +49,9 @@ fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(sel
 fun Application.forebyggingsplanApplicationModule() {
     val legacyAktivitetService =
         LegacyAktivitetService(aktivitetRepository = ValgtAktivitetRepository())
+    val hasher = Sha3Hasher()
     val aktivitetService =
-        AktivitetService(aktivitetRepository = SqlAktiviteterRepository, hasher = Sha3Hasher())
+        AktivitetService(aktivitetRepository = SqlAktiviteterRepository, hasher = hasher)
 
     install(ContentNegotiation) {
         json()
@@ -114,6 +115,7 @@ fun Application.forebyggingsplanApplicationModule() {
                 legacyValgteAktiviteter(aktivitetService = legacyAktivitetService)
                 legacyFullførteAktiviteter(aktivitetService = legacyAktivitetService)
                 fullførteAktiviteter(aktivitetService = aktivitetService)
+                aktiviteter(aktivitetService = aktivitetService, hasher = hasher)
             }
         }
     }

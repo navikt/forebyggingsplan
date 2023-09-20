@@ -7,5 +7,7 @@ interface AktiviteterRepository {
     fun hentAlleFullførteAktiviteterFor(
         hashetFnr: ByteArray,
         orgnr: String
-    ): List<Aktivitet>
+    ): List<Aktivitet.Aktivitetskort>
+
+    fun oppdaterOppgave(oppgave: Aktivitet.Oppgave)
 }

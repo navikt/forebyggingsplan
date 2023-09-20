@@ -1,6 +1,7 @@
 package api
 
-import api.dto.FullførtAktivitetDTO
+import api.dto.FullførtAktivitetJson
+import api.endepunkt.json.OppdaterAktivitetJson
 import container.helper.TestContainerHelper
 import container.helper.withToken
 import io.kotest.core.spec.style.FunSpec
@@ -10,6 +11,8 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.datetime.Clock
 import request.ForebyggingsplanApi
@@ -22,12 +25,11 @@ internal class AktivitetRoutesTest : FunSpec({
     val aktivitetsId = "aktivitetsid"
     val aktivitetsVersjon = "aktivitetsversjon"
 
-    fun alleFelterLikeIgnorerDato(fullførtAktivitetDTO: FullførtAktivitetDTO) = Matcher<FullførtAktivitetDTO> {
+    fun alleFelterLikeIgnorerDato(fullførtAktivitetJson: FullførtAktivitetJson) = Matcher<FullførtAktivitetJson> {
         MatcherResult(
-            fullførtAktivitetDTO.aktivitetsId == it.aktivitetsId &&
-                    fullførtAktivitetDTO.aktivitetsversjon == it.aktivitetsversjon &&
-                    fullførtAktivitetDTO.fullført == it.fullført,
-            { "Objektene er ikke like. Fikk $it men forventet $fullførtAktivitetDTO." },
+            fullførtAktivitetJson.aktivitetsId == it.aktivitetsId &&
+                    fullførtAktivitetJson.fullført == it.fullført,
+            { "Objektene er ikke like. Fikk $it men forventet $fullførtAktivitetJson." },
             { "Objetene er like." },
         )
     }
@@ -69,14 +71,13 @@ internal class AktivitetRoutesTest : FunSpec({
         val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
 
         resultat.status shouldBe HttpStatusCode.OK
-        val fullførte: List<FullførtAktivitetDTO> = resultat.body()
+        val fullførte: List<FullførtAktivitetJson> = resultat.body()
         fullførte shouldHaveSize 0
     }
 
     test("hent fullførte aktiviteter returnerer 200 og en liste med fullførte aktiviteter") {
-        val fullført = FullførtAktivitetDTO(
+        val fullført = FullførtAktivitetJson(
             aktivitetsId,
-            aktivitetsVersjon,
             true,
             Clock.System.now()
         )
@@ -86,8 +87,41 @@ internal class AktivitetRoutesTest : FunSpec({
 
 
         resultat.status shouldBe HttpStatusCode.OK
-        val fullførte: List<FullførtAktivitetDTO> = resultat.body()
+        val fullførte: List<FullførtAktivitetJson> = resultat.body()
         fullførte shouldHaveSize 1
         fullførte.first() shouldHave alleFelterLikeIgnorerDato(fullført)
+    }
+
+    context("oppdater aktivitet") {
+        test("svarer med 400 når payload er en tom JSON") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken() {
+                    setBody("{}")
+                })
+            resultat.status shouldBe HttpStatusCode.BadRequest
+        }
+
+        test("svarer med 400 når status er ugyldig") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken() {
+                    setBody(OppdaterAktivitetJson(status = "ikke_en_status_jeg_har_sett"))
+                })
+            resultat.status shouldBe HttpStatusCode.BadRequest
+        }
+
+        test("svarer med 200 OK når en aktivitet er oppdatert") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken() {
+                    setBody(OppdaterAktivitetJson(status = "fullført"))
+                })
+            resultat.bodyAsText() shouldBe ""
+            resultat.status shouldBe HttpStatusCode.OK
+        }
     }
 })

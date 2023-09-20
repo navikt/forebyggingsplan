@@ -15,16 +15,15 @@ class AktiviteterRepositoryKotest : FunSpec({
 
     val hashetFodselsnummer = byteArrayOf(1, 2, 3)
     val orgnr = "123"
-    val aktivitet = Aktivitet(
+    val aktivitet = Aktivitet.Aktivitetskort(
         hashetFodselsnummer = hashetFodselsnummer,
         orgnr = orgnr,
         aktivitetsid = "aktivitetsid",
-        aktivitetsversjon = "aktivitetsversjon",
         fullført = true,
         fullføringstidspunkt = LocalDateTime(2023, 1, 1, 0, 0, 0).toInstant(TimeZone.UTC)
     )
 
-    fun SqlAktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet> = transaction {
+    fun SqlAktiviteterRepository.hentAlleAktiviteter(): List<Aktivitet.Aktivitetskort> = transaction {
         selectAll().map(::tilDomene)
     }
 
@@ -61,6 +60,33 @@ class AktiviteterRepositoryKotest : FunSpec({
             SqlAktiviteterRepository.hentAlleFullførteAktiviteterFor(hashetFodselsnummer, orgnr)
 
         resultat shouldContainExactly listOf(aktivitet, aktivitet2)
+    }
+
+    context("sett oppgave") {
+        val startetOppgave = Aktivitet.Oppgave(
+            hashetFodselsnummer,
+            orgnr,
+            aktivitetsid = "aktivitetsid",
+            status = Aktivitet.Oppgave.Status.STARTET
+        )
+
+        test("burde skrive ny status til db") {
+            SqlAktiviteterRepository.settAktivitet(startetOppgave)
+
+            val resultat = SqlAktiviteterRepository.hentAlleAktiviteter(hashetFodselsnummer, orgnr)
+
+            resultat shouldContainExactly listOf(startetOppgave)
+        }
+
+        test("burde oppdatere status i db") {
+            SqlAktiviteterRepository.settAktivitet(startetOppgave.copy(status = Aktivitet.Oppgave.Status.STARTET))
+            val fullførtOppgave = startetOppgave.copy(status = Aktivitet.Oppgave.Status.FULLFØRT)
+            SqlAktiviteterRepository.settAktivitet(fullførtOppgave)
+
+            val resultat = SqlAktiviteterRepository.hentAlleAktiviteter(hashetFodselsnummer, orgnr)
+
+            resultat shouldContainExactly listOf(fullførtOppgave)
+        }
     }
 
 })

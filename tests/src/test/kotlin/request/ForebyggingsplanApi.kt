@@ -101,5 +101,9 @@ class ForebyggingsplanApi(private val forebyggingsplanContainer: GenericContaine
             "/aktivitet/$aktivitetsId/versjon/$aktivitetsversjon/orgnr/$orgnr/fullfor",
             block
         )
+
+    internal suspend fun oppdater(
+        orgnr: String, aktivitetId: String, block: HttpRequestBuilder.() -> Unit = {}
+    ) = forebyggingsplanContainer.performPost("/aktivitet/$aktivitetId/orgnr/$orgnr/oppdater", block)
 }
 

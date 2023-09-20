@@ -59,7 +59,7 @@ jobs:
   deploy-to-dev:
     name: Deploy to dev-gcp
     needs: docker-build-push
-    if: github.ref == 'refs/heads/gar'
+    if: github.ref == 'refs/heads/generaliser-aktivitetskonsept'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

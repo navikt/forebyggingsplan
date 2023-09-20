@@ -9,40 +9,48 @@ data class AktivitetDto(
     val hashetFodselsnummer: ByteArray,
     val orgnr: String,
     val aktivitetsid: String,
-    val aktivitetsversjon: String,
-    val fullført: Boolean,
-    val fullføringstidspunkt: Instant? = null
+    val aktivitetstype: Aktivitetstype,
+    val fullført: Boolean?,
+    val fullføringstidspunkt: Instant?,
+    val status: String?,
 ) {
-    constructor(aktivitet: Aktivitet) : this(
-        hashetFodselsnummer = aktivitet.hashetFodselsnummer,
-        orgnr = aktivitet.orgnr,
-        aktivitetsid = aktivitet.aktivitetsid,
-        aktivitetsversjon = aktivitet.aktivitetsversjon,
-        fullført = aktivitet.fullført,
-        fullføringstidspunkt = aktivitet.fullføringstidspunkt?.toJavaInstant()
-    )
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    companion object {
+        fun fromDomain(aktivitet: Aktivitet) = when (aktivitet) {
+            is Aktivitet.Aktivitetskort -> AktivitetDto(
+                hashetFodselsnummer = aktivitet.hashetFodselsnummer,
+                orgnr = aktivitet.orgnr,
+                aktivitetsid = aktivitet.aktivitetsid,
+                aktivitetstype = Aktivitetstype.AKTIVITETSKORT,
+                fullført = aktivitet.fullført,
+                fullføringstidspunkt = aktivitet.fullføringstidspunkt?.toJavaInstant(),
+                status = null,
+            )
 
-        other as AktivitetDto
-
-        if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
-        if (orgnr != other.orgnr) return false
-        if (aktivitetsid != other.aktivitetsid) return false
-        if (aktivitetsversjon != other.aktivitetsversjon) return false
-        if (fullført != other.fullført) return false
-        return fullføringstidspunkt == other.fullføringstidspunkt
+            is Aktivitet.Oppgave -> AktivitetDto(
+                hashetFodselsnummer = aktivitet.hashetFodselsnummer,
+                orgnr = aktivitet.orgnr,
+                aktivitetsid = aktivitet.aktivitetsid,
+                aktivitetstype = Aktivitetstype.OPPGAVE,
+                status = aktivitet.status.toString(),
+                fullført = null,
+                fullføringstidspunkt = null,
+            )
+        }
     }
 
-    override fun hashCode(): Int {
-        var result = hashetFodselsnummer.contentHashCode()
-        result = 31 * result + orgnr.hashCode()
-        result = 31 * result + aktivitetsid.hashCode()
-        result = 31 * result + aktivitetsversjon.hashCode()
-        result = 31 * result + (fullført?.hashCode() ?: 0)
-        result = 31 * result + (fullføringstidspunkt?.hashCode() ?: 0)
-        return result
+    fun tilDomene(): Aktivitet = when (aktivitetstype) {
+        Aktivitetstype.AKTIVITETSKORT -> Aktivitet.Aktivitetskort(
+            hashetFodselsnummer, orgnr, aktivitetsid, fullført!!, fullføringstidspunkt?.toKotlinInstant()
+        )
+
+        Aktivitetstype.OPPGAVE -> Aktivitet.Oppgave(
+            hashetFodselsnummer, orgnr, aktivitetsid, Aktivitet.Oppgave.Status.valueOf(status!!)
+        )
+    }
+
+
+    enum class Aktivitetstype {
+        AKTIVITETSKORT, OPPGAVE
     }
 }
