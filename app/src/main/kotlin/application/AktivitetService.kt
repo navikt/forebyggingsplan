@@ -5,7 +5,6 @@ import domene.Aktivitet
 import domene.Virksomhet
 import kotlinx.datetime.Clock
 import util.hash.Hasher
-import util.hash.Sha3Hasher
 
 class AktivitetService(
     private val aktivitetRepository: AktiviteterRepository,
@@ -20,11 +19,16 @@ class AktivitetService(
     }
 
     fun hentAlleFullførteAktiviteterFor(fnr: String, virksomhet: Virksomhet): List<Aktivitet.Aktivitetskort> {
-        val hashetFnr = Sha3Hasher().hash(fnr)
+        val hashetFnr = hasher.hash(fnr)
         return aktivitetRepository.hentAlleFullførteAktiviteterFor(hashetFnr, virksomhet.orgnr)
     }
 
     fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {
         return aktivitetRepository.oppdaterOppgave(oppgave)
+    }
+
+    fun hentAktiviteter(fnr: String, orgnr: String): List<Aktivitet> {
+        val hashetFnr = hasher.hash(fnr)
+        return aktivitetRepository.hentAktiviteter(hashetFnr, orgnr)
     }
 }

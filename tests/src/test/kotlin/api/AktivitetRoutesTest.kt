@@ -35,7 +35,6 @@ internal class AktivitetRoutesTest : FunSpec({
     }
 
     context("fullfør aktivitet") {
-
         test("returnerer 401 ved manglende autentisering") {
             val resultat = forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, authorisertOrgnr)
 
@@ -45,7 +44,6 @@ internal class AktivitetRoutesTest : FunSpec({
         test("returnerer 403 hvis brukeren ikke har tilgang") {
             val resultat =
                 forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, "999999999", withToken())
-
 
             resultat.status shouldBe HttpStatusCode.Forbidden
         }
@@ -59,20 +57,20 @@ internal class AktivitetRoutesTest : FunSpec({
     }
 
     context("hent fullførte aktiviteter") {
-        test("hent fullførte aktiviteter returnerer 401 ved manglende autentisering") {
+        test("returnerer 401 ved manglende autentisering") {
             val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr)
 
             resultat.status shouldBe HttpStatusCode.Unauthorized
         }
 
-        test("hent fullførte aktivitetert returnerer 403 hvis brukeren ikke har tilgang") {
+        test("returnerer 403 hvis brukeren ikke har tilgang") {
             val resultat =
                 forebyggingsplanApi.hentFullførteAktiviteter("999999999", withToken())
 
             resultat.status shouldBe HttpStatusCode.Forbidden
         }
 
-        test("hent fullførte aktiviteter returnerer 200 og en tom liste hvis ingen aktiviteter er fullført") {
+        test("returnerer 200 og en tom liste hvis ingen aktiviteter er fullført") {
             val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
 
             resultat.status shouldBe HttpStatusCode.OK
@@ -80,7 +78,7 @@ internal class AktivitetRoutesTest : FunSpec({
             fullførte shouldHaveSize 0
         }
 
-        test("hent fullførte aktiviteter returnerer 200 og en liste med fullførte aktiviteter") {
+        test("returnerer 200 og en liste med fullførte aktiviteter") {
             val fullført = FullførtAktivitetJson(
                 aktivitetsId,
                 true,

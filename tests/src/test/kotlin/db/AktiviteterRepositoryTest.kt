@@ -73,7 +73,7 @@ class AktiviteterRepositoryKotest : FunSpec({
         test("burde skrive ny status til db") {
             SqlAktiviteterRepository.settAktivitet(startetOppgave)
 
-            val resultat = SqlAktiviteterRepository.hentAlleAktiviteter(hashetFodselsnummer, orgnr)
+            val resultat = SqlAktiviteterRepository.hentAktiviteter(hashetFodselsnummer, orgnr)
 
             resultat shouldContainExactly listOf(startetOppgave)
         }
@@ -83,7 +83,7 @@ class AktiviteterRepositoryKotest : FunSpec({
             val fullførtOppgave = startetOppgave.copy(status = Aktivitet.Oppgave.Status.FULLFØRT)
             SqlAktiviteterRepository.settAktivitet(fullførtOppgave)
 
-            val resultat = SqlAktiviteterRepository.hentAlleAktiviteter(hashetFodselsnummer, orgnr)
+            val resultat = SqlAktiviteterRepository.hentAktiviteter(hashetFodselsnummer, orgnr)
 
             resultat shouldContainExactly listOf(fullførtOppgave)
         }

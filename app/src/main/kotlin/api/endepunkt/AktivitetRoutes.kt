@@ -1,5 +1,6 @@
 package api.endepunkt
 
+import api.dto.AktivitetJson
 import api.dto.FullførtAktivitetJson
 import api.endepunkt.json.OppdaterAktivitetJson
 import application.AktivitetService
@@ -33,6 +34,14 @@ fun Route.fullførteAktiviteter(aktivitetService: AktivitetService) {
         }
     }
     route("/aktiviteter/orgnr/{orgnr}") {
+        get("/") {
+            val fnr = call.request.tokenSubject()
+            val orgnr = call.virksomhet.orgnr
+            call.respond(
+                aktivitetService.hentAktiviteter(fnr, orgnr).map(AktivitetJson::fraDomene)
+            )
+        }
+
         get("/fullforte") {
             val fnr = call.request.tokenSubject()
             val virksomhet = call.virksomhet
@@ -52,8 +61,7 @@ fun Route.aktiviteter(aktivitetService: AktivitetService, hasher: Hasher) {
                 HttpStatusCode.BadRequest,
                 "Mangler aktivitetId"
             )
-            val orgnr = call.parameters["orgnr"]
-                ?: return@post call.respond(HttpStatusCode.BadRequest, "Mangler orgnr")
+            val orgnr = call.virksomhet.orgnr
 
             val status = runCatching {
                 Aktivitet.Oppgave.Status.valueOf(it.status.uppercase())
