@@ -106,6 +106,7 @@ fun Application.forebyggingsplanApplicationModule() {
             }
         }
     }
+    install(IgnoreTrailingSlash)
     routing {
         helseEndepunkter()
         metrics()

@@ -163,6 +163,7 @@ internal class TestContainerHelper {
             )
                 .withNetwork(network)
                 .dependsOn(authServer.container, database.container)
+                .withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("testcontainer")))
                 .withEnv(
                     mapOf(
                         "DB_HOST" to database.postgresNetworkAlias,

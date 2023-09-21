@@ -34,62 +34,66 @@ internal class AktivitetRoutesTest : FunSpec({
         )
     }
 
-    test("fullfør aktivitet returnerer 401 ved manglende autentisering") {
-        val resultat = forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, authorisertOrgnr)
+    context("fullfør aktivitet") {
+        test("returnerer 401 ved manglende autentisering") {
+            val resultat = forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, authorisertOrgnr)
 
-        resultat.status shouldBe HttpStatusCode.Unauthorized
+            resultat.status shouldBe HttpStatusCode.Unauthorized
+        }
+
+        test("returnerer 403 hvis brukeren ikke har tilgang") {
+            val resultat =
+                forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, "999999999", withToken())
+
+            resultat.status shouldBe HttpStatusCode.Forbidden
+        }
+
+        test("returnerer 200 hvis aktiviteten blir fullført") {
+            val resultat =
+                forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, authorisertOrgnr, withToken())
+
+            resultat.status shouldBe HttpStatusCode.OK
+        }
     }
 
-    test("fullfør aktivitet returnerer 403 hvis brukeren ikke har tilgang") {
-        val resultat =
-            forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, "999999999", withToken())
+    context("hent fullførte aktiviteter") {
+        test("returnerer 401 ved manglende autentisering") {
+            val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr)
 
-        resultat.status shouldBe HttpStatusCode.Forbidden
-    }
+            resultat.status shouldBe HttpStatusCode.Unauthorized
+        }
 
-    test("fullfør aktivitet returnerer 200 hvis aktiviteten blir fullført") {
-        val resultat =
+        test("returnerer 403 hvis brukeren ikke har tilgang") {
+            val resultat =
+                forebyggingsplanApi.hentFullførteAktiviteter("999999999", withToken())
+
+            resultat.status shouldBe HttpStatusCode.Forbidden
+        }
+
+        test("returnerer 200 og en tom liste hvis ingen aktiviteter er fullført") {
+            val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
+
+            resultat.status shouldBe HttpStatusCode.OK
+            val fullførte: List<FullførtAktivitetJson> = resultat.body()
+            fullførte shouldHaveSize 0
+        }
+
+        test("returnerer 200 og en liste med fullførte aktiviteter") {
+            val fullført = FullførtAktivitetJson(
+                aktivitetsId,
+                true,
+                Clock.System.now()
+            )
+
             forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, authorisertOrgnr, withToken())
-
-        resultat.status shouldBe HttpStatusCode.OK
-    }
-
-    test("hent fullførte aktiviteter returnerer 401 ved manglende autentisering") {
-        val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr)
-
-        resultat.status shouldBe HttpStatusCode.Unauthorized
-    }
-
-    test("hent fullførte aktivitetert returnerer 403 hvis brukeren ikke har tilgang") {
-        val resultat =
-            forebyggingsplanApi.hentFullførteAktiviteter("999999999", withToken())
-
-        resultat.status shouldBe HttpStatusCode.Forbidden
-    }
-
-    test("hent fullførte aktiviteter returnerer 200 og en tom liste hvis ingen aktiviteter er fullført") {
-        val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
-
-        resultat.status shouldBe HttpStatusCode.OK
-        val fullførte: List<FullførtAktivitetJson> = resultat.body()
-        fullførte shouldHaveSize 0
-    }
-
-    test("hent fullførte aktiviteter returnerer 200 og en liste med fullførte aktiviteter") {
-        val fullført = FullførtAktivitetJson(
-            aktivitetsId,
-            true,
-            Clock.System.now()
-        )
-
-        forebyggingsplanApi.fullførAktivitet(aktivitetsId, aktivitetsVersjon, authorisertOrgnr, withToken())
-        val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
+            val resultat = forebyggingsplanApi.hentFullførteAktiviteter(authorisertOrgnr, withToken())
 
 
-        resultat.status shouldBe HttpStatusCode.OK
-        val fullførte: List<FullførtAktivitetJson> = resultat.body()
-        fullførte shouldHaveSize 1
-        fullførte.first() shouldHave alleFelterLikeIgnorerDato(fullført)
+            resultat.status shouldBe HttpStatusCode.OK
+            val fullførte: List<FullførtAktivitetJson> = resultat.body()
+            fullførte shouldHaveSize 1
+            fullførte.first() shouldHave alleFelterLikeIgnorerDato(fullført)
+        }
     }
 
     context("oppdater aktivitet") {

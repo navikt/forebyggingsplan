@@ -37,7 +37,7 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
         }
     }
 
-    fun hentAlleAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
+    override fun hentAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
         return transaction {
             select {
                 (hashetFodselsnummer eq hashetFnr) and

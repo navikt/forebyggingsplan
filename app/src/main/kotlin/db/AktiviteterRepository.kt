@@ -10,4 +10,5 @@ interface AktiviteterRepository {
     ): List<Aktivitet.Aktivitetskort>
 
     fun oppdaterOppgave(oppgave: Aktivitet.Oppgave)
+    fun hentAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet>
 }
