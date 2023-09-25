@@ -60,7 +60,7 @@ jobs:
   deploy-to-dev:
     name: Deploy to dev-gcp
     needs: docker-build-push
-    if: github.ref == 'refs/heads/nytt_endepunkt'
+    if: github.ref == 'refs/heads/migrer-aktivitetskort-til-oppgaver'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
