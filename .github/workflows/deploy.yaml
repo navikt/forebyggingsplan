@@ -1,6 +1,10 @@
 name: Build and deploy forebyggingsplan
 run-name: Build and deploy || ${{ github.event.head_commit.message }}
-on: [ push ]
+on:
+  push:
+    branches:
+      - main
+      - DEV_BRANCH
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -60,7 +64,6 @@ jobs:
   deploy-to-dev:
     name: Deploy to dev-gcp
     needs: docker-build-push
-    if: github.ref == 'refs/heads/migrer-aktivitetskort-til-oppgaver'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
