@@ -1,8 +1,7 @@
 package plugins
 
 import Systemmiljø
-import api.endepunkt.ORGNR
-import api.hentVirksomheterSomBrukerHarRiktigEnkelRettighetI
+import application.hentVirksomheterSomBrukerHarRiktigEnkelRettighetI
 import auth.TokenExchanger
 import exceptions.UgyldigForespørselException
 import http.hentToken
@@ -32,12 +31,12 @@ val AuthorizationPlugin = createRouteScopedPlugin(
             val orgnr = kotlin.runCatching { call.orgnr }.getOrNull()
             if (orgnr.isNullOrEmpty()) {
                 call.auditLogVedUkjentOrgnummer(fnr, virksomheterVedkommendeHarTilgangTil)
-                throw UgyldigForespørselException("Manglende parameter '$ORGNR'")
+                throw UgyldigForespørselException("Manglende parameter 'orgnr'")
             }
 
             if (!orgnr.erEtOrgNummer()) {
                 call.auditLogVedUgyldigOrgnummer(fnr, orgnr, virksomheterVedkommendeHarTilgangTil)
-                throw UgyldigForespørselException("Ugyldig orgnummer '$ORGNR'")
+                throw UgyldigForespørselException("Ugyldig orgnummer 'orgnr'")
             }
 
             if (virksomheterVedkommendeHarTilgangTil.none { it.organizationNumber == orgnr }) {

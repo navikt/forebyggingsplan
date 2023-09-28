@@ -1,4 +1,4 @@
-package api
+package application
 
 import Systemmiljø
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.AltinnrettigheterProxyKlient

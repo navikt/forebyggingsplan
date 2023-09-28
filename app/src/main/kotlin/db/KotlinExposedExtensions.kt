@@ -29,29 +29,3 @@ class InsertOrUpdate<Key : Any>(
         return "${super.prepareSQL(transaction)} $onConflict"
     }
 }
-
-/**
- * Fungerer kun med PostgreSQL.
- */
-fun <T : Table, E> T.batchUpsert(
-    data: Collection<E>,
-    vararg keys: Column<*> = (primaryKey ?: throw IllegalArgumentException("primary key is missing")).columns,
-    body: T.(BatchInsertStatement, E) -> Unit
-) = BatchInsertOrUpdate(this, keys = keys).apply {
-    data.forEach {
-        addBatch()
-        body(this, it)
-    }
-    execute(TransactionManager.current())
-}
-
-class BatchInsertOrUpdate(
-    table: Table, isIgnore: Boolean = false, private vararg val keys: Column<*>
-) : BatchInsertStatement(table, isIgnore) {
-    override fun prepareSQL(transaction: Transaction): String {
-        val tm = TransactionManager.current()
-        val updateSetter = (table.columns - keys.toSet()).joinToString { "${tm.identity(it)} = EXCLUDED.${tm.identity(it)}" }
-        val onConflict = "ON CONFLICT (${keys.joinToString { tm.identity(it) }}) DO UPDATE SET $updateSetter"
-        return "${super.prepareSQL(transaction)} $onConflict"
-    }
-}

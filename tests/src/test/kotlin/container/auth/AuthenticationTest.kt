@@ -1,54 +1,20 @@
 package container.auth
 
-import api.dto.ValgtAktivitetDTO
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
-import container.helper.withToken
+import container.helper.TestContainerHelper.Companion.performGet
 import enVirksomhet
-import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.shouldBe
-import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
-import request.ForebyggingsplanApi
-import java.util.*
 
 internal class AuthenticationTest {
 
-    private val forebyggingsplanApi = ForebyggingsplanApi(TestContainerHelper.forebyggingsplanContainer)
-
-    @Test
-    fun `happy path - skal få 200 ok ved henting av aktivitet`() {
-        runBlocking {
-            forebyggingsplanApi.velgAktivitet(
-                aktivitetsmalId = UUID.randomUUID().toString(),
-                orgnr = enVirksomhet.orgnr,
-                block = withToken()
-            )
-            val response =
-                forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr, block = withToken())
-            response.status shouldBe HttpStatusCode.OK
-            response.body<List<ValgtAktivitetDTO>>() shouldHaveAtLeastSize 1
-        }
-    }
-
-    @Test
-    fun `skal få 401 unauthorized på kall uten token`() {
-        runBlocking {
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1").status shouldBe HttpStatusCode.Unauthorized
-        }
-    }
-
-    @Test
-    fun `skal få 403 forbidden på forsøk mot en bedrift brukeren ikke har enkel rettighet til`() {
-        runBlocking {
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(
-                orgnr = "315829062",
-                block = withToken()
-            ).status shouldBe HttpStatusCode.Forbidden
-        }
+    private suspend fun kallEndepunkt(orgnr: String = "1", block: HttpRequestBuilder.() -> Unit = {}): HttpResponse {
+        return TestContainerHelper.forebyggingsplanContainer.performGet("/aktiviteter/orgnr/$orgnr", block)
     }
 
     @Test
@@ -56,24 +22,27 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken()
         val plainToken = PlainJWT(accessToken.jwtClaimsSet) // Token med "alg": "none"
         runBlocking {
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            kallEndepunkt {
                 header(HttpHeaders.Authorization, "Bearer ${plainToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+
+            kallEndepunkt {
                 // "alg": "n0ne"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAibjBuZSIKfQ.${plainToken.payload.toBase64URL()}"
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+
+            kallEndepunkt {
                 // "alg": "nonE"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAibm9uRSIKfQ.${plainToken.payload.toBase64URL()}"
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+
+            kallEndepunkt {
                 // "alg": "NONE"
                 header(
                     HttpHeaders.Authorization,
@@ -88,7 +57,7 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken(audience = "ugyldig audience")
 
         runBlocking {
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            kallEndepunkt {
                 header(HttpHeaders.Authorization, "Bearer ${accessToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -100,7 +69,7 @@ internal class AuthenticationTest {
             val gyldigToken = TestContainerHelper.accessToken()
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
 
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr) {
+            kallEndepunkt(orgnr = enVirksomhet.orgnr) {
                 header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.OK
 
@@ -111,14 +80,14 @@ internal class AuthenticationTest {
             )
             ugyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level3"
 
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = "1") {
+            kallEndepunkt {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
 
             val ugyldigToken2 = TestContainerHelper.accessToken(claims = emptyMap())
             ugyldigToken2.jwtClaimsSet.getStringClaim("acr") shouldBe null
 
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet("1") {
+            kallEndepunkt {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken2.serialize()}")
             }.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -137,7 +106,7 @@ internal class AuthenticationTest {
             )
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "idporten-loa-high"
 
-            forebyggingsplanApi.hentValgteAktiviteterForVirksomhet(orgnr = enVirksomhet.orgnr) {
+            kallEndepunkt(orgnr = enVirksomhet.orgnr) {
                 header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
             }.status shouldBe HttpStatusCode.OK
         }

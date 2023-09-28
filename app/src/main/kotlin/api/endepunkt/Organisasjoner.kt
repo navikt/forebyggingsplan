@@ -2,7 +2,7 @@ package api.endepunkt
 
 import Systemmiljø
 import api.endepunkt.Logger.logger
-import api.hentVirksomheterSomBrukerRepresenterer
+import application.hentVirksomheterSomBrukerRepresenterer
 import auth.TokenExchanger
 import http.hentToken
 import http.tokenSubject

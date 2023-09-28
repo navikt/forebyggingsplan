@@ -5,7 +5,6 @@ import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.DecodedJWT
 import db.DatabaseFactory
 import db.SqlAktiviteterRepository
-import db.ValgtAktivitetRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
 import io.ktor.http.*
@@ -47,8 +46,6 @@ fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(sel
 }
 
 fun Application.forebyggingsplanApplicationModule() {
-    val legacyAktivitetService =
-        LegacyAktivitetService(aktivitetRepository = ValgtAktivitetRepository())
     val hasher = Sha3Hasher()
     val aktivitetService =
         AktivitetService(aktivitetRepository = SqlAktiviteterRepository, hasher = hasher)
@@ -113,10 +110,8 @@ fun Application.forebyggingsplanApplicationModule() {
         authenticate("tokenx") {
             organisasjoner()
             medAltinnTilgang {
-                legacyValgteAktiviteter(aktivitetService = legacyAktivitetService)
-                legacyFullførteAktiviteter(aktivitetService = legacyAktivitetService)
-                fullførteAktiviteter(aktivitetService = aktivitetService)
-                aktiviteter(aktivitetService = aktivitetService, hasher = hasher)
+                aktiviteter(aktivitetService = aktivitetService)
+                aktivitet(aktivitetService = aktivitetService, hasher = hasher)
             }
         }
     }
