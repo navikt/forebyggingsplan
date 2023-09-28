@@ -5,7 +5,7 @@ import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toKotlinInstant
 import java.time.Instant
 
-data class AktivitetDto(
+class AktivitetDto(
     val hashetFodselsnummer: ByteArray,
     val orgnr: String,
     val aktivitetsid: String,
@@ -48,7 +48,6 @@ data class AktivitetDto(
             hashetFodselsnummer, orgnr, aktivitetsid, Aktivitet.Oppgave.Status.valueOf(status!!)
         )
     }
-
 
     enum class Aktivitetstype {
         AKTIVITETSKORT, OPPGAVE
