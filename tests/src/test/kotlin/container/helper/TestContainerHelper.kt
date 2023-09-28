@@ -1,6 +1,5 @@
 package container.helper
 
-import api.sanity.SanityForebyggingsplan
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -30,8 +29,8 @@ internal class TestContainerHelper {
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
         private val authServer = AuthContainer(network = network)
         val database = PostgresContainer(network = network)
-        private const val serviceCode = "5934"
-        private const val serviceEdition = "1"
+        private const val SERVICE_CODE = "5934"
+        private const val SERVICE_EDITION = "1"
 
         private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort()).also {
             it.stubFor(
@@ -63,8 +62,8 @@ internal class TestContainerHelper {
             )
             it.stubFor(
                 WireMock.get(WireMock.urlPathEqualTo("/altinn/v2/organisasjoner"))
-                    .withQueryParam("serviceCode", equalTo(serviceCode))
-                    .withQueryParam("serviceEdition", equalTo(serviceEdition))
+                    .withQueryParam("serviceCode", equalTo(SERVICE_CODE))
+                    .withQueryParam("serviceEdition", equalTo(SERVICE_EDITION))
                     .willReturn(
                         WireMock.ok()
                             .withHeader(CONTENT_TYPE, "application/json")
@@ -79,71 +78,6 @@ internal class TestContainerHelper {
                                      "Status": "Active"
                                 }
                             ]""".trimMargin()
-                            )
-                    )
-            )
-            it.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/v2022-10-28/data/query/${SanityForebyggingsplan.Dataset.Development.name.lowercase()}"))
-                    .willReturn(
-                        WireMock.ok()
-                            .withHeader(CONTENT_TYPE, "application/json")
-                            .withBody(
-                                """{
-                                    "ms": 710,
-                                    "query": "*[_type == 'Aktivitet' \u0026\u0026 _id == 'f9daa4cb-a432-4945-8436-6f7d3fa32a5d']",
-                                    "result": [
-                                        {
-                                            "_createdAt": "2022-11-30T09:31:05Z",
-                                            "_id": "f9daa4cb-a432-4945-8436-6f7d3fa32a5d",
-                                            "_rev": "3C549LRrvVH6gsnZfS148M",
-                                            "_type": "Aktivitet",
-                                            "_updatedAt": "2022-12-05T08:58:14Z",
-                                            "beskrivelse": "Første aktivitet har en beskrivelse",
-                                            "embeddedInnhold": [
-                                                {
-                                                    "_key": "e3d11e24ce68",
-                                                    "_type": "block",
-                                                    "children": [
-                                                        {
-                                                            "_key": "5ba6295a4490",
-                                                            "_type": "span",
-                                                            "marks": [],
-                                                            "text": "Hei, her er det noe tekst"
-                                                        }
-                                                    ],
-                                                    "markDefs": [],
-                                                    "style": "normal"
-                                                },
-                                                {
-                                                    "_key": "975c816813e3",
-                                                    "_type": "block",
-                                                    "children": [
-                                                        {
-                                                            "_key": "4c0cf96bedfb",
-                                                            "_type": "span",
-                                                            "marks": [],
-                                                            "text": ""
-                                                        }
-                                                    ],
-                                                    "markDefs": [],
-                                                    "style": "normal"
-                                                },
-                                                {
-                                                    "_key": "174b82d2c890",
-                                                    "_type": "seksjon",
-                                                    "seksjonInnhold": []
-                                                }
-                                            ],
-                                            "kategori": {
-                                                "_ref": "d1e19bae-4625-437f-8bba-4ec5d7825272",
-                                                "_type": "reference"
-                                            },
-                                            "maal": "Og et relativt enkelt mål",
-                                            "tittel": "Første aktivitet"
-                                        }
-                                    ]
-                                }
-                                """
                             )
                     )
             )

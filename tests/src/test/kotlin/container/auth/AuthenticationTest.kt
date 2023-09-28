@@ -3,7 +3,7 @@ package container.auth
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.performGet
-import enVirksomhet
+import container.helper.enVirksomhet
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import io.ktor.client.statement.*

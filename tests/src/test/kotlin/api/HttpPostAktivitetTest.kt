@@ -8,7 +8,6 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import no.nav.security.mock.oauth2.http.json
 import request.ForebyggingsplanApi
 
 internal class HttpPostAktivitetTest : FunSpec({

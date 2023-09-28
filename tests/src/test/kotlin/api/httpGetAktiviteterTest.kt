@@ -6,7 +6,7 @@ import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.performGet
 import container.helper.TestContainerHelper.Companion.performPost
 import container.helper.withToken
-import enVirksomhet
+import container.helper.enVirksomhet
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe

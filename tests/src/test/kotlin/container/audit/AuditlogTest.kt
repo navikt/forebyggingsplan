@@ -2,16 +2,14 @@ package container.audit
 
 import container.helper.TestContainerHelper.Companion.forebyggingsplanContainer
 import container.helper.TestContainerHelper.Companion.performGet
-import container.helper.TestContainerHelper.Companion.performPost
 import container.helper.TestContainerHelper.Companion.shouldContainLog
 import container.helper.withToken
-import enVirksomhet
+import container.helper.enVirksomhet
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
-import request.ForebyggingsplanApi
 
 class AuditlogTest {
     @Test

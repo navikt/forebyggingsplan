@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - DEV_BRANCH
+      - fjern_endepunkter
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
