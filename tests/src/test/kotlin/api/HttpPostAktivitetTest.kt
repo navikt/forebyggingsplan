@@ -1,5 +1,6 @@
 package api
 
+import api.endepunkt.json.Aktivitetstype
 import api.endepunkt.json.OppdaterAktivitetJson
 import container.helper.TestContainerHelper
 import container.helper.withToken
@@ -30,7 +31,7 @@ internal class HttpPostAktivitetTest : FunSpec({
             val resultat = forebyggingsplanApi.oppdater(
                 orgnr = "999999999",
                 aktivitetId = aktivitetsId,
-                block = withToken { setBody(OppdaterAktivitetJson(status = "FULLFØRT")) }
+                block = withToken { setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "FULLFØRT")) }
             )
             resultat.status shouldBe HttpStatusCode.Forbidden
         }
@@ -50,20 +51,53 @@ internal class HttpPostAktivitetTest : FunSpec({
                 authorisertOrgnr,
                 aktivitetsId,
                 withToken {
-                    setBody(OppdaterAktivitetJson(status = "ikke_en_status_jeg_har_sett"))
+                    setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "ikke_en_status_jeg_har_sett"))
                 })
             resultat.status shouldBe HttpStatusCode.BadRequest
         }
 
-        test("svarer med 200 OK når en aktivitet er oppdatert") {
+        test("svarer med 200 OK når en oppgave er oppdatert og aktivitetstype er null") {
             val resultat = forebyggingsplanApi.oppdater(
                 authorisertOrgnr,
                 aktivitetsId,
                 withToken {
-                    setBody(OppdaterAktivitetJson(status = "fullført"))
+                    setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "fullført"))
                 })
             resultat.bodyAsText() shouldBe ""
             resultat.status shouldBe HttpStatusCode.OK
+        }
+
+        test("svarer med 200 OK når en oppgave er oppdatert") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken {
+                    setBody(OppdaterAktivitetJson(aktivitetstype = Aktivitetstype.OPPGAVE, status = "fullført"))
+                })
+            resultat.bodyAsText() shouldBe ""
+            resultat.status shouldBe HttpStatusCode.OK
+        }
+
+        test("svarer med 200 OK når en teoriseksjon er oppdatert") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken {
+                    setBody(OppdaterAktivitetJson(aktivitetstype = Aktivitetstype.TEORISEKSJON, status = "lest"))
+                })
+            resultat.bodyAsText() shouldBe ""
+            resultat.status shouldBe HttpStatusCode.OK
+        }
+
+        test("svarer med 400 BadRequest når det er mismatch mellom status og aktivitetstype") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken {
+                    setBody(OppdaterAktivitetJson(aktivitetstype = Aktivitetstype.TEORISEKSJON, status = "fullført"))
+                })
+
+            resultat.status shouldBe HttpStatusCode.BadRequest
         }
     }
 })

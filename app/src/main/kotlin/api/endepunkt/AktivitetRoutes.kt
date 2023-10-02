@@ -1,9 +1,8 @@
 package api.endepunkt
 
-import api.dto.AktivitetJson
+import api.endepunkt.json.AktivitetJson
 import api.endepunkt.json.OppdaterAktivitetJson
 import application.AktivitetService
-import domene.Aktivitet
 import http.tokenSubject
 import http.virksomhet
 import io.ktor.http.*
@@ -34,19 +33,13 @@ fun Route.aktivitet(aktivitetService: AktivitetService, hasher: Hasher) {
             )
             val orgnr = call.virksomhet.orgnr
 
-            val status = runCatching {
-                Aktivitet.Oppgave.Status.valueOf(it.status.uppercase())
+            val aktivitet = kotlin.runCatching {
+                it.tilDomene(hasher.hash(fødselsnummer), orgnr, aktivitetId)
             }.getOrElse {
-                return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${Aktivitet.Oppgave.Status.values().joinToString()}")
+                return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${AktivitetJson.Status.values().joinToString()}")
             }
-            val oppgave = Aktivitet.Oppgave(
-                hashetFodselsnummer = hasher.hash(fødselsnummer),
-                orgnr = orgnr,
-                aktivitetsid = aktivitetId,
-                status = status
-            )
 
-            aktivitetService.oppdaterOppgave(oppgave)
+            aktivitetService.oppdaterAktivitet(aktivitet)
 
             call.response.status(HttpStatusCode.OK)
         }
