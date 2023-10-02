@@ -7,14 +7,14 @@ import kotlinx.serialization.Serializable
 data class AktivitetJson(
     val aktivitetId: String,
     val aktivitetType: Aktivitetstype,
-    val status: Oppgavestatus?,
+    val status: Status?,
 ) {
     enum class Aktivitetstype {
-        AKTIVITETSKORT, OPPGAVE;
+        TEORISEKSJON, OPPGAVE;
     }
 
-    enum class Oppgavestatus {
-        STARTET, FULLFØRT, AVBRUTT;
+    enum class Status {
+        STARTET, FULLFØRT, AVBRUTT, LEST, ULEST;
 
         companion object {
             fun fraDomene(status: Aktivitet.Oppgave.Status) = when (status) {
@@ -22,20 +22,26 @@ data class AktivitetJson(
                 Aktivitet.Oppgave.Status.FULLFØRT -> FULLFØRT
                 Aktivitet.Oppgave.Status.AVBRUTT -> AVBRUTT
             }
+            fun fraDomene(status: Aktivitet.Teoriseksjon.Status) = when (status) {
+                Aktivitet.Teoriseksjon.Status.LEST -> LEST
+                Aktivitet.Teoriseksjon.Status.ULEST -> ULEST
+            }
+
         }
     }
 
     companion object {
         fun fraDomene(aktivitet: Aktivitet) = when (aktivitet) {
-            is Aktivitet.Aktivitetskort -> AktivitetJson(
-                aktivitetId = aktivitet.aktivitetsid,
-                aktivitetType = Aktivitetstype.AKTIVITETSKORT,
-                status = null
-            )
             is Aktivitet.Oppgave -> AktivitetJson(
                 aktivitetId = aktivitet.aktivitetsid,
                 aktivitetType = Aktivitetstype.OPPGAVE,
-                status = Oppgavestatus.fraDomene(aktivitet.status)
+                status = Status.fraDomene(aktivitet.status)
+            )
+
+            is Aktivitet.Teoriseksjon -> AktivitetJson(
+                aktivitetId = aktivitet.aktivitetsid,
+                aktivitetType = Aktivitetstype.TEORISEKSJON,
+                status = Status.fraDomene(aktivitet.status)
             )
         }
     }

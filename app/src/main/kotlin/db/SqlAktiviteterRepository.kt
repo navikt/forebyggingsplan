@@ -1,7 +1,6 @@
 package db
 
 import domene.Aktivitet
-import kotlinx.datetime.toKotlinInstant
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
@@ -23,20 +22,6 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
 
     override val primaryKey = PrimaryKey(hashetFodselsnummer, organisasjonsnummer, aktivitetsid)
 
-    override fun settAktivitet(aktivitet: Aktivitet) {
-        settAktivitet(AktivitetDto.fromDomain(aktivitet))
-    }
-
-    override fun hentAlleFullførteAktiviteterFor(hashetFnr: ByteArray, orgnr: String): List<Aktivitet.Aktivitetskort> {
-        return transaction {
-            select {
-                (hashetFodselsnummer eq hashetFnr) and
-                        (organisasjonsnummer eq orgnr) and
-                        (fullført eq true)
-            }.map(::tilDomene)
-        }
-    }
-
     override fun hentAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
         return transaction {
             select {
@@ -44,7 +29,7 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
                         (organisasjonsnummer eq orgnr)
             }
                 .map(::tilDto)
-                .map(AktivitetDto::tilDomene)
+                .mapNotNull(AktivitetDto::tilDomene)
         }
     }
 
@@ -77,12 +62,4 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
             }
         }
     }
-
-    fun tilDomene(it: ResultRow) = Aktivitet.Aktivitetskort(
-        hashetFodselsnummer = it[hashetFodselsnummer],
-        orgnr = it[organisasjonsnummer],
-        aktivitetsid = it[aktivitetsid],
-        fullført = it[fullført]!!,
-        fullføringstidspunkt = it[fullføringstidspunkt]?.toKotlinInstant(),
-    )
 }

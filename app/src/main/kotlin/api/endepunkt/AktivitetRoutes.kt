@@ -39,6 +39,7 @@ fun Route.aktivitet(aktivitetService: AktivitetService, hasher: Hasher) {
             }.getOrElse {
                 return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${Aktivitet.Oppgave.Status.values().joinToString()}")
             }
+
             val oppgave = Aktivitet.Oppgave(
                 hashetFodselsnummer = hasher.hash(fødselsnummer),
                 orgnr = orgnr,

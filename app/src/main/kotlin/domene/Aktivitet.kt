@@ -1,41 +1,33 @@
 package domene
 
-import kotlinx.datetime.Instant
-
 sealed class Aktivitet {
     abstract val hashetFodselsnummer: ByteArray
     abstract val orgnr: String
     abstract val aktivitetsid: String
 
-
-    data class Aktivitetskort(
+    data class Teoriseksjon(
         override val hashetFodselsnummer: ByteArray,
         override val orgnr: String,
         override val aktivitetsid: String,
-        val fullført: Boolean,
-        val fullføringstidspunkt: Instant?,
+        val status: Status,
     ) : Aktivitet() {
+
+        enum class Status {
+            LEST, ULEST
+        }
+
         override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Aktivitetskort
-
-            if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
-            if (orgnr != other.orgnr) return false
-            if (aktivitetsid != other.aktivitetsid) return false
-            if (fullført != other.fullført) return false
-            if (fullføringstidspunkt != other.fullføringstidspunkt) return false
-
-            return true
+            if (!super.equals(other)) {
+                return false
+            }
+            return status == (other as Teoriseksjon).status
         }
 
         override fun hashCode(): Int {
             var result = hashetFodselsnummer.contentHashCode()
             result = 31 * result + orgnr.hashCode()
             result = 31 * result + aktivitetsid.hashCode()
-            result = 31 * result + fullført.hashCode()
-            result = 31 * result + (fullføringstidspunkt?.hashCode() ?: 0)
+            result = 31 * result + status.hashCode()
             return result
         }
     }
@@ -52,17 +44,10 @@ sealed class Aktivitet {
         }
 
         override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Oppgave
-
-            if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
-            if (orgnr != other.orgnr) return false
-            if (aktivitetsid != other.aktivitetsid) return false
-            if (status != other.status) return false
-
-            return true
+            if (!super.equals(other)) {
+                return false
+            }
+            return status == (other as Oppgave).status
         }
 
         override fun hashCode(): Int {
@@ -72,5 +57,25 @@ sealed class Aktivitet {
             result = 31 * result + status.hashCode()
             return result
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Aktivitet
+
+        if (!hashetFodselsnummer.contentEquals(other.hashetFodselsnummer)) return false
+        if (orgnr != other.orgnr) return false
+        if (aktivitetsid != other.aktivitetsid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = hashetFodselsnummer.contentHashCode()
+        result = 31 * result + orgnr.hashCode()
+        result = 31 * result + aktivitetsid.hashCode()
+        return result
     }
 }

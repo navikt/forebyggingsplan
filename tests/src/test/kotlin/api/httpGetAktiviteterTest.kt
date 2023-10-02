@@ -43,7 +43,7 @@ class httpGetAktiviteterTest : FunSpec({
             val aktivitetJson = AktivitetJson(
                 aktivitetId = aktivitetId,
                 aktivitetType = AktivitetJson.Aktivitetstype.OPPGAVE,
-                status = AktivitetJson.Oppgavestatus.STARTET,
+                status = AktivitetJson.Status.STARTET,
             )
             TestContainerHelper.forebyggingsplanContainer.performPost(
                 "/aktivitet/$aktivitetId/orgnr/$autorisertOrgnr/oppdater",
