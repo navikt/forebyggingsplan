@@ -64,5 +64,71 @@ class HttpGetAktiviteterTest : FunSpec({
             val body = resultat.body<List<AktivitetJson>>()
             body shouldContainExactly listOf(aktivitetJson)
         }
+
+        test("svarer med 200 OK med teoriseksjoner") {
+            val aktivitetId = "123"
+            val aktivitetJson = AktivitetJson(
+                aktivitetId = aktivitetId,
+                aktivitetType = Aktivitetstype.TEORISEKSJON,
+                status = AktivitetJson.Status.LEST,
+            )
+            TestContainerHelper.forebyggingsplanContainer.performPost(
+                "/aktivitet/$aktivitetId/orgnr/$autorisertOrgnr/oppdater",
+                withToken {
+                    setBody(OppdaterAktivitetJson(
+                        aktivitetstype = Aktivitetstype.TEORISEKSJON,
+                        status = "LEST"
+                    ))
+                })
+            val resultat = TestContainerHelper.forebyggingsplanContainer.performGet(
+                "/aktiviteter/orgnr/$autorisertOrgnr",
+                withToken()
+            )
+
+            resultat.status shouldBe HttpStatusCode.OK
+
+            val body = resultat.body<List<AktivitetJson>>()
+            body shouldContainExactly listOf(aktivitetJson)
+        }
+
+        test("svarer med 200 OK med alle typer aktiviteter") {
+            val teoriseksjonId = "123"
+            val oppgaveId = "456"
+            val teoriseksjon = AktivitetJson(
+                aktivitetId = teoriseksjonId,
+                aktivitetType = Aktivitetstype.TEORISEKSJON,
+                status = AktivitetJson.Status.LEST,
+            )
+            val oppgave = AktivitetJson(
+                aktivitetId = oppgaveId,
+                aktivitetType = Aktivitetstype.OPPGAVE,
+                status = AktivitetJson.Status.FULLFØRT,
+            )
+            TestContainerHelper.forebyggingsplanContainer.performPost(
+                "/aktivitet/$teoriseksjonId/orgnr/$autorisertOrgnr/oppdater",
+                withToken {
+                    setBody(OppdaterAktivitetJson(
+                        aktivitetstype = Aktivitetstype.TEORISEKSJON,
+                        status = "LEST"
+                    ))
+                })
+            TestContainerHelper.forebyggingsplanContainer.performPost(
+                "/aktivitet/$oppgaveId/orgnr/$autorisertOrgnr/oppdater",
+                withToken {
+                    setBody(OppdaterAktivitetJson(
+                        aktivitetstype = Aktivitetstype.OPPGAVE,
+                        status = "FULLFØRT"
+                    ))
+                })
+            val resultat = TestContainerHelper.forebyggingsplanContainer.performGet(
+                "/aktiviteter/orgnr/$autorisertOrgnr",
+                withToken()
+            )
+
+            resultat.status shouldBe HttpStatusCode.OK
+
+            val body = resultat.body<List<AktivitetJson>>()
+            body shouldContainExactly listOf(teoriseksjon, oppgave)
+        }
     }
 })
