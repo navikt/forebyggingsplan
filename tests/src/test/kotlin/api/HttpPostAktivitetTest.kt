@@ -1,5 +1,6 @@
 package api
 
+import api.endepunkt.json.Aktivitetstype
 import api.endepunkt.json.OppdaterAktivitetJson
 import container.helper.TestContainerHelper
 import container.helper.withToken
@@ -55,7 +56,7 @@ internal class HttpPostAktivitetTest : FunSpec({
             resultat.status shouldBe HttpStatusCode.BadRequest
         }
 
-        test("svarer med 200 OK når en aktivitet er oppdatert") {
+        test("svarer med 200 OK når en oppgave er oppdatert og aktivitetstype er null") {
             val resultat = forebyggingsplanApi.oppdater(
                 authorisertOrgnr,
                 aktivitetsId,
@@ -64,6 +65,39 @@ internal class HttpPostAktivitetTest : FunSpec({
                 })
             resultat.bodyAsText() shouldBe ""
             resultat.status shouldBe HttpStatusCode.OK
+        }
+
+        test("svarer med 200 OK når en oppgave er oppdatert") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken {
+                    setBody(OppdaterAktivitetJson(aktivitetstype = Aktivitetstype.OPPGAVE, status = "fullført"))
+                })
+            resultat.bodyAsText() shouldBe ""
+            resultat.status shouldBe HttpStatusCode.OK
+        }
+
+        test("svarer med 200 OK når en teoriseksjon er oppdatert") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken {
+                    setBody(OppdaterAktivitetJson(aktivitetstype = Aktivitetstype.TEORISEKSJON, status = "lest"))
+                })
+            resultat.bodyAsText() shouldBe ""
+            resultat.status shouldBe HttpStatusCode.OK
+        }
+
+        test("svarer med 400 BadRequest når det er mismatch mellom status og aktivitetstype") {
+            val resultat = forebyggingsplanApi.oppdater(
+                authorisertOrgnr,
+                aktivitetsId,
+                withToken {
+                    setBody(OppdaterAktivitetJson(aktivitetstype = Aktivitetstype.TEORISEKSJON, status = "fullført"))
+                })
+
+            resultat.status shouldBe HttpStatusCode.BadRequest
         }
     }
 })

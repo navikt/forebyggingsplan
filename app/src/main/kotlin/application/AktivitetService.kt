@@ -9,10 +9,7 @@ class AktivitetService(
     private val hasher: Hasher,
 ) {
     fun oppdaterAktivitet(aktivitet: Aktivitet) {
-        return when (aktivitet) {
-            is Aktivitet.Oppgave -> aktivitetRepository.oppdaterOppgave(aktivitet)
-            is Aktivitet.Teoriseksjon -> TODO()
-        }
+        return aktivitetRepository.oppdaterAktivitet(aktivitet)
     }
 
     fun hentAktiviteter(fnr: String, orgnr: String): List<Aktivitet> {

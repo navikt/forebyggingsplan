@@ -14,7 +14,7 @@ class AktivitetDto(
 ) {
 
     companion object {
-        fun fromDomain(aktivitet: Aktivitet) = when (aktivitet) {
+        fun fraDomene(aktivitet: Aktivitet) = when (aktivitet) {
             is Aktivitet.Oppgave -> AktivitetDto(
                 hashetFodselsnummer = aktivitet.hashetFodselsnummer,
                 orgnr = aktivitet.orgnr,
@@ -33,7 +33,7 @@ class AktivitetDto(
                 status = aktivitet.status.toString(),
                 fullført = null,
                 fullføringstidspunkt = null,
-                )
+            )
         }
     }
 

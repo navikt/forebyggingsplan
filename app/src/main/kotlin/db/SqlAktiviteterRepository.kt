@@ -33,8 +33,8 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
         }
     }
 
-    override fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {
-        settAktivitet(AktivitetDto.fromDomain(oppgave))
+    override fun oppdaterAktivitet(aktivitet: Aktivitet) {
+        settAktivitet(AktivitetDto.fraDomene(aktivitet))
     }
 
     private fun tilDto(resultRow: ResultRow) = AktivitetDto(
