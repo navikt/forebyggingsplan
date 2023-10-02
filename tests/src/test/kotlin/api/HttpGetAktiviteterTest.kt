@@ -1,6 +1,7 @@
 package api
 
-import api.dto.AktivitetJson
+import api.endepunkt.json.AktivitetJson
+import api.endepunkt.json.Aktivitetstype
 import api.endepunkt.json.OppdaterAktivitetJson
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.performGet
@@ -15,7 +16,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-class httpGetAktiviteterTest : FunSpec({
+class HttpGetAktiviteterTest : FunSpec({
     extension(TestContainerHelper.database)
 
     val autorisertOrgnr = enVirksomhet.orgnr
@@ -42,13 +43,16 @@ class httpGetAktiviteterTest : FunSpec({
             val aktivitetId = "123"
             val aktivitetJson = AktivitetJson(
                 aktivitetId = aktivitetId,
-                aktivitetType = AktivitetJson.Aktivitetstype.OPPGAVE,
+                aktivitetType = Aktivitetstype.OPPGAVE,
                 status = AktivitetJson.Status.STARTET,
             )
             TestContainerHelper.forebyggingsplanContainer.performPost(
                 "/aktivitet/$aktivitetId/orgnr/$autorisertOrgnr/oppdater",
                 withToken {
-                    setBody(OppdaterAktivitetJson(status = "STARTET"))
+                    setBody(OppdaterAktivitetJson(
+                        aktivitetstype = null,
+                        status = "STARTET"
+                    ))
                 })
             val resultat = TestContainerHelper.forebyggingsplanContainer.performGet(
                 "/aktiviteter/orgnr/$autorisertOrgnr",

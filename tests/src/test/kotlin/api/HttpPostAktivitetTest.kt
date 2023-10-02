@@ -30,7 +30,7 @@ internal class HttpPostAktivitetTest : FunSpec({
             val resultat = forebyggingsplanApi.oppdater(
                 orgnr = "999999999",
                 aktivitetId = aktivitetsId,
-                block = withToken { setBody(OppdaterAktivitetJson(status = "FULLFØRT")) }
+                block = withToken { setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "FULLFØRT")) }
             )
             resultat.status shouldBe HttpStatusCode.Forbidden
         }
@@ -50,7 +50,7 @@ internal class HttpPostAktivitetTest : FunSpec({
                 authorisertOrgnr,
                 aktivitetsId,
                 withToken {
-                    setBody(OppdaterAktivitetJson(status = "ikke_en_status_jeg_har_sett"))
+                    setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "ikke_en_status_jeg_har_sett"))
                 })
             resultat.status shouldBe HttpStatusCode.BadRequest
         }
@@ -60,7 +60,7 @@ internal class HttpPostAktivitetTest : FunSpec({
                 authorisertOrgnr,
                 aktivitetsId,
                 withToken {
-                    setBody(OppdaterAktivitetJson(status = "fullført"))
+                    setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "fullført"))
                 })
             resultat.bodyAsText() shouldBe ""
             resultat.status shouldBe HttpStatusCode.OK

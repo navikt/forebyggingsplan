@@ -8,8 +8,11 @@ class AktivitetService(
     private val aktivitetRepository: AktiviteterRepository,
     private val hasher: Hasher,
 ) {
-    fun oppdaterOppgave(oppgave: Aktivitet.Oppgave) {
-        return aktivitetRepository.oppdaterOppgave(oppgave)
+    fun oppdaterAktivitet(aktivitet: Aktivitet) {
+        return when (aktivitet) {
+            is Aktivitet.Oppgave -> aktivitetRepository.oppdaterOppgave(aktivitet)
+            is Aktivitet.Teoriseksjon -> TODO()
+        }
     }
 
     fun hentAktiviteter(fnr: String, orgnr: String): List<Aktivitet> {

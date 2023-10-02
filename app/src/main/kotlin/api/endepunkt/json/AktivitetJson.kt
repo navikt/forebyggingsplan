@@ -1,4 +1,4 @@
-package api.dto
+package api.endepunkt.json
 
 import domene.Aktivitet
 import kotlinx.serialization.Serializable
@@ -9,9 +9,6 @@ data class AktivitetJson(
     val aktivitetType: Aktivitetstype,
     val status: Status?,
 ) {
-    enum class Aktivitetstype {
-        TEORISEKSJON, OPPGAVE;
-    }
 
     enum class Status {
         STARTET, FULLFØRT, AVBRUTT, LEST, ULEST;
