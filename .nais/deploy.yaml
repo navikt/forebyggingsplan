@@ -41,6 +41,8 @@ spec:
       rules:
         - application: forebyggingsplan-frontend
           namespace: teamia
+        - application: min-ia
+          namespace: teamia
     outbound:
       rules:
         - application: altinn-rettigheter-proxy
