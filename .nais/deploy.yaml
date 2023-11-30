@@ -39,8 +39,6 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: forebyggingsplan-frontend
-          namespace: teamia
         - application: min-ia
           namespace: teamia
     outbound:
@@ -54,9 +52,5 @@ spec:
       value: {{altinnRettigheterProxyClientId}}
     - name: ALTINN_RETTIGHETER_PROXY_URL
       value: "http://altinn-rettigheter-proxy.arbeidsgiver/altinn-rettigheter-proxy"
-    - name: ALTINN_RETTIGHET_SERVICE_CODE
-      value: "{{altinnRettighetServiceCode}}"
-    - name: ALTINN_RETTIGHET_SERVICE_EDITION
-      value: "{{altinnRettighetServiceEdition}}"
     - name: SANITY_HOST
       value: "https://2u7e6oll.api.sanity.io"
