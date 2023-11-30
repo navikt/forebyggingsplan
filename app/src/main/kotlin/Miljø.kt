@@ -7,7 +7,6 @@ interface DbMiljø {
 }
 
 interface Miljø : DbMiljø {
-    val sanityHost: String
     val tokenxClientId: String
     val tokenxIssuer: String
     val tokenxJwkPath: String

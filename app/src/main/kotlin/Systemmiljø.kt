@@ -1,5 +1,4 @@
 internal object Systemmiljø : Miljø {
-    override val sanityHost: String by lazy { System.getenv("SANITY_HOST") }
     override val tokenxClientId: String by lazy { System.getenv("TOKEN_X_CLIENT_ID") }
     override val tokenxIssuer: String by lazy { System.getenv("TOKEN_X_ISSUER") }
     override val tokenxJwkPath: String by lazy { System.getenv("TOKEN_X_JWKS_URI") }
