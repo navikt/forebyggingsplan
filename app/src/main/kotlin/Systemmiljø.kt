@@ -6,12 +6,6 @@ internal object Systemmiljø : Miljø {
     override val tokenxPrivateJwk: String by lazy { System.getenv("TOKEN_X_PRIVATE_JWK") }
     override val tokenXTokenEndpoint: String by lazy { System.getenv("TOKEN_X_TOKEN_ENDPOINT") }
     override val altinnRettigheterProxyUrl: String by lazy { System.getenv("ALTINN_RETTIGHETER_PROXY_URL") }
-    override val altinnRettighetServiceCode: String by lazy {
-        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_CODE", "5934")
-    }
-    override val altinnRettighetServiceEdition: String by lazy {
-        System.getenv().getOrDefault("ALTINN_RETTIGHET_SERVICE_EDITION", "1")
-    }
     override val altinnRettigheterProxyClientId: String by lazy { System.getenv("ALTINN_RETTIGHETER_PROXY_CLIENT_ID") }
     override val dbHost: String by lazy { System.getenv("DB_HOST") }
     override val dbDatabaseName: String by lazy { System.getenv("DB_DATABASE") }
