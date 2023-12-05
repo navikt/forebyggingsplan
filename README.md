@@ -50,4 +50,4 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 ## For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i
-kanalen [#teamia-utvikling](https://nav-it.slack.com/archives/C016KJA7CFK).
+kanalen [#team-pia](https://nav-it.slack.com/archives/C02DL347ZT2).
