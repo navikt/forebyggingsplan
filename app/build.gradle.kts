@@ -28,7 +28,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     // JWT utilities
-    implementation("com.nimbusds:nimbus-jose-jwt:9.27")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
 
 
     val altinnKlientVersion = "3.1.0"
@@ -37,9 +37,9 @@ dependencies {
     implementation("commons-codec:commons-codec:1.16.0")
 
     // Database
-    implementation("org.postgresql:postgresql:42.5.1")
-    implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("org.flywaydb:flyway-core:9.10.2")
+    implementation("org.postgresql:postgresql:42.7.1")
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("org.flywaydb:flyway-database-postgresql:10.4.1")
     val jetbrainsExposedVersion = "0.45.0"
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
@@ -50,14 +50,14 @@ dependencies {
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
     // Serialisering av dato-objekter
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
     // Funksjonelle operatorer
-    implementation("io.arrow-kt:arrow-core:1.1.2")
+    implementation("io.arrow-kt:arrow-core:1.2.1")
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.10.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.12.1")
 }
 
 application {
@@ -66,6 +66,7 @@ application {
 
 tasks {
     shadowJar {
+        mergeServiceFiles()
         manifest {
             attributes(Pair("Main-Class", "MainKt"))
         }
