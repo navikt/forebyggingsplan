@@ -13,7 +13,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    val ktorVersion = "2.3.1"
+    val ktorVersion = "2.3.7"
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -33,11 +33,8 @@ dependencies {
 
     val altinnKlientVersion = "3.1.0"
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
-    constraints {
-        implementation("commons-codec:commons-codec:1.15") {
-            because("altinn-rettigheter-proxy-klient bruker sårbar commons-codec se: https://issues.apache.org/jira/browse/CODEC-134")
-        }
-    }
+    // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
+    implementation("commons-codec:commons-codec:1.16.0")
 
     // Database
     implementation("org.postgresql:postgresql:42.5.1")
