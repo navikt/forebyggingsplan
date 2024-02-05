@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - teoriseksjon
+      - flytte-min-ia-over-til-pia-namespace
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
