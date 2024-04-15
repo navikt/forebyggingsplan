@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - flytte-min-ia-over-til-pia-namespace
+      - update-dependencies-apr-2024
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
