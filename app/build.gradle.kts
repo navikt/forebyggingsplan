@@ -13,7 +13,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    val ktorVersion = "2.3.7"
+    val ktorVersion = "2.3.9"
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -31,16 +31,16 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
 
 
-    val altinnKlientVersion = "3.1.0"
+    val altinnKlientVersion = "4.0.0"
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
     implementation("commons-codec:commons-codec:1.16.0")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.1")
+    implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("org.flywaydb:flyway-database-postgresql:10.4.1")
-    val jetbrainsExposedVersion = "0.45.0"
+    implementation("org.flywaydb:flyway-database-postgresql:10.11.0")
+    val jetbrainsExposedVersion = "0.49.0"
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
