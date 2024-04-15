@@ -21,11 +21,11 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
     // Testcontainers
-    val testcontainersVersion = "1.19.3"
+    val testcontainersVersion = "1.19.7"
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
+    testImplementation("org.wiremock:wiremock-standalone:3.5.2")
 
     // Ktor specific
     val ktorVersion = "2.3.7"
