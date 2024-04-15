@@ -16,7 +16,7 @@ dependencies {
     testImplementation(kotlin("test"))
 
 
-    val kotestVersion = "5.8.0"
+    val kotestVersion = "5.8.1"
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
@@ -28,7 +28,7 @@ dependencies {
     testImplementation("org.wiremock:wiremock-standalone:3.5.2")
 
     // Ktor specific
-    val ktorVersion = "2.3.7"
+    val ktorVersion = "2.3.9"
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     testImplementation("io.ktor:ktor-client-core:$ktorVersion")
     testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
@@ -36,13 +36,13 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
     // DB
-    val jetbrainsExposedVersion = "0.45.0"
+    val jetbrainsExposedVersion = "0.49.0"
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
 
     // Mock-oauth2-server
-    val mockOAuth2ServerVersion = "2.1.0"
+    val mockOAuth2ServerVersion = "2.1.2"
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
 
 }
