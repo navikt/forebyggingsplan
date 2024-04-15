@@ -58,6 +58,15 @@ dependencies {
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:1.12.1")
+
+    constraints {
+        implementation("io.netty:netty-codec-http") {
+            version {
+                require("4.1.108.Final")
+            }
+            because("Because of CVD-2024-29025 (Medium severity) - ref: https://nvd.nist.gov/vuln/detail/CVE-2024-29025 ")
+        }
+    }
 }
 
 application {
