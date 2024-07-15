@@ -1,3 +1,7 @@
+val ktorVersion = "2.3.12"
+val altinnKlientVersion = "4.0.0"
+val jetbrainsExposedVersion = "0.52.0"
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -13,7 +17,6 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    val ktorVersion = "2.3.9"
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -28,24 +31,22 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     // JWT utilities
-    implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.40")
 
 
-    val altinnKlientVersion = "4.0.0"
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
-    implementation("commons-codec:commons-codec:1.16.0")
+    implementation("commons-codec:commons-codec:1.17.0")
 
     // Database
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("org.flywaydb:flyway-database-postgresql:10.11.0")
-    val jetbrainsExposedVersion = "0.49.0"
+    implementation("org.flywaydb:flyway-database-postgresql:10.15.2")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
@@ -53,20 +54,13 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
     // Funksjonelle operatorer
-    implementation("io.arrow-kt:arrow-core:1.2.1")
+    implementation("io.arrow-kt:arrow-core:1.2.4")
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.12.1")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.13.2")
+    implementation("io.netty:netty-codec-http:4.1.111.Final")
 
-    constraints {
-        implementation("io.netty:netty-codec-http") {
-            version {
-                require("4.1.108.Final")
-            }
-            because("Because of CVD-2024-29025 (Medium severity) - ref: https://nvd.nist.gov/vuln/detail/CVE-2024-29025 ")
-        }
-    }
 }
 
 application {
