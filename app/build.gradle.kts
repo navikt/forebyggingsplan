@@ -1,11 +1,11 @@
 val ktorVersion = "2.3.12"
 val altinnKlientVersion = "4.0.0"
-val jetbrainsExposedVersion = "0.52.0"
+val jetbrainsExposedVersion = "0.53.0"
 
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
 
@@ -36,30 +36,30 @@ dependencies {
 
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
-    implementation("commons-codec:commons-codec:1.17.0")
+    implementation("commons-codec:commons-codec:1.17.1")
 
     // Database
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("org.flywaydb:flyway-database-postgresql:10.15.2")
+    implementation("org.flywaydb:flyway-database-postgresql:10.17.2")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.5.6")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+    implementation("ch.qos.logback:logback-classic:1.5.7")
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
     // Serialisering av dato-objekter
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 
     // Funksjonelle operatorer
     implementation("io.arrow-kt:arrow-core:1.2.4")
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.13.2")
-    implementation("io.netty:netty-codec-http:4.1.111.Final")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.13.3")
+    implementation("io.netty:netty-codec-http:4.1.112.Final")
 
 }
 
