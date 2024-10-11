@@ -1,6 +1,6 @@
 val ktorVersion = "2.3.12"
 val altinnKlientVersion = "4.0.0"
-val jetbrainsExposedVersion = "0.53.0"
+val jetbrainsExposedVersion = "0.55.0"
 
 plugins {
     kotlin("jvm")

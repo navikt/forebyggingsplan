@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.javatime.timestamp
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Clock
 
@@ -24,10 +24,11 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
 
     override fun hentAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
         return transaction {
-            select {
-                (hashetFodselsnummer eq hashetFnr) and
-                        (organisasjonsnummer eq orgnr)
-            }
+            selectAll()
+                .where {
+                    (hashetFodselsnummer eq hashetFnr) and
+                            (organisasjonsnummer eq orgnr)
+                }
                 .map(::tilDto)
                 .mapNotNull(AktivitetDto::tilDomene)
         }
