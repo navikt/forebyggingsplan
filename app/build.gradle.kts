@@ -31,7 +31,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     // JWT utilities
-    implementation("com.nimbusds:nimbus-jose-jwt:9.40")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.41.2")
 
 
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
@@ -39,14 +39,14 @@ dependencies {
     implementation("commons-codec:commons-codec:1.17.1")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.3")
-    implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("org.flywaydb:flyway-database-postgresql:10.17.2")
+    implementation("org.postgresql:postgresql:42.7.4")
+    implementation("com.zaxxer:HikariCP:6.0.0")
+    implementation("org.flywaydb:flyway-database-postgresql:10.19.0")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.5.7")
+    implementation("ch.qos.logback:logback-classic:1.5.8")
     implementation("net.logstash.logback:logstash-logback-encoder:8.0")
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
@@ -58,8 +58,8 @@ dependencies {
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.13.3")
-    implementation("io.netty:netty-codec-http:4.1.112.Final")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.13.5")
+    implementation("io.netty:netty-codec-http:4.1.114.Final")
 
 }
 

@@ -1,7 +1,7 @@
 val kotestVersion = "5.9.1"
-val testcontainersVersion = "1.20.1"
-val ktorVersion = "2.3.12"
-val jetbrainsExposedVersion = "0.53.0"
+val testcontainersVersion = "1.20.2"
+val ktorVersion = "3.0.0"
+val jetbrainsExposedVersion = "0.55.0"
 val mockOAuth2ServerVersion = "2.1.9"
 
 plugins {
@@ -45,6 +45,15 @@ dependencies {
 
     // Mock-oauth2-server
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
+
+    constraints {
+        testImplementation("org.apache.commons:commons-compress") {
+            version {
+                require("1.27.1")
+            }
+            because("testcontainers har sårbar versjon")
+        }
+    }
 
 }
 
