@@ -21,7 +21,6 @@ dependencies {
     implementation(project(":app"))
     testImplementation(kotlin("test"))
 
-
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
@@ -54,7 +53,6 @@ dependencies {
             because("testcontainers har sårbar versjon")
         }
     }
-
 }
 
 tasks {

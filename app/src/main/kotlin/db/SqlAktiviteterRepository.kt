@@ -22,32 +22,35 @@ object SqlAktiviteterRepository : Table("aktiviteter"), AktiviteterRepository {
 
     override val primaryKey = PrimaryKey(hashetFodselsnummer, organisasjonsnummer, aktivitetsid)
 
-    override fun hentAktiviteter(hashetFnr: ByteArray, orgnr: String): List<Aktivitet> {
-        return transaction {
+    override fun hentAktiviteter(
+        hashetFnr: ByteArray,
+        orgnr: String,
+    ): List<Aktivitet> =
+        transaction {
             selectAll()
                 .where {
                     (hashetFodselsnummer eq hashetFnr) and
-                            (organisasjonsnummer eq orgnr)
+                        (organisasjonsnummer eq orgnr)
                 }
                 .map(::tilDto)
                 .mapNotNull(AktivitetDto::tilDomene)
         }
-    }
 
     override fun oppdaterAktivitet(aktivitet: Aktivitet) {
         settAktivitet(AktivitetDto.fraDomene(aktivitet))
     }
 
-    private fun tilDto(resultRow: ResultRow) = AktivitetDto(
-        hashetFodselsnummer = resultRow[hashetFodselsnummer],
-        orgnr = resultRow[organisasjonsnummer],
-        aktivitetsid = resultRow[aktivitetsid],
-        // Kun "aktivitetskort" kan ha aktivitetsype lik null
-        aktivitetstype = resultRow[aktivitetstype] ?: AktivitetDto.Aktivitetstype.AKTIVITETSKORT,
-        fullført = resultRow[fullført],
-        fullføringstidspunkt = resultRow[fullføringstidspunkt],
-        status = resultRow[status],
-    )
+    private fun tilDto(resultRow: ResultRow) =
+        AktivitetDto(
+            hashetFodselsnummer = resultRow[hashetFodselsnummer],
+            orgnr = resultRow[organisasjonsnummer],
+            aktivitetsid = resultRow[aktivitetsid],
+            // Kun "aktivitetskort" kan ha aktivitetsype lik null
+            aktivitetstype = resultRow[aktivitetstype] ?: AktivitetDto.Aktivitetstype.AKTIVITETSKORT,
+            fullført = resultRow[fullført],
+            fullføringstidspunkt = resultRow[fullføringstidspunkt],
+            status = resultRow[status],
+        )
 
     private fun settAktivitet(aktivitetDto: AktivitetDto) {
         transaction {

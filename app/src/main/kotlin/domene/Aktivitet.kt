@@ -11,9 +11,9 @@ sealed class Aktivitet {
         override val aktivitetsid: String,
         val status: Status,
     ) : Aktivitet() {
-
         enum class Status {
-            LEST, ULEST
+            LEST,
+            ULEST,
         }
 
         override fun equals(other: Any?): Boolean {
@@ -38,9 +38,10 @@ sealed class Aktivitet {
         override val aktivitetsid: String,
         val status: Status,
     ) : Aktivitet() {
-
         enum class Status {
-            STARTET, FULLFØRT, AVBRUTT
+            STARTET,
+            FULLFØRT,
+            AVBRUTT,
         }
 
         override fun equals(other: Any?): Boolean {

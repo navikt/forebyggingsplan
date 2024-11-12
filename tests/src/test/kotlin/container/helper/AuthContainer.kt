@@ -21,7 +21,9 @@ import org.testcontainers.utility.DockerImageName
 import java.net.URI
 import java.util.UUID
 
-internal class AuthContainer(network: Network = Network.newNetwork()) {
+internal class AuthContainer(
+    network: Network = Network.newNetwork(),
+) {
     private val networkAlias = "authserver"
     private val issuerName = "default"
     private val baseEndpointUrl = "http://$networkAlias:6969"
@@ -34,8 +36,8 @@ internal class AuthContainer(network: Network = Network.newNetwork()) {
         .withEnv(
             mapOf(
                 "SERVER_PORT" to "6969",
-                "TZ" to "Europe/Oslo"
-            )
+                "TZ" to "Europe/Oslo",
+            ),
         )
         .waitingFor(Wait.forHttp("/default/.well-known/openid-configuration").forStatusCode(200))
         .apply { start() }
@@ -45,7 +47,7 @@ internal class AuthContainer(network: Network = Network.newNetwork()) {
         subject: String = UUID.randomUUID().toString(),
         audience: String,
         claims: Map<String, Any> = emptyMap(),
-        expiry: Long = 3600
+        expiry: Long = 3600,
     ): SignedJWT {
         val issuerUrl = "$baseEndpointUrl/$issuerName"
         val tokenCallback = DefaultOAuth2TokenCallback(
@@ -54,19 +56,20 @@ internal class AuthContainer(network: Network = Network.newNetwork()) {
             JOSEObjectType.JWT.type,
             listOf(audience),
             claims,
-            expiry
+            expiry,
         )
 
         val tokenRequest = TokenRequest(
             URI.create(baseEndpointUrl),
             ClientSecretBasic(ClientID(issuerName), Secret("secret")),
-            AuthorizationCodeGrant(AuthorizationCode("123"), URI.create("http://localhost"))
+            AuthorizationCodeGrant(AuthorizationCode("123"), URI.create("http://localhost")),
         )
         return oAuth2Config.tokenProvider.accessToken(tokenRequest, issuerUrl.toHttpUrl(), tokenCallback, null)
     }
 }
 
-internal fun withToken(block: HttpRequestBuilder.() -> Unit = {}): HttpRequestBuilder.() -> Unit = {
-    apply(block)
-    header(HttpHeaders.Authorization, "Bearer ${TestContainerHelper.accessToken().serialize()}")
-}
+internal fun withToken(block: HttpRequestBuilder.() -> Unit = {}): HttpRequestBuilder.() -> Unit =
+    {
+        apply(block)
+        header(HttpHeaders.Authorization, "Bearer ${TestContainerHelper.accessToken().serialize()}")
+    }

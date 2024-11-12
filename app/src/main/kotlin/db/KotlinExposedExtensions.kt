@@ -11,16 +11,21 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
  */
 fun <T : Table> T.upsert(
     vararg keys: Column<*> = (primaryKey ?: throw IllegalArgumentException("primary key is missing")).columns,
-    body: T.(InsertStatement<Number>) -> Unit
+    body: T.(InsertStatement<Number>) -> Unit,
 ) = InsertOrUpdate<Number>(this, keys = keys).apply {
     body(this)
     execute(TransactionManager.current())
 }
 
 class InsertOrUpdate<Key : Any>(
-    table: Table, isIgnore: Boolean = false, private vararg val keys: Column<*>
+    table: Table,
+    isIgnore: Boolean = false,
+    private vararg val keys: Column<*>,
 ) : InsertStatement<Key>(table, isIgnore) {
-    override fun prepareSQL(transaction: Transaction, prepared: Boolean): String {
+    override fun prepareSQL(
+        transaction: Transaction,
+        prepared: Boolean,
+    ): String {
         val tm = TransactionManager.current()
         val updateSetter =
             (table.columns - keys.toSet()).joinToString { "${tm.identity(it)} = EXCLUDED.${tm.identity(it)}" }

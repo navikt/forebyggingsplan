@@ -24,8 +24,9 @@ val AuthorizationPlugin = createRouteScopedPlugin(
                 hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(
                     token = TokenExchanger.exchangeToken(
                         token = token,
-                        audience = Systemmiljø.altinnRettigheterProxyClientId
-                    ), subject = fnr
+                        audience = Systemmiljø.altinnRettigheterProxyClientId,
+                    ),
+                    subject = fnr,
                 )
 
             val orgnr = kotlin.runCatching { call.orgnr }.getOrNull()
@@ -50,6 +51,3 @@ val AuthorizationPlugin = createRouteScopedPlugin(
 }
 
 private fun String.erEtOrgNummer() = this.matches("^[0-9]{9}$".toRegex())
-
-
-

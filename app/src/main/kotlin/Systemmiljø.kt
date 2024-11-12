@@ -15,6 +15,10 @@ internal object Systemmiljø : Miljø {
     override val cluster: String by lazy { System.getenv("NAIS_CLUSTER_NAME") }
 }
 
-enum class Clusters(val clusterId: String) {
-    PROD_GCP("prod-gcp"), DEV_GCP("dev-gcp"), LOKAL("local")
+enum class Clusters(
+    val clusterId: String,
+) {
+    PROD_GCP("prod-gcp"),
+    DEV_GCP("dev-gcp"),
+    LOKAL("local"),
 }

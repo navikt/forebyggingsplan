@@ -7,15 +7,17 @@ import org.jetbrains.exposed.sql.Database
 import org.postgresql.ds.PGSimpleDataSource
 import java.util.concurrent.TimeUnit.MINUTES
 
-class DatabaseFactory(private val miljø: DbMiljø) {
+class DatabaseFactory(
+    private val miljø: DbMiljø,
+) {
     fun init() {
         Database.connect(hikari())
         val flyway = Flyway.configure().dataSource(hikari()).load()
         flyway.migrate()
     }
 
-    private fun hikari(): HikariDataSource {
-        return HikariDataSource().apply {
+    private fun hikari(): HikariDataSource =
+        HikariDataSource().apply {
             dataSourceClassName = PGSimpleDataSource::class.qualifiedName
             addDataSourceProperty("serverName", miljø.dbHost)
             addDataSourceProperty("portNumber", miljø.dbPort)
@@ -28,5 +30,4 @@ class DatabaseFactory(private val miljø: DbMiljø) {
             connectionTimeout = 100000
             maxLifetime = MINUTES.toMillis(30)
         }
-    }
 }

@@ -10,35 +10,38 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.ServiceEdition
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.Subject
 import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.TokenXToken
 
-
-fun hentVirksomheterSomBrukerRepresenterer(token: String, subject: String): List<AltinnReportee> {
-    return AltinnrettigheterProxyKlient(
+fun hentVirksomheterSomBrukerRepresenterer(
+    token: String,
+    subject: String,
+): List<AltinnReportee> =
+    AltinnrettigheterProxyKlient(
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(
                 consumerId = "Forebyggingsplan",
-                url = Systemmiljø.altinnRettigheterProxyUrl
-            )
-        )
+                url = Systemmiljø.altinnRettigheterProxyUrl,
+            ),
+        ),
     ).hentOrganisasjoner(
         selvbetjeningToken = TokenXToken(value = token),
         subject = Subject(subject),
-        filtrerPåAktiveOrganisasjoner = true
+        filtrerPåAktiveOrganisasjoner = true,
     )
-}
 
-fun hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(token: String, subject: String): List<AltinnReportee> {
-    return AltinnrettigheterProxyKlient(
+fun hentVirksomheterSomBrukerHarRiktigEnkelRettighetI(
+    token: String,
+    subject: String,
+): List<AltinnReportee> =
+    AltinnrettigheterProxyKlient(
         AltinnrettigheterProxyKlientConfig(
             ProxyConfig(
                 consumerId = "Forebyggingsplan",
-                url = Systemmiljø.altinnRettigheterProxyUrl
-            )
-        )
+                url = Systemmiljø.altinnRettigheterProxyUrl,
+            ),
+        ),
     ).hentOrganisasjoner(
         selvbetjeningToken = TokenXToken(value = token),
         subject = Subject(subject),
         serviceCode = ServiceCode("5934"), // Enkelrettighet i Altinn
         serviceEdition = ServiceEdition("1"),
-        filtrerPåAktiveOrganisasjoner = true
+        filtrerPåAktiveOrganisasjoner = true,
     )
-}

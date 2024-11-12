@@ -1,4 +1,9 @@
-import api.endepunkt.*
+import api.endepunkt.Metrics
+import api.endepunkt.aktivitet
+import api.endepunkt.aktiviteter
+import api.endepunkt.helseEndepunkter
+import api.endepunkt.metrics
+import api.endepunkt.organisasjoner
 import application.AktivitetService
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.interfaces.Claim
@@ -7,20 +12,26 @@ import db.DatabaseFactory
 import db.SqlAktiviteterRepository
 import exceptions.IkkeFunnetException
 import exceptions.UgyldigForespørselException
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.engine.*
-import io.ktor.server.metrics.micrometer.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.doublereceive.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.application.log
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.metrics.micrometer.MicrometerMetrics
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.doublereceive.DoubleReceive
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import io.ktor.server.routing.IgnoreTrailingSlash
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.routing
 import plugins.AuthorizationPlugin
 import util.hash.Sha3Hasher
 import java.net.URI
@@ -36,14 +47,15 @@ fun bootstrapServer() {
     embeddedServer(
         factory = Netty,
         port = System.getenv("SERVER_PORT")?.toInt() ?: 8080,
-        module = Application::forebyggingsplanApplicationModule
+        module = Application::forebyggingsplanApplicationModule,
     ).start(wait = true)
 }
 
-fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) = createChild(selector).apply {
-    install(AuthorizationPlugin)
-    authorizedRoutes()
-}
+fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) =
+    createChild(selector).apply {
+        install(AuthorizationPlugin)
+        authorizedRoutes()
+    }
 
 fun Application.forebyggingsplanApplicationModule() {
     val hasher = Sha3Hasher()
@@ -58,17 +70,17 @@ fun Application.forebyggingsplanApplicationModule() {
             when (cause) {
                 is IkkeFunnetException -> call.respond(
                     status = HttpStatusCode.NotFound,
-                    message = cause.message!!
+                    message = cause.message!!,
                 )
 
                 is UgyldigForespørselException -> call.respond(
                     status = HttpStatusCode.BadRequest,
-                    message = cause.message
+                    message = cause.message,
                 )
 
                 is BadRequestException -> call.respond(
                     status = HttpStatusCode.BadRequest,
-                    message = cause.message!!
+                    message = cause.message!!,
                 )
 
                 else -> {
@@ -93,8 +105,9 @@ fun Application.forebyggingsplanApplicationModule() {
                 acceptLeeway(tokenFortsattGyldigFørUtløpISekunder)
                 withAudience(Systemmiljø.tokenxClientId)
                 withClaim("acr") { claim: Claim, _: DecodedJWT ->
-                    claim.asString().equals("Level4") || claim.asString()
-                        .equals("idporten-loa-high")
+                    claim.asString().equals("Level4") ||
+                        claim.asString()
+                            .equals("idporten-loa-high")
                 }
                 withClaimPresence("sub")
             }

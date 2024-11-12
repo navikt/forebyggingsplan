@@ -1,8 +1,8 @@
 package container.helper
 
 import DbMiljø
-import db.SqlAktiviteterRepository
 import db.DatabaseFactory
+import db.SqlAktiviteterRepository
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
@@ -18,7 +18,12 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy
 import org.testcontainers.utility.DockerImageName
 
-class PostgresContainer(network: Network = Network.newNetwork()) : BeforeAllCallback, AfterEachCallback, BeforeSpecListener, AfterEachListener {
+class PostgresContainer(
+    network: Network = Network.newNetwork(),
+) : BeforeAllCallback,
+    AfterEachCallback,
+    BeforeSpecListener,
+    AfterEachListener {
     internal val postgresNetworkAlias = "postgrescontainer"
     internal val dbName = "forebyggingsplan"
     private val port = 5432
@@ -36,7 +41,10 @@ class PostgresContainer(network: Network = Network.newNetwork()) : BeforeAllCall
         beforeAll(null)
     }
 
-    override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+    override suspend fun afterEach(
+        testCase: TestCase,
+        result: TestResult,
+    ) {
         afterEach(null)
     }
 
@@ -54,7 +62,6 @@ class PostgresContainer(network: Network = Network.newNetwork()) : BeforeAllCall
     override fun afterEach(context: ExtensionContext?) {
         SqlAktiviteterRepository.slettAlt()
     }
-
 
     private fun SqlAktiviteterRepository.slettAlt() {
         transaction {

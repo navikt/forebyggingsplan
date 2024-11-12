@@ -5,10 +5,13 @@ import api.endepunkt.json.OppdaterAktivitetJson
 import application.AktivitetService
 import http.tokenSubject
 import http.virksomhet
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import util.hash.Hasher
 
 fun Route.aktiviteter(aktivitetService: AktivitetService) {
@@ -17,26 +20,29 @@ fun Route.aktiviteter(aktivitetService: AktivitetService) {
             val fnr = call.request.tokenSubject()
             val orgnr = call.virksomhet.orgnr
             call.respond(
-                aktivitetService.hentAktiviteter(fnr, orgnr).map(AktivitetJson::fraDomene)
+                aktivitetService.hentAktiviteter(fnr, orgnr).map(AktivitetJson::fraDomene),
             )
         }
     }
 }
 
-fun Route.aktivitet(aktivitetService: AktivitetService, hasher: Hasher) {
+fun Route.aktivitet(
+    aktivitetService: AktivitetService,
+    hasher: Hasher,
+) {
     route("/aktivitet/{aktivitetId}/orgnr/{orgnr}") {
         post<OppdaterAktivitetJson>("/oppdater") {
             val fødselsnummer = call.request.tokenSubject()
             val aktivitetId = call.parameters["aktivitetId"] ?: return@post call.respond(
                 HttpStatusCode.BadRequest,
-                "Mangler aktivitetId"
+                "Mangler aktivitetId",
             )
             val orgnr = call.virksomhet.orgnr
 
             val aktivitet = kotlin.runCatching {
                 it.tilDomene(hasher.hash(fødselsnummer), orgnr, aktivitetId)
             }.getOrElse {
-                return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${AktivitetJson.Status.values().joinToString()}")
+                return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${AktivitetJson.Status.entries.joinToString()}")
             }
 
             aktivitetService.oppdaterAktivitet(aktivitet)

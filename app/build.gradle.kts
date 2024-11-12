@@ -33,7 +33,6 @@ dependencies {
     // JWT utilities
     implementation("com.nimbusds:nimbus-jose-jwt:9.41.2")
 
-
     implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
     implementation("commons-codec:commons-codec:1.17.1")
@@ -60,7 +59,6 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:1.13.5")
     implementation("io.netty:netty-codec-http:4.1.114.Final")
-
 }
 
 application {

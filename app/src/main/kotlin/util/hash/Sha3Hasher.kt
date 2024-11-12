@@ -21,4 +21,3 @@ class Sha3Hasher : Hasher {
         return salt
     }
 }
-

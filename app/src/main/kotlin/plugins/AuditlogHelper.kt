@@ -14,21 +14,28 @@ import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.AltinnReportee
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-
+@Suppress("ktlint:standard:enum-entry-name-case")
 enum class AuditType {
-    access, update, create, delete
+    access,
+    update,
+    create,
+    delete,
 }
 
-private fun HttpMethod.tilAuditType(): AuditType = when (this) {
-    HttpMethod.Get -> AuditType.access
-    HttpMethod.Post -> AuditType.create
-    HttpMethod.Put -> AuditType.update
-    HttpMethod.Delete -> AuditType.delete
-    else -> AuditType.access
-}
+private fun HttpMethod.tilAuditType(): AuditType =
+    when (this) {
+        HttpMethod.Get -> AuditType.access
+        HttpMethod.Post -> AuditType.create
+        HttpMethod.Put -> AuditType.update
+        HttpMethod.Delete -> AuditType.delete
+        else -> AuditType.access
+    }
 
-enum class Tillat(val tillat: String) {
-    Ja("Permit"), Nei("Deny")
+enum class Tillat(
+    val tillat: String,
+) {
+    Ja("Permit"),
+    Nei("Deny"),
 }
 
 private val auditLog = LoggerFactory.getLogger("auditLogger")
@@ -69,7 +76,7 @@ fun ApplicationCall.auditLogVedIkkeTilgangTilOrg(
         orgnummer = orgnr,
         tillat = Tillat.Nei,
         beskrivelse = "$fnr har ikke tilgang til organisasjonsnummer $orgnr",
-        virksomheter = virksomheter
+        virksomheter = virksomheter,
     )
 }
 
@@ -83,10 +90,10 @@ suspend fun ApplicationCall.auditLogVedOkKall(
         orgnummer = orgnummer,
         tillat = Tillat.Ja,
         beskrivelse = "$fnr har gjort følgende mot organisajonsnummer $orgnummer " +
-                "path: ${this.request.path()} " +
-                "arg: ${this.request.queryParameters.toMap()} " +
-                "body: ${this.receiveText()}",
-        virksomheter = virksomheter
+            "path: ${this.request.path()} " +
+            "arg: ${this.request.queryParameters.toMap()} " +
+            "body: ${this.receiveText()}",
+        virksomheter = virksomheter,
     )
 }
 
@@ -105,21 +112,21 @@ private fun ApplicationCall.auditLog(
     val virksomheterSomBrukerRepresenterer = virksomheter.map { it.organizationNumber }.joinToString()
     val logstring =
         "CEF:0|$appIdentifikator|auditLog|1.0|audit:${auditType.name}|Sporingslogg|$severity|end=${System.currentTimeMillis()} " +
-                "suid=$fnr " +
-                (orgnummer?.let { "duid=$it " } ?: "") +
-                "sproc=${UUID.randomUUID()} " +
-                "requestMethod=$method " +
-                "request=${
-                    uri.substring(
-                        0,
-                        uri.length.coerceAtMost(70)
-                    )
-                } " +
-                "flexString1Label=Decision " +
-                "flexString1=${tillat.tillat} " +
-                "flexString2Label=VirksomheterSomBrukerRepresenterer " +
-                "flexString2=${virksomheterSomBrukerRepresenterer} " +
-                "msg=${beskrivelse} "
+            "suid=$fnr " +
+            (orgnummer?.let { "duid=$it " } ?: "") +
+            "sproc=${UUID.randomUUID()} " +
+            "requestMethod=$method " +
+            "request=${
+                uri.substring(
+                    0,
+                    uri.length.coerceAtMost(70),
+                )
+            } " +
+            "flexString1Label=Decision " +
+            "flexString1=${tillat.tillat} " +
+            "flexString2Label=VirksomheterSomBrukerRepresenterer " +
+            "flexString2=$virksomheterSomBrukerRepresenterer " +
+            "msg=$beskrivelse "
 
     when (Systemmiljø.cluster) {
         PROD_GCP.clusterId -> auditLog.info(logstring)

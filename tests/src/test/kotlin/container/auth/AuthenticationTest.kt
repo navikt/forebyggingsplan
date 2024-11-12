@@ -5,17 +5,19 @@ import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.performGet
 import container.helper.enVirksomhet
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 
 internal class AuthenticationTest {
-
-    private suspend fun kallEndepunkt(orgnr: String = "1", block: HttpRequestBuilder.() -> Unit = {}): HttpResponse {
-        return TestContainerHelper.forebyggingsplanContainer.performGet("/aktiviteter/orgnr/$orgnr", block)
-    }
+    private suspend fun kallEndepunkt(
+        orgnr: String = "1",
+        block: HttpRequestBuilder.() -> Unit = {},
+    ): HttpResponse = TestContainerHelper.forebyggingsplanContainer.performGet("/aktiviteter/orgnr/$orgnr", block)
 
     @Test
     fun `skal få 401 på et token uten signatur`() {
@@ -30,7 +32,7 @@ internal class AuthenticationTest {
                 // "alg": "n0ne"
                 header(
                     HttpHeaders.Authorization,
-                    "Bearer ewogICJhbGciOiAibjBuZSIKfQ.${plainToken.payload.toBase64URL()}"
+                    "Bearer ewogICJhbGciOiAibjBuZSIKfQ.${plainToken.payload.toBase64URL()}",
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
 
@@ -38,7 +40,7 @@ internal class AuthenticationTest {
                 // "alg": "nonE"
                 header(
                     HttpHeaders.Authorization,
-                    "Bearer ewogICJhbGciOiAibm9uRSIKfQ.${plainToken.payload.toBase64URL()}"
+                    "Bearer ewogICJhbGciOiAibm9uRSIKfQ.${plainToken.payload.toBase64URL()}",
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
 
@@ -46,7 +48,7 @@ internal class AuthenticationTest {
                 // "alg": "NONE"
                 header(
                     HttpHeaders.Authorization,
-                    "Bearer ewogICJhbGciOiAiTk9ORSIKfQ.${plainToken.payload.toBase64URL()}"
+                    "Bearer ewogICJhbGciOiAiTk9ORSIKfQ.${plainToken.payload.toBase64URL()}",
                 )
             }.status shouldBe HttpStatusCode.Unauthorized
         }
@@ -75,8 +77,8 @@ internal class AuthenticationTest {
 
             val ugyldigToken = TestContainerHelper.accessToken(
                 claims = mapOf(
-                    "acr" to "Level3"
-                )
+                    "acr" to "Level3",
+                ),
             )
             ugyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level3"
 
@@ -101,7 +103,7 @@ internal class AuthenticationTest {
                 "hei",
                 mapOf(
                     "acr" to "idporten-loa-high",
-                    "pid" to "123"
+                    "pid" to "123",
                 ),
             )
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "idporten-loa-high"

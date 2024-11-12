@@ -16,6 +16,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 const val ORGANISASJONER_PATH = "organisasjoner"
+
 object Logger {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 }
@@ -28,8 +29,9 @@ fun Route.organisasjoner() {
         val virksomheter = hentVirksomheterSomBrukerRepresenterer(
             token = TokenExchanger.exchangeToken(
                 token = token,
-                audience = Systemmiljø.altinnRettigheterProxyClientId
-            ), subject = subject
+                audience = Systemmiljø.altinnRettigheterProxyClientId,
+            ),
+            subject = subject,
         ).map {
             AltinnVirksomhetDTO(
                 navn = it.name,
@@ -38,7 +40,7 @@ fun Route.organisasjoner() {
                 orgnummer = it.organizationNumber,
                 organisasjonsform = it.organizationForm,
                 status = it.status,
-                fødselsnummer = it.socialSecurityNumber
+                fødselsnummer = it.socialSecurityNumber,
             )
         }
         logger.info("[Organisajoner] hentet ${virksomheter.size} virksomheter")

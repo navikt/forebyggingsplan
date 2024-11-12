@@ -20,8 +20,11 @@ object TokenExchanger {
     private val privateKey = RSAKey.parse(Systemmiljø.tokenxPrivateJwk).toRSAPrivateKey()
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-    internal suspend fun exchangeToken(token: String, audience: String): String {
-        return try {
+    internal suspend fun exchangeToken(
+        token: String,
+        audience: String,
+    ): String =
+        try {
             HttpClient.client.post(URI.create(Systemmiljø.tokenXTokenEndpoint).toURL()) {
                 val now = Instant.now()
                 val clientAssertion = JWT.create().apply {
@@ -34,17 +37,20 @@ object TokenExchanger {
                     withExpiresAt(Date.from(now.plusSeconds(120)))
                 }.sign(Algorithm.RSA256(null, privateKey))
 
-                setBody(FormDataContent(Parameters.build {
-                    append("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange")
-                    append("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
-                    append("client_assertion", clientAssertion)
-                    append("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
-                    append("subject_token", token)
-                    append("audience", audience)
-                }))
+                setBody(
+                    FormDataContent(
+                        Parameters.build {
+                            append("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange")
+                            append("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+                            append("client_assertion", clientAssertion)
+                            append("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
+                            append("subject_token", token)
+                            append("audience", audience)
+                        },
+                    ),
+                )
             }.body<Map<String, String>>()["access_token"] ?: throw IllegalStateException("Fikk ingen token i response")
         } catch (e: Exception) {
             throw RuntimeException("Token exchange feil", e)
         }
-    }
 }

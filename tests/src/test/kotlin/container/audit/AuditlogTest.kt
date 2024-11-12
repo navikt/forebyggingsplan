@@ -3,11 +3,11 @@ package container.audit
 import container.helper.TestContainerHelper.Companion.forebyggingsplanContainer
 import container.helper.TestContainerHelper.Companion.performGet
 import container.helper.TestContainerHelper.Companion.shouldContainLog
-import container.helper.withToken
 import container.helper.enVirksomhet
+import container.helper.withToken
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.request.parameter
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 
@@ -18,7 +18,7 @@ class AuditlogTest {
             val resultat =
                 forebyggingsplanContainer.performGet(
                     "/aktiviteter/orgnr/${enVirksomhet.orgnr}",
-                    withToken { parameter("parameter", "1") }
+                    withToken { parameter("parameter", "1") },
                 )
 
             resultat.status shouldBe HttpStatusCode.OK
