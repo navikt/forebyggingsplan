@@ -31,6 +31,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.IgnoreTrailingSlash
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.RoutingNode
 import io.ktor.server.routing.routing
 import plugins.AuthorizationPlugin
 import util.hash.Sha3Hasher
@@ -52,7 +53,7 @@ fun bootstrapServer() {
 }
 
 fun Route.medAltinnTilgang(authorizedRoutes: Route.() -> Unit) =
-    createChild(selector).apply {
+    (this as RoutingNode).createChild(selector).apply {
         install(AuthorizationPlugin)
         authorizedRoutes()
     }

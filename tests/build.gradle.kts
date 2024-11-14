@@ -1,6 +1,6 @@
 val kotestVersion = "5.9.1"
 val testcontainersVersion = "1.20.2"
-val ktorVersion = "3.0.0"
+val ktorVersion = "3.0.1"
 val jetbrainsExposedVersion = "0.55.0"
 val mockOAuth2ServerVersion = "2.1.9"
 
@@ -11,6 +11,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 tasks.withType<Test>().configureEach {

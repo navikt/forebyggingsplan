@@ -11,8 +11,6 @@ internal object TestHttpClient {
             requestTimeout = 0
         },
     ) {
-        developmentMode = true
-
         install(ContentNegotiation) {
             json()
         }

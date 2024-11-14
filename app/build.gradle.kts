@@ -1,5 +1,5 @@
-val ktorVersion = "2.3.12"
-val altinnKlientVersion = "4.0.0"
+val ktorVersion = "3.0.1"
+val altinnKlientVersion = "5.0.0"
 val jetbrainsExposedVersion = "0.55.0"
 
 plugins {
@@ -33,7 +33,8 @@ dependencies {
     // JWT utilities
     implementation("com.nimbusds:nimbus-jose-jwt:9.41.2")
 
-    implementation("no.nav.arbeidsgiver:altinn-rettigheter-proxy-klient:$altinnKlientVersion")
+    implementation("com.github.navikt:altinn-rettigheter-proxy-klient:altinn-rettigheter-proxy-klient-$altinnKlientVersion")
+
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
     implementation("commons-codec:commons-codec:1.17.1")
 
