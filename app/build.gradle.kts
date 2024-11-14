@@ -1,6 +1,6 @@
 val ktorVersion = "3.0.1"
 val altinnKlientVersion = "5.0.0"
-val jetbrainsExposedVersion = "0.55.0"
+val jetbrainsExposedVersion = "0.56.0"
 
 plugins {
     kotlin("jvm")
@@ -31,7 +31,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     // JWT utilities
-    implementation("com.nimbusds:nimbus-jose-jwt:9.41.2")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.47")
 
     implementation("com.github.navikt:altinn-rettigheter-proxy-klient:altinn-rettigheter-proxy-klient-$altinnKlientVersion")
 
@@ -40,13 +40,13 @@ dependencies {
 
     // Database
     implementation("org.postgresql:postgresql:42.7.4")
-    implementation("com.zaxxer:HikariCP:6.0.0")
-    implementation("org.flywaydb:flyway-database-postgresql:10.19.0")
+    implementation("com.zaxxer:HikariCP:6.1.0")
+    implementation("org.flywaydb:flyway-database-postgresql:10.21.0")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.5.8")
+    implementation("ch.qos.logback:logback-classic:1.5.12")
     implementation("net.logstash.logback:logstash-logback-encoder:8.0")
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
@@ -58,8 +58,8 @@ dependencies {
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.13.5")
-    implementation("io.netty:netty-codec-http:4.1.114.Final")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.14.0")
+    implementation("io.netty:netty-codec-http:4.1.115.Final")
 }
 
 application {

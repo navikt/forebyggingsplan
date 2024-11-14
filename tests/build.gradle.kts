@@ -1,8 +1,8 @@
 val kotestVersion = "5.9.1"
-val testcontainersVersion = "1.20.2"
+val testcontainersVersion = "1.20.3"
 val ktorVersion = "3.0.1"
-val jetbrainsExposedVersion = "0.55.0"
-val mockOAuth2ServerVersion = "2.1.9"
+val jetbrainsExposedVersion = "0.56.0"
+val mockOAuth2ServerVersion = "2.1.10"
 
 plugins {
     kotlin("jvm")
@@ -29,14 +29,14 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("org.wiremock:wiremock-standalone:3.9.1")
+    testImplementation("org.wiremock:wiremock-standalone:3.9.2")
 
     // Ktor specific
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     testImplementation("io.ktor:ktor-client-core:$ktorVersion")
     testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 
     // DB
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
