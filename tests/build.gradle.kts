@@ -1,7 +1,7 @@
 val kotestVersion = "5.9.1"
 val testcontainersVersion = "1.20.4"
 val ktorVersion = "3.1.0"
-val jetbrainsExposedVersion = "0.5.0"
+val jetbrainsExposedVersion = "0.59.0"
 val mockOAuth2ServerVersion = "2.1.10"
 
 plugins {
