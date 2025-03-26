@@ -51,9 +51,16 @@ class AktivitetTest {
 
     @Test
     fun `skal få 403 forbidden på forsøk mot en bedrift brukeren ikke har enkel rettighet til`() {
+        val orgnr = "999999999"
+
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = orgnr,
+            altinn2Rettighet = "en-annen-enkelrettighet-enn-forebygge-fravær",
+        )
+
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
-                orgnr = "999999999",
+                orgnr = orgnr,
                 aktivitetId = aktivitetsId,
                 config = withToken { setBody(OppdaterAktivitetJson(aktivitetstype = null, status = "FULLFØRT")) },
             )
