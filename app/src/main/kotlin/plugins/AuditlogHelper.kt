@@ -10,7 +10,6 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receiveText
 import io.ktor.server.request.uri
 import io.ktor.util.toMap
-import no.nav.arbeidsgiver.altinnrettigheter.proxy.klient.model.AltinnReportee
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
@@ -41,35 +40,31 @@ enum class Tillat(
 private val auditLog = LoggerFactory.getLogger("auditLogger")
 private val fiaLog = LoggerFactory.getLogger("auditLogLokal")
 
-fun ApplicationCall.auditLogVedUkjentOrgnummer(
-    fnr: String,
-    virksomheter: List<AltinnReportee>,
-) {
+fun ApplicationCall.auditLogVedUkjentOrgnummer(fnr: String) {
     this.auditLog(
         fnr = fnr,
         tillat = Tillat.Nei,
         beskrivelse = "finner ikke organisjasjonsnummeret i requesten fra bruker $fnr",
-        virksomheter = virksomheter,
+        virksomheter = emptyList(),
     )
 }
 
 fun ApplicationCall.auditLogVedUgyldigOrgnummer(
     fnr: String,
     orgnr: String,
-    virksomheter: List<AltinnReportee>,
 ) {
     this.auditLog(
         fnr = fnr,
         tillat = Tillat.Nei,
         beskrivelse = "ugyldig organisjasjonsnummer $orgnr i requesten fra bruker $fnr",
-        virksomheter = virksomheter,
+        virksomheter = emptyList(),
     )
 }
 
 fun ApplicationCall.auditLogVedIkkeTilgangTilOrg(
     fnr: String,
     orgnr: String,
-    virksomheter: List<AltinnReportee>,
+    virksomheter: List<String>,
 ) {
     this.auditLog(
         fnr = fnr,
@@ -83,7 +78,7 @@ fun ApplicationCall.auditLogVedIkkeTilgangTilOrg(
 suspend fun ApplicationCall.auditLogVedOkKall(
     fnr: String,
     orgnummer: String,
-    virksomheter: List<AltinnReportee>,
+    virksomheter: List<String>,
 ) {
     this.auditLog(
         fnr = fnr,
@@ -102,14 +97,14 @@ private fun ApplicationCall.auditLog(
     orgnummer: String? = null,
     tillat: Tillat,
     beskrivelse: String,
-    virksomheter: List<AltinnReportee>,
+    virksomheter: List<String>,
 ) {
     val auditType = this.request.httpMethod.tilAuditType()
     val method = this.request.httpMethod.value
     val uri = this.request.uri
     val severity = if (orgnummer.isNullOrEmpty()) "WARN" else "INFO"
     val appIdentifikator = "forebyggingsplan"
-    val virksomheterSomBrukerRepresenterer = virksomheter.map { it.organizationNumber }.joinToString()
+    val virksomheterSomBrukerRepresenterer = virksomheter.joinToString()
     val logstring =
         "CEF:0|$appIdentifikator|auditLog|1.0|audit:${auditType.name}|Sporingslogg|$severity|end=${System.currentTimeMillis()} " +
             "suid=$fnr " +

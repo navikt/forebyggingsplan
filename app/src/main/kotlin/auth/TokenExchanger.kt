@@ -10,7 +10,6 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.Parameters
-import org.slf4j.LoggerFactory
 import java.net.URI
 import java.time.Instant
 import java.util.Date
@@ -18,7 +17,6 @@ import java.util.UUID
 
 object TokenExchanger {
     private val privateKey = RSAKey.parse(Systemmiljø.tokenxPrivateJwk).toRSAPrivateKey()
-    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     internal suspend fun exchangeToken(
         token: String,

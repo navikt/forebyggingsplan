@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - flytte-frontend-til-teamia-namespace--konfig-i-backend
+      - altinn-tilganger-migrering
     paths:
       - '.nais/alerts/alerts.yaml'
       - '.github/workflows/alerts-deploy.yaml'

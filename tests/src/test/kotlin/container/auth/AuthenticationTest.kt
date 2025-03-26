@@ -1,56 +1,62 @@
 package container.auth
 
+import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
-import container.helper.TestContainerHelper.Companion.performGet
+import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
+import container.helper.TestContainerHelper.Companion.postgresContainerHelper
 import container.helper.enVirksomhet
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 internal class AuthenticationTest {
-    private suspend fun kallEndepunkt(
-        orgnr: String = "1",
-        block: HttpRequestBuilder.() -> Unit = {},
-    ): HttpResponse = TestContainerHelper.forebyggingsplanContainer.performGet("/aktiviteter/orgnr/$orgnr", block)
+    @BeforeTest
+    fun cleanUp() {
+        runBlocking {
+            altinnTilgangerContainerHelper.slettAlleRettigheter()
+            postgresContainerHelper.slettAlleStatistikk()
+        }
+    }
 
     @Test
     fun `skal få 401 på et token uten signatur`() {
         val accessToken = TestContainerHelper.accessToken()
         val plainToken = PlainJWT(accessToken.jwtClaimsSet) // Token med "alg": "none"
-        runBlocking {
-            kallEndepunkt {
-                header(HttpHeaders.Authorization, "Bearer ${plainToken.serialize()}")
-            }.status shouldBe HttpStatusCode.Unauthorized
 
-            kallEndepunkt {
+        runBlocking {
+            TestContainerHelper.hentAktiviteter(
+                config = { header(HttpHeaders.Authorization, "Bearer ${plainToken.serialize()}") },
+                orgnr = "1234",
+            ).status shouldBe HttpStatusCode.Unauthorized
+
+            TestContainerHelper.hentAktiviteter(orgnr = "1234", config = {
                 // "alg": "n0ne"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAibjBuZSIKfQ.${plainToken.payload.toBase64URL()}",
                 )
-            }.status shouldBe HttpStatusCode.Unauthorized
+            }).status shouldBe HttpStatusCode.Unauthorized
 
-            kallEndepunkt {
+            TestContainerHelper.hentAktiviteter(orgnr = "1234", config = {
                 // "alg": "nonE"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAibm9uRSIKfQ.${plainToken.payload.toBase64URL()}",
                 )
-            }.status shouldBe HttpStatusCode.Unauthorized
+            }).status shouldBe HttpStatusCode.Unauthorized
 
-            kallEndepunkt {
+            TestContainerHelper.hentAktiviteter(orgnr = "1234", config = {
                 // "alg": "NONE"
                 header(
                     HttpHeaders.Authorization,
                     "Bearer ewogICJhbGciOiAiTk9ORSIKfQ.${plainToken.payload.toBase64URL()}",
                 )
-            }.status shouldBe HttpStatusCode.Unauthorized
+            }).status shouldBe HttpStatusCode.Unauthorized
         }
     }
 
@@ -59,21 +65,29 @@ internal class AuthenticationTest {
         val accessToken = TestContainerHelper.accessToken(audience = "ugyldig audience")
 
         runBlocking {
-            kallEndepunkt {
+            TestContainerHelper.hentAktiviteter(orgnr = "1234", config = {
                 header(HttpHeaders.Authorization, "Bearer ${accessToken.serialize()}")
-            }.status shouldBe HttpStatusCode.Unauthorized
+            }).status shouldBe HttpStatusCode.Unauthorized
         }
     }
 
     @Test
     fun `skal få 401 uten acr satt til Level4`() {
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = enVirksomhet.orgnr,
+            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+        )
+
         runBlocking {
             val gyldigToken = TestContainerHelper.accessToken()
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
 
-            kallEndepunkt(orgnr = enVirksomhet.orgnr) {
-                header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
-            }.status shouldBe HttpStatusCode.OK
+            TestContainerHelper.hentAktiviteter(
+                orgnr = enVirksomhet.orgnr,
+                config = {
+                    header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
+                },
+            ).status shouldBe HttpStatusCode.OK
 
             val ugyldigToken = TestContainerHelper.accessToken(
                 claims = mapOf(
@@ -82,21 +96,26 @@ internal class AuthenticationTest {
             )
             ugyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level3"
 
-            kallEndepunkt {
+            TestContainerHelper.hentAktiviteter(orgnr = "1234", config = {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken.serialize()}")
-            }.status shouldBe HttpStatusCode.Unauthorized
+            }).status shouldBe HttpStatusCode.Unauthorized
 
             val ugyldigToken2 = TestContainerHelper.accessToken(claims = emptyMap())
             ugyldigToken2.jwtClaimsSet.getStringClaim("acr") shouldBe null
 
-            kallEndepunkt {
+            TestContainerHelper.hentAktiviteter(orgnr = "1234", config = {
                 header(HttpHeaders.Authorization, "Bearer ${ugyldigToken2.serialize()}")
-            }.status shouldBe HttpStatusCode.Unauthorized
+            }).status shouldBe HttpStatusCode.Unauthorized
         }
     }
 
     @Test
     fun `skal få 200 når ace er satt til idporten-loa-high`() {
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = enVirksomhet.orgnr,
+            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+        )
+
         runBlocking {
             val gyldigToken = TestContainerHelper.accessToken(
                 "123",
@@ -108,9 +127,12 @@ internal class AuthenticationTest {
             )
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "idporten-loa-high"
 
-            kallEndepunkt(orgnr = enVirksomhet.orgnr) {
-                header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
-            }.status shouldBe HttpStatusCode.OK
+            TestContainerHelper.hentAktiviteter(
+                orgnr = enVirksomhet.orgnr,
+                config = {
+                    header(HttpHeaders.Authorization, "Bearer ${gyldigToken.serialize()}")
+                },
+            ).status shouldBe HttpStatusCode.OK
         }
     }
 }

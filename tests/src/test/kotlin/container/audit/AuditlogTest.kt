@@ -1,7 +1,10 @@
 package container.audit
 
-import container.helper.TestContainerHelper.Companion.forebyggingsplanContainer
-import container.helper.TestContainerHelper.Companion.performGet
+import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
+import container.helper.TestContainerHelper
+import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
+import container.helper.TestContainerHelper.Companion.applikasjon
+import container.helper.TestContainerHelper.Companion.postgresContainerHelper
 import container.helper.TestContainerHelper.Companion.shouldContainLog
 import container.helper.enVirksomhet
 import container.helper.withToken
@@ -9,39 +12,59 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class AuditlogTest {
+    @BeforeTest
+    fun cleanUp() {
+        runBlocking {
+            altinnTilgangerContainerHelper.slettAlleRettigheter()
+            postgresContainerHelper.slettAlleStatistikk()
+        }
+    }
+
     @Test
     fun `auditlogger visning av valgte aktiviteter`() {
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = enVirksomhet.orgnr,
+            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+        )
         runBlocking {
-            val resultat =
-                forebyggingsplanContainer.performGet(
-                    "/aktiviteter/orgnr/${enVirksomhet.orgnr}",
-                    withToken { parameter("parameter", "1") },
-                )
+            val resultat = TestContainerHelper.hentAktiviteter(
+                orgnr = enVirksomhet.orgnr,
+                config = withToken { parameter("parameter", "1") },
+            )
 
             resultat.status shouldBe HttpStatusCode.OK
-            forebyggingsplanContainer shouldContainLog "\\?parameter=1".toRegex()
+            applikasjon shouldContainLog "\\?parameter=1".toRegex()
         }
     }
 
     @Test
     fun `auditlogger feil ved manglende orgnummer`() {
         runBlocking {
-            forebyggingsplanContainer.performGet("/aktiviteter/orgnr/null", withToken { parameter("parameter", "1") })
-                .status shouldBe HttpStatusCode.BadRequest
+            val resultat = TestContainerHelper.hentAktiviteter(
+                orgnr = "null",
+                config = withToken { parameter("parameter", "1") },
+            )
 
-            forebyggingsplanContainer shouldContainLog "\\?parameter=1".toRegex()
+            resultat.status shouldBe HttpStatusCode.BadRequest
+
+            applikasjon shouldContainLog "\\?parameter=1".toRegex()
         }
     }
 
     @Test
     fun `auditlogger feil ved feil i orgnummer`() {
         runBlocking {
-            val resultat = forebyggingsplanContainer.performGet("/aktiviteter/orgnr/1234", withToken())
+            val resultat = TestContainerHelper.hentAktiviteter(
+                orgnr = "1234",
+                config = withToken(),
+            )
+
             resultat.status shouldBe HttpStatusCode.BadRequest
-            forebyggingsplanContainer shouldContainLog "ugyldig organisjasjonsnummer 1234 i requesten fra bruker ".toRegex()
+            applikasjon shouldContainLog "ugyldig organisjasjonsnummer 1234 i requesten fra bruker ".toRegex()
         }
     }
 }
