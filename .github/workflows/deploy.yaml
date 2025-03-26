@@ -52,7 +52,7 @@ jobs:
   deploy:
     strategy:
       matrix:
-        cluster: [ dev-gcp, prod-gcp ]
+        cluster: [ dev, prod ]
     name: Deploy app to ${{ matrix.cluster }}
     needs: build
     if: github.ref == 'refs/heads/main'
