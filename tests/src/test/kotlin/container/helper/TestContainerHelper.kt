@@ -1,5 +1,6 @@
 package container.helper
 
+import domene.Virksomhet
 import io.kotest.matchers.string.shouldContain
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -33,6 +34,8 @@ class TestContainerHelper {
         private val authServer = AuthContainerHelper(network = network)
         val postgresContainerHelper = PostgresContainerHelper(network = network)
         val altinnTilgangerContainerHelper = AltinnTilgangerContainerHelper(network = network)
+
+        val enVirksomhet = Virksomhet("811076732")
 
         val applikasjon: GenericContainer<*> = GenericContainer(ImageFromDockerfile().withDockerfile(Path("../Dockerfile")))
             .dependsOn(

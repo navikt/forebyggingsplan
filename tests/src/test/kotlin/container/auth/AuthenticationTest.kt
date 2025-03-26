@@ -4,8 +4,8 @@ import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
+import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
-import container.helper.enVirksomhet
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
@@ -21,6 +21,14 @@ internal class AuthenticationTest {
             altinnTilgangerContainerHelper.slettAlleRettigheter()
             postgresContainerHelper.slettAlleStatistikk()
         }
+    }
+
+    @BeforeTest
+    fun giTilgang() {
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = enVirksomhet.orgnr,
+            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+        )
     }
 
     @Test
@@ -73,11 +81,6 @@ internal class AuthenticationTest {
 
     @Test
     fun `skal få 401 uten acr satt til Level4`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
-
         runBlocking {
             val gyldigToken = TestContainerHelper.accessToken()
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
@@ -111,11 +114,6 @@ internal class AuthenticationTest {
 
     @Test
     fun `skal få 200 når ace er satt til idporten-loa-high`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
-
         runBlocking {
             val gyldigToken = TestContainerHelper.accessToken(
                 "123",

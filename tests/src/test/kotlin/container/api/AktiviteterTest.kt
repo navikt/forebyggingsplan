@@ -1,4 +1,4 @@
-package api
+package container.api
 
 import api.endepunkt.json.AktivitetJson
 import api.endepunkt.json.Aktivitetstype
@@ -6,8 +6,8 @@ import api.endepunkt.json.OppdaterAktivitetJson
 import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
+import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
-import container.helper.enVirksomhet
 import container.helper.withToken
 import container.helper.withoutToken
 import io.kotest.matchers.collections.shouldContainExactly
@@ -29,6 +29,14 @@ class AktiviteterTest {
         }
     }
 
+    @BeforeTest
+    fun giTilgang() {
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = enVirksomhet.orgnr,
+            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+        )
+    }
+
     @Test
     fun `svarer med 401 hvis ikke vi er logget inn`() {
         val tulleorgnr = "123456789"
@@ -42,10 +50,6 @@ class AktiviteterTest {
 
     @Test
     fun `svarer med 200 OK med tom JSON-array hvis brukeren ikke har noen aktiviteter`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.hentAktiviteter(
                 withToken(),
@@ -59,10 +63,6 @@ class AktiviteterTest {
 
     @Test
     fun `svarer med 200 OK med oppgaver`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val aktivitetId = "123"
             val aktivitetJson = AktivitetJson(
@@ -95,10 +95,6 @@ class AktiviteterTest {
 
     @Test
     fun `svarer med 200 OK med teoriseksjoner`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val aktivitetId = "123"
             val aktivitetJson = AktivitetJson(
@@ -131,10 +127,6 @@ class AktiviteterTest {
 
     @Test
     fun `svarer med 200 OK med alle typer aktiviteter`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val teoriseksjonId = "123"
             val oppgaveId = "456"

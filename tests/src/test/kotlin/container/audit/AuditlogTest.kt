@@ -4,9 +4,9 @@ import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
 import container.helper.TestContainerHelper.Companion.applikasjon
+import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
 import container.helper.TestContainerHelper.Companion.shouldContainLog
-import container.helper.enVirksomhet
 import container.helper.withToken
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.parameter
@@ -24,12 +24,16 @@ class AuditlogTest {
         }
     }
 
-    @Test
-    fun `auditlogger visning av valgte aktiviteter`() {
+    @BeforeTest
+    fun giTilgang() {
         altinnTilgangerContainerHelper.leggTilRettigheter(
             underenhet = enVirksomhet.orgnr,
             altinn2Rettighet = ENKELRETTIGHET_ALTINN,
         )
+    }
+
+    @Test
+    fun `auditlogger visning av valgte aktiviteter`() {
         runBlocking {
             val resultat = TestContainerHelper.hentAktiviteter(
                 orgnr = enVirksomhet.orgnr,

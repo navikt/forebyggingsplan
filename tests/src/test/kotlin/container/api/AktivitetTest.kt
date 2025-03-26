@@ -1,12 +1,12 @@
-package api
+package container.api
 
 import api.endepunkt.json.Aktivitetstype
 import api.endepunkt.json.OppdaterAktivitetJson
 import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
+import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
-import container.helper.enVirksomhet
 import container.helper.withToken
 import container.helper.withoutToken
 import io.kotest.common.runBlocking
@@ -24,6 +24,14 @@ class AktivitetTest {
             altinnTilgangerContainerHelper.slettAlleRettigheter()
             postgresContainerHelper.slettAlleStatistikk()
         }
+    }
+
+    @BeforeTest
+    fun giTilgang() {
+        altinnTilgangerContainerHelper.leggTilRettigheter(
+            underenhet = enVirksomhet.orgnr,
+            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+        )
     }
 
     private val aktivitetsId = "aktivitetsid"
@@ -56,10 +64,6 @@ class AktivitetTest {
 
     @Test
     fun `svarer med 400 når payload er en tom JSON`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
                 orgnr = enVirksomhet.orgnr,
@@ -73,10 +77,6 @@ class AktivitetTest {
 
     @Test
     fun `svarer med 400 når status er ugyldig`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
                 orgnr = enVirksomhet.orgnr,
@@ -91,10 +91,6 @@ class AktivitetTest {
 
     @Test
     fun `svarer med 200 OK når en oppgave er oppdatert og aktivitetstype er null`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
                 orgnr = enVirksomhet.orgnr,
@@ -110,10 +106,6 @@ class AktivitetTest {
 
     @Test
     fun `svarer med 200 OK når en oppgave er oppdatert`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
                 orgnr = enVirksomhet.orgnr,
@@ -129,10 +121,6 @@ class AktivitetTest {
 
     @Test
     fun `svarer med 200 OK når en teoriseksjon er oppdatert`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
                 orgnr = enVirksomhet.orgnr,
@@ -148,10 +136,6 @@ class AktivitetTest {
 
     @Test
     fun `svarer med 400 BadRequest når det er mismatch mellom status og aktivitetstype`() {
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
-        )
         runBlocking {
             val resultat = TestContainerHelper.oppdaterAktivitet(
                 orgnr = enVirksomhet.orgnr,
