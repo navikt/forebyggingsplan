@@ -22,7 +22,6 @@ fun AltinnAuthorizationPlugin(altinnTilgangerService: AltinnTilgangerService) =
         val logger: Logger = LoggerFactory.getLogger(this::class.java)
         pluginConfig.apply {
             on(AuthenticationChecked) { call ->
-
                 if (call.authentication.allErrors.isNotEmpty()) {
                     logger.warn("Authentication errors: ${call.authentication.allErrors}")
                     call.respond(

@@ -1,6 +1,6 @@
 package container.audit
 
-import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_ALTINN
+import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_I_ALTINN
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
 import container.helper.TestContainerHelper.Companion.applikasjon
@@ -28,7 +28,7 @@ class AuditlogTest {
     fun giTilgang() {
         altinnTilgangerContainerHelper.leggTilRettigheter(
             underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_ALTINN,
+            altinn2Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_I_ALTINN,
         )
     }
 
