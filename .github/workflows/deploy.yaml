@@ -10,7 +10,7 @@ permissions: {}
 jobs:
   build:
     permissions:
-      contents: read # TODO: hvorfor er denne write i pia-sykefravarsstatistikk og lydia-api?
+      contents: read
       id-token: write
     name: build
     runs-on: ubuntu-latest
@@ -21,9 +21,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-          cache: gradle # TODO: hvorfor mangler denne i lydia-api og pia-sykefravarsstatistikk?
-
-      - uses: gradle/wrapper-validation-action@v1  # TODO: hvorfor mangler denne i lydia-api og pia-sykefravarsstatistikk?
 
       - name: Setup Gradle to generate and submit dependency graphs
         uses: gradle/actions/setup-gradle@v4
@@ -31,7 +28,7 @@ jobs:
           dependency-graph: generate-and-submit
 
       - name: Compile, run tests and build
-        run: ./gradlew build --no-daemon # TODO: Hvorfor --no-daemon? mangler i pia-sykefravarsstatistikk og lydia-api.
+        run: ./gradlew build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -46,15 +43,13 @@ jobs:
         id: docker-push
         with:
           team: teamia
-          tag: latest #todo: bruk? ${{ github.ref == 'refs/heads/main' && 'latest' || 'branch_latest' }}
+          tag: ${{ github.ref == 'refs/heads/main' && 'latest' || 'branch_latest' }}
           platforms: linux/amd64,linux/arm64
           salsa: true
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
 
   deploy:
-#    permissions: # Todo: hvorfor har ikke vi denne?
-#      id-token: write
     strategy:
       matrix:
         cluster: [ dev-gcp, prod-gcp ]
@@ -70,16 +65,14 @@ jobs:
         env:
           IMAGE: ${{ needs.build.outputs.image }}
           CLUSTER: ${{ matrix.cluster }}-gcp
-          RESOURCE: .nais/deploy.yaml #Todo: rename til nais.yaml ?
+          RESOURCE: .nais/nais.yaml
           VARS: .nais/${{ matrix.cluster }}.yaml
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
 
   deploy-branch-to-dev:
-#    permissions: # Todo: hvorfor har ikke vi denne?
-#      id-token: write
     name: Deploy branch to dev
     needs: build
-    if: github.ref == 'refs/heads/utled-aggregert-statistikk'
+    if: github.ref == 'refs/heads/altinn-tilganger-migrering'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -89,7 +82,7 @@ jobs:
         env:
           IMAGE: ${{ needs.build.outputs.image }}
           CLUSTER: dev-gcp
-          RESOURCE: .nais/deploy.yaml #Todo: rename til nais.yaml ?
+          RESOURCE: .nais/nais.yaml
           VARS: .nais/dev.yaml
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
 
