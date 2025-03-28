@@ -18,8 +18,9 @@ fun main() {
     val altinnTilgangerService = AltinnTilgangerService()
 
     embeddedServer(
-        Netty,
+        factory = Netty,
         port = System.getenv("SERVER_PORT")?.toInt() ?: 8080,
+        host = "0.0.0.0",
     ) {
         configure(altinnTilgangerService = altinnTilgangerService)
     }.start(wait = true)
