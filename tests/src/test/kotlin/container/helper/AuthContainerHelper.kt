@@ -9,6 +9,7 @@ import com.nimbusds.oauth2.sdk.TokenRequest
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic
 import com.nimbusds.oauth2.sdk.auth.Secret
 import com.nimbusds.oauth2.sdk.id.ClientID
+import container.helper.AuthContainerHelper.Companion.FNR
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
@@ -22,7 +23,7 @@ import org.testcontainers.utility.DockerImageName
 import java.net.URI
 import java.util.UUID
 
-internal class AuthContainer(
+internal class AuthContainerHelper(
     network: Network = Network.newNetwork(),
 ) {
     private val networkAlias = "authserver"
@@ -30,7 +31,7 @@ internal class AuthContainer(
     private val baseEndpointUrl = "http://$networkAlias:6969"
     private val oAuth2Config = OAuth2Config()
 
-    internal val container = GenericContainer(DockerImageName.parse("ghcr.io/navikt/mock-oauth2-server:2.1.9"))
+    internal val container = GenericContainer(DockerImageName.parse("ghcr.io/navikt/mock-oauth2-server:2.1.10"))
         .withNetwork(network)
         .withNetworkAliases(networkAlias)
         .withExposedPorts(6969)
@@ -63,10 +64,14 @@ internal class AuthContainer(
         val tokenRequest = TokenRequest(
             URI.create(baseEndpointUrl),
             ClientSecretBasic(ClientID(issuerName), Secret("secret")),
-            AuthorizationCodeGrant(AuthorizationCode("123"), URI.create("http://localhost")),
+            AuthorizationCodeGrant(AuthorizationCode(FNR), URI.create("http://localhost")),
             Scope(audience),
         )
         return oAuth2Config.tokenProvider.accessToken(tokenRequest, issuerUrl.toHttpUrl(), tokenCallback, null)
+    }
+
+    companion object {
+        const val FNR = "12345678901"
     }
 }
 
@@ -74,4 +79,10 @@ internal fun withToken(block: HttpRequestBuilder.() -> Unit = {}): HttpRequestBu
     {
         apply(block)
         header(HttpHeaders.Authorization, "Bearer ${TestContainerHelper.accessToken().serialize()}")
+    }
+
+internal fun withoutToken(block: HttpRequestBuilder.() -> Unit = {}): HttpRequestBuilder.() -> Unit =
+    {
+        apply(block)
+        header(HttpHeaders.Authorization, "Bearer $FNR")
     }

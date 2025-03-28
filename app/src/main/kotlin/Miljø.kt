@@ -12,7 +12,6 @@ interface Miljø : DbMiljø {
     val tokenxJwkPath: String
     val tokenxPrivateJwk: String
     val tokenXTokenEndpoint: String
-    val altinnRettigheterProxyUrl: String
-    val altinnRettigheterProxyClientId: String
+    val altinnTilgangerProxyUrl: String
     val cluster: String
 }
