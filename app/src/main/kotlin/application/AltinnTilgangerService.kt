@@ -26,12 +26,18 @@ class AltinnTilgangerService {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     companion object {
-        const val ENKELRETTIGHET_FOREBYGGE_FRAVÆR_I_ALTINN = "5934:1"
+        const val ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_2 = "5934:1"
+        const val ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3 = "nav_forebygge-og-redusere-sykefravær_samarbeid"
 
-        fun AltinnTilganger?.harEnkeltTilgang(
+        fun AltinnTilganger?.harEnkeltRettighet(
             orgnr: String?,
-            altinn2Tilgang: String = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_I_ALTINN,
-        ) = this?.orgNrTilTilganger?.get(orgnr)?.contains(altinn2Tilgang) ?: false
+            enkeltrettighetIAltinn2: String = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_2,
+            enkeltrettighetIAltinn3: String = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3,
+        ): Boolean {
+            val harAltinn2Enkeltrettighet = this?.orgNrTilTilganger?.get(orgnr)?.contains(enkeltrettighetIAltinn2) ?: false
+            val harAltinn3Enkeltrettighet = this?.orgNrTilTilganger?.get(orgnr)?.contains(enkeltrettighetIAltinn3) ?: false
+            return harAltinn2Enkeltrettighet || harAltinn3Enkeltrettighet
+        }
 
         fun AltinnTilganger?.virksomheterVedkommendeHarTilgangTil(): List<String> =
             this?.hierarki?.flatMap {
@@ -41,10 +47,7 @@ class AltinnTilgangerService {
         private fun <T> flatten(
             altinnTilgang: AltinnTilgang,
             mapFn: (AltinnTilgang) -> T,
-        ): Set<T> =
-            setOf(
-                mapFn(altinnTilgang),
-            ) + altinnTilgang.underenheter.flatMap { flatten(it, mapFn) }
+        ): Set<T> = setOf(mapFn(altinnTilgang)) + altinnTilgang.underenheter.flatMap { flatten(it, mapFn) }
     }
 
     private fun getHttpClient(token: String): HttpClient =

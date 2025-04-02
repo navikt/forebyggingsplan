@@ -1,6 +1,6 @@
 package container.auth
 
-import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_I_ALTINN
+import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_2
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
@@ -19,15 +19,12 @@ internal class AuthenticationTest {
     fun cleanUp() {
         runBlocking {
             altinnTilgangerContainerHelper.slettAlleRettigheter()
-            postgresContainerHelper.slettAlleStatistikk()
+            postgresContainerHelper.slettAlleAktiviteter()
         }
-    }
 
-    @BeforeTest
-    fun giTilgang() {
         altinnTilgangerContainerHelper.leggTilRettigheter(
             underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_I_ALTINN,
+            altinn2Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_2,
         )
     }
 

@@ -63,7 +63,7 @@ class PostgresContainerHelper(
             statement.execute("DELETE FROM $table")
         }
 
-    fun slettAlleStatistikk() {
+    fun slettAlleAktiviteter() {
         for (tabell in listOf(
             "valgtaktivitet",
             "aktiviteter",
