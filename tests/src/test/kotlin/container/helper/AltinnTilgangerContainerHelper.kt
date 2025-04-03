@@ -57,7 +57,7 @@ class AltinnTilgangerContainerHelper(
         overordnetEnhet: String = "999888321",
         underenhet: String,
         altinn2Rettighet: String = "",
-        altinn3Rettighet: String = "nav-ia-sykefravarsstatistikk-IKKE-SATT-OPP-ENDA",
+        altinn3Rettighet: String = "",
     ) {
         log.debug(
             "Oppretter MockServerClient med host '${container.host}' og port '${
