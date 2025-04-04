@@ -67,7 +67,7 @@ jobs:
   deploy-branch-to-dev:
     name: Deploy branch to dev
     needs: build
-    if: github.ref == 'refs/heads/altinn-tilganger-migrering'
+    if: github.ref == 'refs/heads/logging-i-dev'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
