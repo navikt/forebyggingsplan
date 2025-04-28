@@ -1,6 +1,6 @@
 package container.auth
 
-import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_2
+import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
@@ -24,7 +24,7 @@ internal class AuthenticationTest {
 
         altinnTilgangerContainerHelper.leggTilRettigheter(
             underenhet = enVirksomhet.orgnr,
-            altinn2Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_2,
+            altinn3Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3,
         )
     }
 
