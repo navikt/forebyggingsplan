@@ -52,7 +52,7 @@ class AktivitetTest {
 
         altinnTilgangerContainerHelper.leggTilRettigheter(
             underenhet = orgnr,
-            altinn2Rettighet = "en-annen-enkelrettighet-enn-forebygge-fravær",
+            altinn3Rettighet = "en-annen-enkelrettighet-enn-forebygge-fravær",
         )
 
         runBlocking {

@@ -56,7 +56,6 @@ class AltinnTilgangerContainerHelper(
     internal fun leggTilRettigheter(
         overordnetEnhet: String = "999888321",
         underenhet: String,
-        altinn2Rettighet: String = "",
         altinn3Rettighet: String = "",
     ) {
         log.debug(
@@ -64,7 +63,7 @@ class AltinnTilgangerContainerHelper(
                 container.getMappedPort(
                     7070,
                 )
-            }'. Legger til rettighet '$altinn2Rettighet' for underenhet '$underenhet'",
+            }'. Legger til rettighet '$altinn3Rettighet' for underenhet '$underenhet'",
         )
         val client = MockServerClient(
             container.host,
@@ -90,9 +89,7 @@ class AltinnTilgangerContainerHelper(
                               "altinn3Tilganger": [
                                 "$altinn3Rettighet"
                               ],
-                              "altinn2Tilganger": [
-                                "$altinn2Rettighet"
-                              ],
+                              "altinn2Tilganger": [],
                               "underenheter": [],
                               "navn": "NAVN TIL UNDERENHET",
                               "organisasjonsform": "BEDR"
@@ -104,15 +101,11 @@ class AltinnTilgangerContainerHelper(
                       ],
                       "orgNrTilTilganger": {
                         "$underenhet": [
-                          "$altinn3Rettighet",
-                          "$altinn2Rettighet"
+                          "$altinn3Rettighet"
                         ]
                       },
                       "tilgangTilOrgNr": {
                         "$altinn3Rettighet": [
-                          "$underenhet"
-                        ],
-                        "$altinn2Rettighet": [
                           "$underenhet"
                         ]
                       },
