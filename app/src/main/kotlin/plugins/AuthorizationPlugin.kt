@@ -2,7 +2,6 @@ package plugins
 
 import application.AltinnTilgangerService
 import application.AltinnTilgangerService.Companion.harEnkeltRettighet
-import application.AltinnTilgangerService.Companion.virksomheterVedkommendeHarTilgangTil
 import exceptions.UgyldigForespørselException
 import http.hentToken
 import http.orgnr
@@ -62,14 +61,12 @@ fun AltinnAuthorizationPlugin(altinnTilgangerService: AltinnTilgangerService) =
                         call.auditLogVedIkkeTilgangTilOrg(
                             fnr = fnr,
                             orgnr = orgnr,
-                            virksomheter = altinnTilganger.virksomheterVedkommendeHarTilgangTil(),
                         )
                     }
                 } else {
                     call.auditLogVedOkKall(
                         fnr = fnr,
                         orgnummer = orgnr,
-                        virksomheter = altinnTilganger.virksomheterVedkommendeHarTilgangTil(),
                     )
                 }
             }

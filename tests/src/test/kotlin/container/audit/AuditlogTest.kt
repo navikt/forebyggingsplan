@@ -7,6 +7,7 @@ import container.helper.TestContainerHelper.Companion.applikasjon
 import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
 import container.helper.TestContainerHelper.Companion.shouldContainLog
+import container.helper.TestContainerHelper.Companion.shouldNotContainLog
 import container.helper.withToken
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.parameter
@@ -39,6 +40,8 @@ class AuditlogTest {
 
             resultat.status shouldBe HttpStatusCode.OK
             applikasjon shouldContainLog "\\?parameter=1".toRegex()
+            applikasjon shouldNotContainLog
+                "flexString2Label=VirksomheterSomBrukerRepresenterer".toRegex()
         }
     }
 

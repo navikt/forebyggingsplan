@@ -2,6 +2,7 @@ package container.helper
 
 import domene.Virksomhet
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -89,6 +90,7 @@ class TestContainerHelper {
             }
 
         infix fun GenericContainer<*>.shouldContainLog(regex: Regex) = logs shouldContain regex
+        infix fun GenericContainer<*>.shouldNotContainLog(regex: Regex) = logs shouldNotContain regex
 
         private val httpClient = HttpClient(CIO) {
             install(ContentNegotiation) {

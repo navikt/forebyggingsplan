@@ -34,11 +34,6 @@ class AltinnTilgangerService {
         private fun AltinnTilganger?.getHarAltinn3Enkeltrettighet(orgnr: String?): Boolean =
             this?.orgNrTilTilganger?.get(orgnr)?.contains(ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3) ?: false
 
-        fun AltinnTilganger?.virksomheterVedkommendeHarTilgangTil(): List<String> =
-            this?.hierarki?.flatMap {
-                flatten(it) { o -> o.orgnr }
-            }?.toList() ?: emptyList()
-
         private fun <T> flatten(
             altinnTilgang: AltinnTilgang,
             mapFn: (AltinnTilgang) -> T,
