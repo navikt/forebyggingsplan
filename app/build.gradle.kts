@@ -1,6 +1,9 @@
-val ktorVersion = "3.1.1"
-val altinnKlientVersion = "5.0.0"
+val ktorVersion = "3.1.3"
 val jetbrainsExposedVersion = "0.60.0"
+val logbackVersion = "1.5.18"
+val logbackEncoderVersion = "8.0"
+val nettyCodecHttpVersion = "4.1.119.Final"
+val prometheusVersion = "1.14.6"
 
 plugins {
     kotlin("jvm")
@@ -35,8 +38,6 @@ dependencies {
     // JWT utilities
     implementation("com.nimbusds:nimbus-jose-jwt:10.0.2")
 
-    implementation("com.github.navikt:altinn-rettigheter-proxy-klient:altinn-rettigheter-proxy-klient-$altinnKlientVersion")
-
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
     implementation("commons-codec:commons-codec:1.18.0")
 
@@ -48,8 +49,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.5.17")
-    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion")
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
     // Serialisering av dato-objekter
@@ -60,8 +61,8 @@ dependencies {
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.14.4")
-    implementation("io.netty:netty-codec-http:4.1.119.Final")
+    implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
+    implementation("io.netty:netty-codec-http:$nettyCodecHttpVersion")
 }
 
 application {
