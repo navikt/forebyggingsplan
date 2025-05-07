@@ -1,8 +1,13 @@
+val arrowKtVersion = "2.1.1"
+val flywayPostgresqlVersion = "11.8.1"
+val hikariCPVersion = "6.3.0"
 val ktorVersion = "3.1.3"
-val jetbrainsExposedVersion = "0.60.0"
+val jetbrainsExposedVersion = "0.61.0"
+val kotlinxDatetimeVersion = "0.6.2"
 val logbackVersion = "1.5.18"
-val logbackEncoderVersion = "8.0"
-val nettyCodecHttpVersion = "4.1.119.Final"
+val logbackEncoderVersion = "8.1"
+val nettyCodecHttpVersion = "4.2.1.Final"
+val nimbusJoseJwtVersion = "10.2"
 val prometheusVersion = "1.14.6"
 
 plugins {
@@ -36,15 +41,15 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     // JWT utilities
-    implementation("com.nimbusds:nimbus-jose-jwt:10.0.2")
+    implementation("com.nimbusds:nimbus-jose-jwt:$nimbusJoseJwtVersion")
 
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
     implementation("commons-codec:commons-codec:1.18.0")
 
     // Database
     implementation("org.postgresql:postgresql:42.7.5")
-    implementation("com.zaxxer:HikariCP:6.2.1")
-    implementation("org.flywaydb:flyway-database-postgresql:11.3.4")
+    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
@@ -54,10 +59,10 @@ dependencies {
     implementation("com.papertrailapp:logback-syslog4j:1.0.0")
 
     // Serialisering av dato-objekter
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
 
     // Funksjonelle operatorer
-    implementation("io.arrow-kt:arrow-core:2.0.1")
+    implementation("io.arrow-kt:arrow-core:$arrowKtVersion")
 
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")

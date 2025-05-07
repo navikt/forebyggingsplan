@@ -1,10 +1,14 @@
+val flywayPostgresqlVersion = "11.8.1"
+val hikariCPVersion = "6.3.0"
+val jetbrainsExposedVersion = "0.61.0"
 val kotestVersion = "5.9.1"
-val testcontainersVersion = "1.20.6"
+val kotlinxDatetimeVersion = "0.6.2"
 val ktorVersion = "3.1.3"
-val jetbrainsExposedVersion = "0.60.0"
 val mockOAuth2ServerVersion = "2.1.10"
-
+val nettyCodecHttpVersion = "4.2.1.Final"
+val testcontainersVersion = "1.21.0"
 val testMockServerVersion = "5.15.0"
+val wiremockVersion = "3.13.0"
 
 plugins {
     kotlin("jvm")
@@ -33,19 +37,19 @@ dependencies {
     testImplementation("org.testcontainers:mockserver:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-    testImplementation("org.wiremock:wiremock-standalone:3.12.1")
+    testImplementation("org.wiremock:wiremock-standalone:$wiremockVersion")
 
     // Ktor specific
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     testImplementation("io.ktor:ktor-client-core:$ktorVersion")
     testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
 
     // Database
     implementation("org.postgresql:postgresql:42.7.5")
-    implementation("com.zaxxer:HikariCP:6.2.1")
-    implementation("org.flywaydb:flyway-database-postgresql:11.3.4")
+    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$jetbrainsExposedVersion")
@@ -66,7 +70,7 @@ dependencies {
         }
         implementation("io.netty:netty-codec-http2") {
             version {
-                require("4.1.119.Final")
+                require(nettyCodecHttpVersion)
             }
             because("From Ktor version: 2.3.5 -> io.netty:netty-codec-http2 vulnerable to HTTP/2 Rapid Reset Attack")
         }
