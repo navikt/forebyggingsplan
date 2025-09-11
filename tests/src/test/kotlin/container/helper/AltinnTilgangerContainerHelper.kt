@@ -113,11 +113,13 @@ class AltinnTilgangerContainerHelper(
                               "altinn2Tilganger": [],
                               "underenheter": [],
                               "navn": "NAVN TIL UNDERENHET",
-                              "organisasjonsform": "BEDR"
+                              "organisasjonsform": "BEDR",
+                              "erSlettet": false
                             }
                           ],
                           "navn": "NAVN TIL OVERORDNET ENHET",
-                          "organisasjonsform": "ORGL"
+                          "organisasjonsform": "ORGL",
+                          "erSlettet": false
                         }
                       ],
                       "orgNrTilTilganger": {

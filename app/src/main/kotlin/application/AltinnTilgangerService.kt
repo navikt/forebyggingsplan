@@ -60,6 +60,10 @@ class AltinnTilgangerService {
             }
         }
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     suspend fun hentAltinnTilganger(token: String): AltinnTilganger? =
         try {
             log.debug("henter Altinn tilganger på URL $altinnTilgangerUrl")
@@ -70,7 +74,7 @@ class AltinnTilgangerService {
                 accept(ContentType.Application.Json)
                 setBody("{}")
             }
-            Json.decodeFromString<AltinnTilganger>(response.body())
+            json.decodeFromString<AltinnTilganger>(response.body())
         } catch (e: Exception) {
             log.error("Feil ved kall til Altinn tilganger", e)
             null
@@ -84,6 +88,7 @@ class AltinnTilgangerService {
         val underenheter: List<AltinnTilgang>,
         val navn: String,
         val organisasjonsform: String,
+        val erSlettet: Boolean,
     )
 
     @Serializable
