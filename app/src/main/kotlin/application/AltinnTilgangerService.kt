@@ -26,13 +26,13 @@ class AltinnTilgangerService {
         private val altinnTilgangerUrl: String = "$altinnTilgangerProxyUrl/altinn-tilganger"
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-        const val ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3 = "nav_forebygge-og-redusere-sykefravar_samarbeid"
+        fun AltinnTilganger?.harTilgangTilOrgnr(orgnr: String?): Boolean =
+            this?.virksomheterVedkommendeHarTilgangTil()?.contains(orgnr) ?: false
 
-        fun AltinnTilganger?.harEnkeltRettighet(orgnr: String?): Boolean =
-            getHarAltinn3Enkeltrettighet(orgnr)
-
-        private fun AltinnTilganger?.getHarAltinn3Enkeltrettighet(orgnr: String?): Boolean =
-            this?.orgNrTilTilganger?.get(orgnr)?.contains(ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3) ?: false
+        private fun AltinnTilganger?.virksomheterVedkommendeHarTilgangTil(): List<String> =
+            this?.hierarki?.flatMap {
+                flatten(it) { o -> o.orgnr }
+            }?.toList() ?: emptyList()
 
         private fun <T> flatten(
             altinnTilgang: AltinnTilgang,

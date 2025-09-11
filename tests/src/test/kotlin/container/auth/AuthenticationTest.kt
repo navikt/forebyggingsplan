@@ -1,11 +1,11 @@
 package container.auth
 
-import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3
 import com.nimbusds.jwt.PlainJWT
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
 import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
+import container.helper.withToken
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
@@ -21,11 +21,6 @@ internal class AuthenticationTest {
             altinnTilgangerContainerHelper.slettAlleRettigheter()
             postgresContainerHelper.slettAlleAktiviteter()
         }
-
-        altinnTilgangerContainerHelper.leggTilRettigheter(
-            underenhet = enVirksomhet.orgnr,
-            altinn3Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3,
-        )
     }
 
     @Test
@@ -82,6 +77,9 @@ internal class AuthenticationTest {
             val gyldigToken = TestContainerHelper.accessToken()
             gyldigToken.jwtClaimsSet.getStringClaim("acr") shouldBe "Level4"
 
+            altinnTilgangerContainerHelper.leggTilRettighetIVirksomhet(
+                underenhet = enVirksomhet.orgnr,
+            )
             TestContainerHelper.hentAktiviteter(
                 orgnr = enVirksomhet.orgnr,
                 config = {
@@ -110,7 +108,18 @@ internal class AuthenticationTest {
     }
 
     @Test
+    fun `skal få 403 når man ikke har tilgang til virksomhet`() {
+        runBlocking {
+            val resultat = TestContainerHelper.hentAktiviteter(config = withToken(), orgnr = enVirksomhet.orgnr)
+            resultat.status shouldBe HttpStatusCode.Forbidden
+        }
+    }
+
+    @Test
     fun `skal få 200 når ace er satt til idporten-loa-high`() {
+        altinnTilgangerContainerHelper.leggTilRettighetIVirksomhet(
+            underenhet = enVirksomhet.orgnr,
+        )
         runBlocking {
             val gyldigToken = TestContainerHelper.accessToken(
                 "123",

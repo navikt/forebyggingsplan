@@ -1,6 +1,5 @@
 package container.audit
 
-import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
 import container.helper.TestContainerHelper.Companion.applikasjon
@@ -24,9 +23,8 @@ class AuditlogTest {
             postgresContainerHelper.slettAlleAktiviteter()
         }
 
-        altinnTilgangerContainerHelper.leggTilRettigheter(
+        altinnTilgangerContainerHelper.leggTilRettighetIVirksomhet(
             underenhet = enVirksomhet.orgnr,
-            altinn3Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3,
         )
     }
 

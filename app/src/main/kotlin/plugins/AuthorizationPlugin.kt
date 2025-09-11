@@ -1,7 +1,7 @@
 package plugins
 
 import application.AltinnTilgangerService
-import application.AltinnTilgangerService.Companion.harEnkeltRettighet
+import application.AltinnTilgangerService.Companion.harTilgangTilOrgnr
 import exceptions.UgyldigForespørselException
 import http.hentToken
 import http.orgnr
@@ -53,10 +53,10 @@ fun AltinnAuthorizationPlugin(altinnTilgangerService: AltinnTilgangerService) =
                     throw UgyldigForespørselException("Ugyldig orgnummer 'orgnr'")
                 }
 
-                if (!altinnTilganger.harEnkeltRettighet(orgnr)) {
+                if (!altinnTilganger.harTilgangTilOrgnr(orgnr)) {
                     call.respond(
                         status = HttpStatusCode.Forbidden,
-                        message = ResponseIError(message = "Bruker har ikke enkelttilgang til forebygge fravær"),
+                        message = ResponseIError(message = "Bruker har ikke tilgang til virksomhet"),
                     ).also {
                         call.auditLogVedIkkeTilgangTilOrg(
                             fnr = fnr,

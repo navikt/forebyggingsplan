@@ -2,7 +2,6 @@ package container.api
 
 import api.endepunkt.json.Aktivitetstype
 import api.endepunkt.json.OppdaterAktivitetJson
-import application.AltinnTilgangerService.Companion.ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3
 import container.helper.TestContainerHelper
 import container.helper.TestContainerHelper.Companion.altinnTilgangerContainerHelper
 import container.helper.TestContainerHelper.Companion.enVirksomhet
@@ -25,9 +24,8 @@ class AktivitetTest {
             postgresContainerHelper.slettAlleAktiviteter()
         }
 
-        altinnTilgangerContainerHelper.leggTilRettigheter(
+        altinnTilgangerContainerHelper.leggTilRettighetIVirksomhet(
             underenhet = enVirksomhet.orgnr,
-            altinn3Rettighet = ENKELRETTIGHET_FOREBYGGE_FRAVÆR_ALTINN_3,
         )
     }
 
@@ -50,7 +48,7 @@ class AktivitetTest {
     fun `skal få 403 forbidden på forsøk mot en bedrift brukeren ikke har enkel rettighet til`() {
         val orgnr = "999999999"
 
-        altinnTilgangerContainerHelper.leggTilRettigheter(
+        altinnTilgangerContainerHelper.leggTilRettighetIVirksomhet(
             underenhet = orgnr,
             altinn3Rettighet = "en-annen-enkelrettighet-enn-forebygge-fravær",
         )

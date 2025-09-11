@@ -83,10 +83,10 @@ class AltinnTilgangerContainerHelper(
         }
     }
 
-    internal fun leggTilRettigheter(
+    internal fun leggTilRettighetIVirksomhet(
         overordnetEnhet: String = "999888321",
         underenhet: String,
-        altinn3Rettighet: String = "",
+        altinn3Rettighet: String = "har-en-rettighet-i-virksomheten",
     ) {
         val client = getMockServerClient()
 
