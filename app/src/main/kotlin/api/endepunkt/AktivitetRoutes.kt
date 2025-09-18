@@ -30,7 +30,7 @@ fun Route.aktivitet(
     hasher: Hasher,
 ) {
     route("/aktivitet/{aktivitetId}/orgnr/{orgnr}") {
-        post<OppdaterAktivitetJson>("/oppdater") {
+        post<OppdaterAktivitetJson>("/oppdater") { requestBody: OppdaterAktivitetJson ->
             val fødselsnummer = call.request.tokenSubject()
             val aktivitetId = call.parameters["aktivitetId"] ?: return@post call.respond(
                 HttpStatusCode.BadRequest,
@@ -39,9 +39,12 @@ fun Route.aktivitet(
             val orgnr = call.virksomhet.orgnr
 
             val aktivitet = kotlin.runCatching {
-                it.tilDomene(hasher.hash(fødselsnummer), orgnr, aktivitetId)
+                requestBody.tilDomene(hasher.hash(fødselsnummer), orgnr, aktivitetId)
             }.getOrElse {
-                return@post call.respond(HttpStatusCode.BadRequest, "Status må være en av ${AktivitetJson.Status.entries.joinToString()}")
+                return@post call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Status må være en av ${AktivitetJson.Status.entries.joinToString()}"
+                )
             }
 
             aktivitetService.oppdaterAktivitet(aktivitet)

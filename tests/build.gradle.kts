@@ -1,18 +1,18 @@
-val flywayPostgresqlVersion = "11.10.1"
-val hikariCPVersion = "6.3.0"
+val flywayPostgresqlVersion = "11.13.0"
+val hikariCPVersion = "7.0.2"
 val jetbrainsExposedVersion = "0.61.0"
-val kotestVersion = "5.9.1"
-val kotlinxDatetimeVersion = "0.6.2"
-val ktorVersion = "3.2.0"
-val mockOAuth2ServerVersion = "2.2.1"
-val mockServerVersion = "1.0.19"
-val nettyCodecHttpVersion = "4.2.2.Final"
+val kotestVersion = "6.0.3"
+val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
+val ktorVersion = "3.3.0"
+val mockOAuth2ServerVersion = "2.3.0"
+val mockServerVersion = "1.1.3"
+val nettyCodecHttpVersion = "4.2.6.Final"
 val testcontainersVersion = "1.21.3"
 val wiremockVersion = "3.13.1"
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
+    kotlin("jvm") version "2.2.20"
+    kotlin("plugin.serialization") version "2.2.20"
     application
 }
 
@@ -62,7 +62,7 @@ dependencies {
     constraints {
         implementation("net.minidev:json-smart") {
             version {
-                require("2.5.2")
+                require("2.6.0")
             }
             because(
                 "From Kotlin version: 1.7.20 -> Earlier versions of json-smart package are vulnerable to Denial of Service (DoS) due to a StackOverflowError when parsing a deeply nested JSON array or object.",
@@ -82,13 +82,13 @@ dependencies {
         }
         testImplementation("org.bouncycastle:bcprov-jdk18on") {
             version {
-                require("1.81")
+                require("1.82")
             }
             because("bcprov-jdk18on in Mockserver har sårbar versjon")
         }
         testImplementation("org.bouncycastle:bcpkix-jdk18on") {
             version {
-                require("1.81")
+                require("1.82")
             }
             because("bcpkix-jdk18on in Mockserver har sårbar versjon")
         }
@@ -100,7 +100,7 @@ dependencies {
         }
         testImplementation("org.apache.commons:commons-compress") {
             version {
-                require("1.27.1")
+                require("1.28.0")
             }
             because("testcontainers har sårbar versjon")
         }

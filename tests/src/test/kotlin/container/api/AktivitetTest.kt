@@ -8,11 +8,11 @@ import container.helper.TestContainerHelper.Companion.enVirksomhet
 import container.helper.TestContainerHelper.Companion.postgresContainerHelper
 import container.helper.withToken
 import container.helper.withoutToken
-import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
