@@ -120,10 +120,10 @@ dependencies {
 
 tasks {
     withType<Test> {
-        dependsOn(":app:shadowJar")
+        dependsOn(":app:installDist")
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }

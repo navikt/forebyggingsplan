@@ -13,8 +13,7 @@ val prometheusVersion = "1.15.4"
 plugins {
     kotlin("jvm") version "2.2.20"
     kotlin("plugin.serialization") version "2.2.20"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    application
+    id("application")
 }
 
 repositories {
@@ -75,18 +74,11 @@ application {
 }
 
 tasks {
-    shadowJar {
-        mergeServiceFiles()
-        manifest {
-            attributes(Pair("Main-Class", "MainKt"))
-        }
-    }
-
     withType<Test> {
-        dependsOn(shadowJar)
+        dependsOn(installDist)
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
