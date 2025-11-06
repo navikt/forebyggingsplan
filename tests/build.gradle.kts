@@ -1,18 +1,18 @@
-val flywayPostgresqlVersion = "11.13.0"
+val flywayPostgresqlVersion = "11.15.0"
 val hikariCPVersion = "7.0.2"
 val jetbrainsExposedVersion = "0.61.0"
-val kotestVersion = "6.0.3"
+val kotestVersion = "6.0.4"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
-val ktorVersion = "3.3.0"
-val mockOAuth2ServerVersion = "2.3.0"
-val mockServerVersion = "1.1.3"
-val nettyCodecHttpVersion = "4.2.6.Final"
-val testcontainersVersion = "1.21.3"
+val ktorVersion = "3.3.2"
+val mockOAuth2ServerVersion = "3.0.1"
+val mockServerVersion = "1.3.0"
+val nettyCodecHttpVersion = "4.2.7.Final"
+val testcontainersVersion = "2.0.1"
 val wiremockVersion = "3.13.1"
 
 plugins {
-    kotlin("jvm") version "2.2.20"
-    kotlin("plugin.serialization") version "2.2.20"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.serialization") version "2.2.21"
     application
 }
 
@@ -34,11 +34,11 @@ dependencies {
 
     // Testcontainers
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
-    testImplementation("org.testcontainers:kafka:$testcontainersVersion")
+    testImplementation("org.testcontainers:testcontainers-kafka:$testcontainersVersion")
     testImplementation("software.xdev.mockserver:testcontainers:${mockServerVersion}")
     testImplementation("software.xdev.mockserver:client:${mockServerVersion}")
-    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
-    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter:$testcontainersVersion")
+    testImplementation("org.testcontainers:testcontainers-postgresql:$testcontainersVersion")
     testImplementation("org.wiremock:wiremock-standalone:$wiremockVersion")
 
     // Ktor specific
@@ -49,7 +49,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.7")
+    implementation("org.postgresql:postgresql:42.7.8")
     implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
@@ -76,7 +76,7 @@ dependencies {
         }
         testImplementation("com.google.guava:guava") {
             version {
-                require("33.4.0-jre")
+                require("33.5.0-jre")
             }
             because("Mockserver har sårbar guava versjon")
         }
