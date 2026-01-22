@@ -1,14 +1,14 @@
-val flywayPostgresqlVersion = "11.15.0"
+val flywayPostgresqlVersion = "11.20.2"
 val hikariCPVersion = "7.0.2"
 val jetbrainsExposedVersion = "0.61.0"
-val kotestVersion = "6.0.4"
+val kotestVersion = "6.1.0"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
-val ktorVersion = "3.3.2"
+val ktorVersion = "3.3.3"
 val mockOAuth2ServerVersion = "3.0.1"
-val mockServerVersion = "1.3.0"
-val nettyCodecHttpVersion = "4.2.7.Final"
-val testcontainersVersion = "2.0.1"
-val wiremockVersion = "3.13.1"
+val mockServerVersion = "1.3.1"
+val nettyCodecHttpVersion = "4.2.9.Final"
+val testcontainersVersion = "2.0.3"
+val wiremockVersion = "3.13.2"
 
 plugins {
     kotlin("jvm") version "2.2.21"
@@ -49,7 +49,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.8")
+    implementation("org.postgresql:postgresql:42.7.9")
     implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
@@ -82,13 +82,13 @@ dependencies {
         }
         testImplementation("org.bouncycastle:bcprov-jdk18on") {
             version {
-                require("1.82")
+                require("1.83")
             }
             because("bcprov-jdk18on in Mockserver har sårbar versjon")
         }
         testImplementation("org.bouncycastle:bcpkix-jdk18on") {
             version {
-                require("1.82")
+                require("1.83")
             }
             because("bcpkix-jdk18on in Mockserver har sårbar versjon")
         }

@@ -1,14 +1,14 @@
-val arrowKtVersion = "2.2.0"
-val flywayPostgresqlVersion = "11.15.0"
+val arrowKtVersion = "2.2.1"
+val flywayPostgresqlVersion = "11.20.2"
 val hikariCPVersion = "7.0.2"
-val ktorVersion = "3.3.2"
+val ktorVersion = "3.3.3"
 val jetbrainsExposedVersion = "0.61.0"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
-val logbackVersion = "1.5.20"
+val logbackVersion = "1.5.25"
 val logbackEncoderVersion = "9.0"
-val nettyCodecHttpVersion = "4.2.7.Final"
-val nimbusJoseJwtVersion = "10.5"
-val prometheusVersion = "1.15.5"
+val nettyCodecHttpVersion = "4.2.9.Final"
+val nimbusJoseJwtVersion = "10.7"
+val prometheusVersion = "1.16.2"
 
 plugins {
     kotlin("jvm") version "2.2.21"
@@ -46,7 +46,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.20.0")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.8")
+    implementation("org.postgresql:postgresql:42.7.9")
     implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
