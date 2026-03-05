@@ -1,10 +1,11 @@
 package db
 
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.Transaction
-import org.jetbrains.exposed.sql.statements.InsertStatement
-import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.statements.InsertStatement
+import org.jetbrains.exposed.v1.jdbc.statements.toExecutable
+import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 
 /**
  * Fungerer kun med PostgreSQL.
@@ -14,8 +15,7 @@ fun <T : Table> T.upsert(
     body: T.(InsertStatement<Number>) -> Unit,
 ) = InsertOrUpdate<Number>(this, keys = keys).apply {
     body(this)
-    execute(TransactionManager.current())
-}
+}.toExecutable().execute(TransactionManager.current())
 
 class InsertOrUpdate<Key : Any>(
     table: Table,

@@ -4,7 +4,7 @@ import db.runMigration
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.v1.jdbc.Database
 import plugins.configureMonitoring
 import plugins.configureRouting
 import plugins.configureSerialization
