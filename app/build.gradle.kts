@@ -1,18 +1,18 @@
-val arrowKtVersion = "2.2.1"
-val flywayPostgresqlVersion = "11.20.2"
+val arrowKtVersion = "2.2.1.1"
+val flywayPostgresqlVersion = "12.0.2"
 val hikariCPVersion = "7.0.2"
-val ktorVersion = "3.3.3"
-val jetbrainsExposedVersion = "0.61.0"
+val ktorVersion = "3.4.0"
+val jetbrainsExposedVersion = "1.1.0"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
-val logbackVersion = "1.5.25"
+val logbackVersion = "1.5.32"
 val logbackEncoderVersion = "9.0"
-val nettyCodecHttpVersion = "4.2.9.Final"
-val nimbusJoseJwtVersion = "10.7"
-val prometheusVersion = "1.16.2"
+val nettyCodecHttpVersion = "4.2.10.Final"
+val nimbusJoseJwtVersion = "10.8"
+val prometheusVersion = "1.16.3"
 
 plugins {
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.serialization") version "2.2.21"
+    kotlin("jvm") version "2.3.10"
+    kotlin("plugin.serialization") version "2.3.10"
     id("application")
 }
 
@@ -43,10 +43,10 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:$nimbusJoseJwtVersion")
 
     // altinn-rettigheter-proxy bruker codec 1.11 som har en sårbarhet
-    implementation("commons-codec:commons-codec:1.20.0")
+    implementation("commons-codec:commons-codec:1.21.0")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.9")
+    implementation("org.postgresql:postgresql:42.7.10")
     implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
