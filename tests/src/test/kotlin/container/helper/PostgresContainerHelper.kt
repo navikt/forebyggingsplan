@@ -3,13 +3,13 @@ package container.helper
 import DbMiljø
 import db.createDataSource
 import db.runMigration
-import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.v1.jdbc.Database
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.Network
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 import javax.sql.DataSource
 
@@ -21,7 +21,7 @@ class PostgresContainerHelper(
     internal val dbName = "forebyggingsplan"
     private var migreringErKjørt = false
     private val port = 5432
-    val container: PostgreSQLContainer<*> =
+    val container: PostgreSQLContainer =
         PostgreSQLContainer(DockerImageName.parse("postgres:14.5"))
             .withLogConsumer(
                 Slf4jLogConsumer(log).withPrefix(postgresNetworkAlias).withSeparateOutputStreams(),
