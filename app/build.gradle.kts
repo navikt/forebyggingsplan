@@ -67,6 +67,17 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
     implementation("io.netty:netty-codec-http:$nettyCodecHttpVersion")
+
+    constraints {
+        implementation("com.fasterxml.jackson.core:jackson-core") {
+            version { require("2.21.1") }
+            because("versjoner < 2.21.1 har sårbarhet. inkludert i ktor-server-auth:3.4.0")
+        }
+        implementation("tools.jackson.core:jackson-core") {
+            version { require("3.1.0") }
+            because("versjoner < 3.1.0 har sårbarhet. inkludert i logstash-logback-encoder:9.0")
+        }
+    }
 }
 
 application {
