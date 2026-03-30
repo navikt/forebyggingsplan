@@ -1,18 +1,18 @@
-val flywayPostgresqlVersion = "12.1.0"
+val flywayPostgresqlVersion = "12.1.1"
 val hikariCPVersion = "7.0.2"
 val jetbrainsExposedVersion = "1.1.1"
 val kotestVersion = "6.1.7"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
 val ktorVersion = "3.4.1"
 val mockOAuth2ServerVersion = "3.0.1"
-val mockServerVersion = "2.0.3"
+val mockServerVersion = "2.0.4"
 val nettyCodecHttpVersion = "4.2.9.Final"
-val testcontainersVersion = "2.0.3"
+val testcontainersVersion = "2.0.4"
 val wiremockVersion = "3.13.2"
 
 plugins {
-    kotlin("jvm") version "2.3.10"
-    kotlin("plugin.serialization") version "2.3.10"
+    kotlin("jvm") version "2.3.20"
+    kotlin("plugin.serialization") version "2.3.20"
     application
 }
 

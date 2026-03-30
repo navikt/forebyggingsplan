@@ -1,5 +1,5 @@
-val arrowKtVersion = "2.2.2"
-val flywayPostgresqlVersion = "12.1.0"
+val arrowKtVersion = "2.2.2.1"
+val flywayPostgresqlVersion = "12.1.1"
 val hikariCPVersion = "7.0.2"
 val ktorVersion = "3.4.1"
 val jetbrainsExposedVersion = "1.1.1"
@@ -11,8 +11,8 @@ val nimbusJoseJwtVersion = "10.8"
 val prometheusVersion = "1.16.4"
 
 plugins {
-    kotlin("jvm") version "2.3.10"
-    kotlin("plugin.serialization") version "2.3.10"
+    kotlin("jvm") version "2.3.20"
+    kotlin("plugin.serialization") version "2.3.20"
     id("application")
 }
 
