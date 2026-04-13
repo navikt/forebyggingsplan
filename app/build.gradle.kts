@@ -1,18 +1,18 @@
-val arrowKtVersion = "2.2.2"
-val flywayPostgresqlVersion = "12.1.0"
+val arrowKtVersion = "2.2.2.1"
+val flywayPostgresqlVersion = "12.3.0"
 val hikariCPVersion = "7.0.2"
-val ktorVersion = "3.4.1"
-val jetbrainsExposedVersion = "1.1.1"
+val ktorVersion = "3.4.2"
+val jetbrainsExposedVersion = "1.2.0"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
 val logbackVersion = "1.5.32"
 val logbackEncoderVersion = "9.0"
-val nettyCodecHttpVersion = "4.2.10.Final"
-val nimbusJoseJwtVersion = "10.8"
+val nettyCodecHttpVersion = "4.2.12.Final"
+val nimbusJoseJwtVersion = "10.9"
 val prometheusVersion = "1.16.4"
 
 plugins {
-    kotlin("jvm") version "2.3.10"
-    kotlin("plugin.serialization") version "2.3.10"
+    kotlin("jvm") version "2.3.20"
+    kotlin("plugin.serialization") version "2.3.20"
     id("application")
 }
 
