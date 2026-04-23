@@ -6,7 +6,6 @@ val jetbrainsExposedVersion = "1.2.0"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
 val logbackVersion = "1.5.32"
 val logbackEncoderVersion = "9.0"
-val nettyCodecHttpVersion = "4.2.12.Final"
 val nimbusJoseJwtVersion = "10.9"
 val prometheusVersion = "1.16.4"
 
@@ -66,7 +65,6 @@ dependencies {
     // metrics
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
-    implementation("io.netty:netty-codec-http:$nettyCodecHttpVersion")
 
     constraints {
         implementation("com.fasterxml.jackson.core:jackson-core") {
@@ -74,8 +72,16 @@ dependencies {
             because("versjoner < 2.21.1 har sårbarhet. inkludert i ktor-server-auth:3.4.0")
         }
         implementation("tools.jackson.core:jackson-core") {
-            version { require("3.1.0") }
-            because("versjoner < 3.1.0 har sårbarhet. inkludert i logstash-logback-encoder:9.0")
+            version { require("3.1.1") }
+            because("versjoner <= 3.1.0 har sårbarhet. inkludert i logstash-logback-encoder:9.0")
+        }
+        implementation("io.netty:netty-codec-http2") {
+            version {
+                require("4.2.11.Final")
+            }
+            because(
+                "versjoner < 4.2.10.Final har sårbarhet. inkludert i ktor-server-netty-jvm:3.4.2",
+            )
         }
     }
 }
