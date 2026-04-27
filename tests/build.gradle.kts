@@ -1,11 +1,11 @@
-val flywayPostgresqlVersion = "12.3.0"
+val flywayPostgresqlVersion = "12.4.0"
 val hikariCPVersion = "7.0.2"
 val jetbrainsExposedVersion = "1.2.0"
 val kotestVersion = "6.1.11"
 val kotlinxDatetimeVersion = "0.7.1-0.6.x-compat"
 val ktorVersion = "3.4.2"
 val mockOAuth2ServerVersion = "3.0.1"
-val mockServerVersion = "2.50.5"
+val mockServerVersion = "2.50.6"
 val testcontainersVersion = "2.0.4"
 val wiremockVersion = "3.13.2"
 
