@@ -67,7 +67,7 @@ jobs:
   deploy-branch-to-dev:
     name: Deploy branch to dev
     needs: build
-    if: github.ref == 'refs/heads/oppgrader-til-postgres17'
+    if: github.ref == 'refs/heads/oppgrader-til-postgres16'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
