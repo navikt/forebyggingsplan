@@ -22,7 +22,7 @@ class PostgresContainerHelper(
     private var migreringErKjørt = false
     private val port = 5432
     val container: PostgreSQLContainer =
-        PostgreSQLContainer(DockerImageName.parse("postgres:16.14"))
+        PostgreSQLContainer(DockerImageName.parse("postgres:17"))
             .withLogConsumer(
                 Slf4jLogConsumer(log).withPrefix(postgresNetworkAlias).withSeparateOutputStreams(),
             )
