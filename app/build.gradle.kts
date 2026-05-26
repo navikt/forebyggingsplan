@@ -1,8 +1,8 @@
 val arrowKtVersion = "2.2.2.1"
-val flywayPostgresqlVersion = "12.6.0"
+val flywayPostgresqlVersion = "12.6.2"
 val hikariCPVersion = "7.0.2"
-val ktorVersion = "3.4.3"
-val jetbrainsExposedVersion = "1.2.0"
+val ktorVersion = "3.5.0"
+val jetbrainsExposedVersion = "1.3.0"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
 val logbackVersion = "1.5.32"
 val logbackEncoderVersion = "9.0"
@@ -10,8 +10,8 @@ val nimbusJoseJwtVersion = "10.9"
 val prometheusVersion = "1.16.5"
 
 plugins {
-    kotlin("jvm") version "2.3.20"
-    kotlin("plugin.serialization") version "2.3.20"
+    kotlin("jvm") version "2.3.21"
+    kotlin("plugin.serialization") version "2.3.21"
     id("application")
 }
 
@@ -68,16 +68,16 @@ dependencies {
 
     constraints {
         implementation("com.fasterxml.jackson.core:jackson-core") {
-            version { require("2.21.1") }
+            version { require("2.21.3") }
             because("versjoner < 2.21.1 har sårbarhet. inkludert i ktor-server-auth:3.4.0")
         }
         implementation("tools.jackson.core:jackson-core") {
-            version { require("3.1.1") }
+            version { require("3.1.3") }
             because("versjoner <= 3.1.0 har sårbarhet. inkludert i logstash-logback-encoder:9.0")
         }
         implementation("io.netty:netty-codec-http2") {
             version {
-                require("4.2.11.Final")
+                require("4.2.14.Final")
             }
             because(
                 "versjoner < 4.2.10.Final har sårbarhet. inkludert i ktor-server-netty-jvm:3.4.2",
