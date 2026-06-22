@@ -1,7 +1,7 @@
-val flywayPostgresqlVersion = "12.8.1"
-val hikariCPVersion = "7.0.2"
+val flywayPostgresqlVersion = "12.9.0"
+val hikariCPVersion = "7.1.0"
 val jetbrainsExposedVersion = "1.3.0"
-val kotestVersion = "6.1.11"
+val kotestVersion = "6.2.1"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
 val ktorVersion = "3.5.0"
 val mockOAuth2ServerVersion = "4.0.1"
@@ -60,11 +60,11 @@ dependencies {
 
     constraints {
         implementation("com.fasterxml.jackson.core:jackson-core") {
-            version { require("2.21.3") }
+            version { require("2.22.0") }
             because("versjoner < 2.21.1 har sårbarhet. inkludert i ktor-server-auth:3.4.0")
         }
         implementation("tools.jackson.core:jackson-core") {
-            version { require("3.1.3") }
+            version { require("3.2.0") }
             because("versjoner <= 3.1.0 har sårbarhet. inkludert i logstash-logback-encoder:9.0")
         }
         testImplementation("org.bouncycastle:bcprov-jdk18on") {
