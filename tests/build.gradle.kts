@@ -1,5 +1,5 @@
 val flywayPostgresqlVersion = "12.8.1"
-val hikariCPVersion = "7.0.2"
+val hikariCPVersion = "7.1.0"
 val jetbrainsExposedVersion = "1.3.0"
 val kotestVersion = "6.1.11"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
@@ -10,8 +10,8 @@ val testcontainersVersion = "2.0.5"
 val wiremockVersion = "3.13.2"
 
 plugins {
-    kotlin("jvm") version "2.3.21"
-    kotlin("plugin.serialization") version "2.3.21"
+    kotlin("jvm") version "2.4.0"
+    kotlin("plugin.serialization") version "2.4.0"
     application
 }
 
