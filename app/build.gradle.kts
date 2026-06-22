@@ -77,7 +77,7 @@ dependencies {
         }
         implementation("io.netty:netty-codec-http2") {
             version {
-                require("4.2.14.Final")
+                require("4.2.15.Final")
             }
             because(
                 "versjoner < 4.2.10.Final har sårbarhet. inkludert i ktor-server-netty-jvm:3.4.2",
