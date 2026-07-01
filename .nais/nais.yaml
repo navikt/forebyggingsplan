@@ -10,9 +10,15 @@ spec:
     sqlInstances:
       - type: POSTGRES_18
         tier: {{dbTier}}
+        diskAutoresize: {{dbAutoresize}}
         databases:
           - name: forebyggingsplan
             envVarPrefix: DB
+        flags:
+        {{#each db_flags}}
+           - name: {{@key}}
+             value: "{{this}}"
+        {{/each}}
   tokenx:
     enabled: true
   image: {{image}}
