@@ -3,15 +3,15 @@ val hikariCPVersion = "7.1.0"
 val jetbrainsExposedVersion = "1.3.0"
 val kotestVersion = "6.2.1"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
-val ktorVersion = "3.5.0"
-val mockOAuth2ServerVersion = "4.0.1"
-val mockServerVersion = "2.50.9"
+val ktorVersion = "3.5.1"
+val mockOAuth2ServerVersion = "5.0.1"
+val mockServerVersion = "2.51.0"
 val testcontainersVersion = "2.0.5"
 val wiremockVersion = "3.13.2"
 
 plugins {
-    kotlin("jvm") version "2.3.21"
-    kotlin("plugin.serialization") version "2.3.21"
+    kotlin("jvm") version "2.4.0"
+    kotlin("plugin.serialization") version "2.4.0"
     application
 }
 
