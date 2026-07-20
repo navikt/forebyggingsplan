@@ -1,10 +1,10 @@
 val arrowKtVersion = "2.2.3"
-val flywayPostgresqlVersion = "12.10.0"
+val flywayPostgresqlVersion = "12.11.0"
 val hikariCPVersion = "7.1.0"
 val ktorVersion = "3.5.1"
 val jetbrainsExposedVersion = "1.3.1"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
-val logbackVersion = "1.5.37"
+val logbackVersion = "1.5.38"
 val logbackEncoderVersion = "9.0"
 val nimbusJoseJwtVersion = "10.9.1"
 val prometheusVersion = "1.17.0"
@@ -45,7 +45,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.22.0")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.12")
+    implementation("org.postgresql:postgresql:42.7.13")
     implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
