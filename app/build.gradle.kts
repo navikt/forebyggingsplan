@@ -7,7 +7,7 @@ val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
 val logbackVersion = "1.6.3"
 val logbackEncoderVersion = "9.0"
 val nimbusJoseJwtVersion = "10.9.1"
-val prometheusVersion = "1.17.0"
+val prometheusVersion = "1.17.1"
 
 plugins {
     kotlin("jvm") version "2.4.10"
