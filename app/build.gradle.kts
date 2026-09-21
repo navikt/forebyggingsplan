@@ -1,17 +1,17 @@
 val arrowKtVersion = "2.2.3"
-val flywayPostgresqlVersion = "13.3.0"
+val flywayPostgresqlVersion = "13.6.0"
 val hikariCPVersion = "7.1.0"
 val ktorVersion = "3.5.2"
-val jetbrainsExposedVersion = "1.4.0"
+val jetbrainsExposedVersion = "1.5.0"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
 val logbackVersion = "1.6.3"
 val logbackEncoderVersion = "9.0"
 val nimbusJoseJwtVersion = "10.9.1"
-val prometheusVersion = "1.17.0"
+val prometheusVersion = "1.17.1"
 
 plugins {
-    kotlin("jvm") version "2.4.10"
-    kotlin("plugin.serialization") version "2.4.10"
+    kotlin("jvm") version "2.4.20"
+    kotlin("plugin.serialization") version "2.4.20"
     id("application")
 }
 
