@@ -1,17 +1,17 @@
-val flywayPostgresqlVersion = "13.3.0"
+val flywayPostgresqlVersion = "13.10.3"
 val hikariCPVersion = "7.1.0"
-val jetbrainsExposedVersion = "1.4.0"
-val kotestVersion = "6.2.4"
+val jetbrainsExposedVersion = "1.6.0"
+val kotestVersion = "6.2.6"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
-val ktorVersion = "3.5.2"
-val mockOAuth2ServerVersion = "6.0.1"
-val mockServerVersion = "2.51.1"
+val ktorVersion = "3.6.0"
+val mockOAuth2ServerVersion = "6.1.2"
+val mockServerVersion = "2.52.1"
 val testcontainersVersion = "2.0.5"
 val wiremockVersion = "3.13.2"
 
 plugins {
-    kotlin("jvm") version "2.4.10"
-    kotlin("plugin.serialization") version "2.4.10"
+    kotlin("jvm") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
     application
 }
 
@@ -48,7 +48,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")
 
     // Database
-    implementation("org.postgresql:postgresql:42.7.13")
+    implementation("org.postgresql:postgresql:42.7.14")
     implementation("com.zaxxer:HikariCP:$hikariCPVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayPostgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
