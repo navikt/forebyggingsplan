@@ -1,13 +1,13 @@
 val arrowKtVersion = "2.2.3"
-val flywayPostgresqlVersion = "13.10.3"
+val flywayPostgresqlVersion = "13.11.1"
 val hikariCPVersion = "7.1.0"
 val ktorVersion = "3.6.0"
 val jetbrainsExposedVersion = "1.6.0"
 val kotlinxDatetimeVersion = "0.8.0-0.6.x-compat"
-val logbackVersion = "1.6.5"
+val logbackVersion = "1.6.6"
 val logbackEncoderVersion = "9.0"
 val nimbusJoseJwtVersion = "10.10"
-val prometheusVersion = "1.17.1"
+val prometheusVersion = "1.17.2"
 
 plugins {
     kotlin("jvm") version "2.4.21"
