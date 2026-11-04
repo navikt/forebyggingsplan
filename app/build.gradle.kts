@@ -75,6 +75,10 @@ dependencies {
             version { require("3.2.4") }
             because("versjoner <= 3.2.2 har sårbarhet. inkludert i logstash-logback-encoder")
         }
+        implementation("com.google.guava:guava") {
+            version { require("33.7.2-jre") }
+            because("versjoner < 33.7.2-jre har sårbarhet. Inkludert i ktor-server-auth-jwt:3.6.1 -> com.auth0:jwks-rsa:0.24.1")
+        }
         implementation("io.netty:netty-codec-http2") {
             version {
                 require("4.2.19.Final")
