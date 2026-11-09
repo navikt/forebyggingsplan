@@ -1,4 +1,4 @@
-val flywayPostgresqlVersion = "13.11.1"
+val flywayPostgresqlVersion = "13.12.0"
 val hikariCPVersion = "7.1.0"
 val jetbrainsExposedVersion = "1.6.0"
 val kotestVersion = "6.2.6"

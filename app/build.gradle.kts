@@ -1,4 +1,4 @@
-val arrowKtVersion = "2.3.0"
+val arrowKtVersion = "2.3.0.1"
 val flywayPostgresqlVersion = "13.12.0"
 val hikariCPVersion = "7.1.0"
 val ktorVersion = "3.6.1"
