@@ -51,6 +51,9 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
 
   deploy:
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       matrix:
         cluster: [ dev, prod ]
@@ -68,7 +71,6 @@ jobs:
           CLUSTER: ${{ matrix.cluster }}-gcp
           RESOURCE: .nais/nais.yaml
           VARS: .nais/${{ matrix.cluster }}.yaml
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
 
   deploy-branch-to-dev:
     name: Deploy branch to dev
