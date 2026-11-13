@@ -14,11 +14,13 @@ spec:
         databases:
           - name: forebyggingsplan
             envVarPrefix: DB
+        {{#if db_flags}}
         flags:
         {{#each db_flags}}
            - name: {{@key}}
              value: "{{this}}"
         {{/each}}
+        {{/if}}
   tokenx:
     enabled: true
   image: {{image}}
